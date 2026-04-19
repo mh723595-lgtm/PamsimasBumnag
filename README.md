@@ -60,7 +60,7 @@ copy .env.example .env
 php artisan key:generate
 
 # 6. Setup database di file .env
-# DB_DATABASE=db_pamsimas
+# DB_DATABASE=db_pdam
 # DB_USERNAME=root
 # DB_PASSWORD=
 
