@@ -233,7 +233,7 @@
                 </div>
                 <div class="flex justify-between py-2 border-b border-brand-600">
                     <span class="text-brand-300">Biaya Admin</span>
-                    <span class="font-semibold">Rp 2.500</span>
+                    <span class="font-semibold">Rp 0</span>
                 </div>
                 <div class="flex justify-between py-2">
                     <span class="text-white font-bold">TOTAL</span>
@@ -260,7 +260,7 @@
                 </div>
                 <div class="flex justify-between items-center py-2">
                     <span class="text-gray-500">Biaya Admin</span>
-                    <span class="font-semibold text-gray-800 dark:text-gray-200">Rp 2.500</span>
+                    <span class="font-semibold text-gray-800 dark:text-gray-200">Rp 0</span>
                 </div>
             </div>
         </div>

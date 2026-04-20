@@ -35,12 +35,12 @@ class TagihanService
         }
 
         // Biaya administrasi
-        $total += 2500;
+        // $total += 2500;
 
         return [
             'pemakaian'   => $pemakaian,
-            'biaya_pokok' => $total - 2500,
-            'biaya_admin' => 2500,
+            'biaya_pokok' => $total,
+            'biaya_admin' => 0,
             'total'       => $total,
             'rincian'     => $this->rincianTarif($pemakaian),
         ];
@@ -88,13 +88,13 @@ class TagihanService
         }
 
         // Biaya admin
-        $rincian[] = [
-            'blok'   => 'Biaya Administrasi',
-            'volume' => '-',
-            'tarif'  => '-',
-            'biaya'  => 2500,
-            'note'   => 'Flat',
-        ];
+        // $rincian[] = [
+        //     'blok'   => 'Biaya Administrasi',
+        //     'volume' => '-',
+        //     'tarif'  => '-',
+        //     'biaya'  => 2500,
+        //     'note'   => 'Flat',
+        // ];
 
         return $rincian;
     }
