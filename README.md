@@ -35,10 +35,10 @@ Sistem ini mendukung multi-role (Admin, Petugas, Pelanggan) dengan fitur utama s
 
 ## 👩‍💻 Developer
 
-- Muhammad Haris
-- Habibullah
-- Vigo Alsabri
-- Nayla Nur Fathiniah
+-
+-
+- 
+- 
 
 ---
 
@@ -48,7 +48,7 @@ Sistem ini mendukung multi-role (Admin, Petugas, Pelanggan) dengan fitur utama s
 git clone https://github.com/mh723595-lgtm/PamsimasBumnag.git
 
 # 2. Masuk ke folder project
-cd pamsimas
+cd PamsimasBumnag
 
 # 3. Install dependency
 composer install
@@ -60,9 +60,7 @@ copy .env.example .env
 php artisan key:generate
 
 # 6. Setup database di file .env
-# DB_DATABASE=db_pdam
-# DB_USERNAME=root
-# DB_PASSWORD=
+DB_DATABASE=db_pdam
 
 # 7. Migrasi & seeder
 php artisan migrate --seed
