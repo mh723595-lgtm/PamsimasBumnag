@@ -39,7 +39,7 @@
                 }
             }
             this.biayaPokok = total;
-            total += 2500;
+            total += 0;
             this.totalTagihan = total;
         },
         formatRp(n) {
