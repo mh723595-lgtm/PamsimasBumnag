@@ -35,10 +35,10 @@ Sistem ini mendukung multi-role (Admin, Petugas, Pelanggan) dengan fitur utama s
 
 ## 👩‍💻 Developer
 
--
--
-- 
-- 
+- Muhammad Haris
+- Habibullah
+- Vigo Alsabri
+- Nayla Nur Fathiniah
 
 ---
 
