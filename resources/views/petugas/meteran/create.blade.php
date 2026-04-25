@@ -210,7 +210,7 @@
     {{-- PREVIEW TAGIHAN --}}
     <div class="space-y-4">
         {{-- Live Preview --}}
-        <div class="bg-gradient-to-br from-brand-800 to-brand-600 rounded-2xl p-5 text-white sticky top-20">
+        <div class="bg-linear-to-br from-brand-800 to-brand-600 rounded-2xl p-5 text-white sticky top-20">
             <p class="text-brand-200 text-xs font-medium uppercase tracking-wider mb-1">Estimasi Tagihan</p>
             <p class="text-4xl font-extrabold mb-6" x-text="formatRp(totalTagihan)">Rp 0</p>
 
