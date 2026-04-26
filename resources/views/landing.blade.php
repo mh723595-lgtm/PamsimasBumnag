@@ -511,8 +511,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                 </div>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Siap Mulai?</h2>
-                <p class="text-brand-200 text-lg mb-8 max-w-xl mx-auto">Masuk ke sistem PAMSIMAS dan kelola layanan air bersih dengan lebih efisien, transparan, dan modern.</p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Siap Memulai?</h2>
+                <p class="text-brand-200 text-lg mb-8 max-w-xl mx-auto">Kelola layanan air bersih Anda dengan lebih mudah, cepat, dan transparan melalui sistem PAMSIMAS yang terintegrasi.
+Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — semuanya dapat diakses dalam satu platform yang modern dan efisien.</p>
                 <div class="flex flex-wrap justify-center gap-4">
                     <a href="/login" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-700 font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:bg-brand-50 transition-all duration-200">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
