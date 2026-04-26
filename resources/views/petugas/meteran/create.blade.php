@@ -5,7 +5,7 @@
 @section('page_subtitle', 'Catat pemakaian air pelanggan bulan ini')
 {{-- memperbaiki fitur input meteran --}}
 Memperbaiki error blade dan menambahkan fitur input meteran
-menambahkan riwayat input meteran
+menambahkan pelanggan pada meteran
 
 
 @section('content')
