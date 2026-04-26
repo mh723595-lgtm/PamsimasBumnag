@@ -552,10 +552,10 @@ Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — se
                         </div>
                         <div>
                             <p class="text-white font-bold">PAMSIMAS</p>
-                            <p class="text-gray-500 text-xs">Sistem Air Minum Berbasis Masyarakat</p>
+                            <p class="text-gray-500 text-xs">Program Penyediaan dan Pengelolaan Air Minum Berbasis Masyarakat</p>
                         </div>
                     </div>
-                    <p class="text-gray-400 text-sm leading-relaxed max-w-sm">Platform digital untuk pengelolaan sistem air minum berbasis masyarakat yang efisien, transparan, dan akuntabel.</p>
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-sm">Platform digital terpadu yang dirancang untuk mendukung pengelolaan sistem air minum berbasis masyarakat secara efisien, transparan, dan akuntabel. Dari pencatatan konsumsi air, pemantauan jaringan distribusi, hingga pelaporan keuangan — semua terintegrasi dalam satu sistem yang mudah diakses oleh seluruh pemangku kepentingan.</p>
                 </div>
                 <!-- Links -->
                 <div>
