@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('pelanggans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
-                  ->unique()
                   ->constrained('users')
                   ->onDelete('cascade');
             $table->string('nomor_pelanggan', 20)->unique();

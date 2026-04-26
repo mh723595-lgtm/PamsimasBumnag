@@ -52,6 +52,7 @@
         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
             <form method="POST" action="{{ route('petugas.meteran.store') }}">
                 @csrf
+                
 
                 {{-- Pilih Pelanggan --}}
                 <div class="mb-5">
