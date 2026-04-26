@@ -420,7 +420,7 @@
             <div class="text-center mb-16">
                 <span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-sm font-semibold mb-4">Alur Sistem</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Cara Kerja PAMSIMAS</h2>
-                <p class="text-gray-500 dark:text-gray-400 text-lg max-w-xl mx-auto">Proses sederhana dan transparan dari pencatatan hingga pembayaran</p>
+                <p class="text-gray-500 dark:text-gray-400 text-lg max-w-xl mx-auto">Proses pengelolaan air bersih yang sederhana, transparan, dan terintegrasi — mulai dari pencatatan meter hingga pembayaran tagihan.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
