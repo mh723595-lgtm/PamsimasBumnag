@@ -35,10 +35,10 @@ Sistem ini mendukung multi-role (Admin, Petugas, Pelanggan) dengan fitur utama s
 
 ## 👩‍💻 Developer
 
-- Muhammad Haris
-- Habibullah
-- Vigo Alsabri
-- Nayla Nur Fathiniah
+- Muhammad Haris, NIM: 2330407015
+- Habibullah , NIM: 2330407012
+- Vigo Alsabri, NIM: 2430407063 
+- Nayla Nur Fathiniah, NIM: 2330407018
 
 ---
 
