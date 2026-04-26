@@ -559,11 +559,11 @@ Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — se
                 </div>
                 <!-- Links -->
                 <div>
-                    <p class="text-white font-semibold text-sm mb-3">Sistem</p>
+                    <p class="text-white font-semibold text-sm mb-3">Tentang Sistem</p>
                     <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="/login" class="hover:text-brand-400 transition-colors">Login</a></li>
-                        <li><a href="#fitur" class="hover:text-brand-400 transition-colors">Fitur</a></li>
-                        <li><a href="#cara-kerja" class="hover:text-brand-400 transition-colors">Cara Kerja</a></li>
+                        <li><a href="/login" class="hover:text-brand-400 transition-colors">Masuk ke akun</a></li>
+                        <li><a href="#fitur" class="hover:text-brand-400 transition-colors">Layanan & Fitur</a></li>
+                        <li><a href="#cara-kerja" class="hover:text-brand-400 transition-colors">Pengaduan dan Cara Kerja</a></li>
                     </ul>
                 </div>
                 <div>
@@ -576,7 +576,7 @@ Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — se
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <p class="text-gray-500 text-sm">© {{ date('Y') }} Sistem Informasi PAMSIMAS. Hak Cipta Dilindungi.</p>
+                <p class="text-gray-500 text-sm">© {{ date('Y') }} Sistem Informasi PAMSIMAS – Penyediaan Air Minum Berbasis Masyarakat.</p>
                 <p class="text-gray-600 text-xs">Dibangun dengan Laravel & Tailwind CSS</p>
             </div>
         </div>
