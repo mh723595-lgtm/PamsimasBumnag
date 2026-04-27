@@ -37,8 +37,8 @@
             </svg>
         </div>
         <p class="text-2xl font-extrabold text-gray-900 dark:text-white">
-            {{ $tagihanBulanIni ? 'Rp '.number_format($tagihanBulanIni->total_tagihan/1000, 0, ',', '.').'.' : '-' }}
-        </p>
+    {{ $tagihanBulanIni ? 'Rp. '.number_format($tagihanBulanIni->total_tagihan, 0, ',', '.') : '-' }}
+       </p>
         <p class="text-gray-500 dark:text-gray-400 text-sm">Tagihan Bulan Ini</p>
     </div>
 
