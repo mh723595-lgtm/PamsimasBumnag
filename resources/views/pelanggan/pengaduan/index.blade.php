@@ -39,25 +39,22 @@
 
                     {{-- Step 1: Dibuat --}}
                     <div class="flex flex-col items-center">
-                        <div class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold
-                            {{ $currentStep >= 1 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-400' }}">
-                            ✓
-                        </div>
+                        <div class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">✓</div>
                         <span class="text-[9px] text-gray-400 mt-0.5 whitespace-nowrap">Dibuat</span>
                     </div>
 
-                    <div class="h-px w-6 mb-3 {{ $currentStep >= 2 ? 'bg-emerald-400' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
+                    <div class="h-px w-6 mb-3 {{ $currentStep >= 2 ? 'bg-green-400' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
 
                     {{-- Step 2: Ditanggapi --}}
                     <div class="flex flex-col items-center">
                         <div class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold
-                            {{ $currentStep >= 2 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-400' }}">
+                            {{ $currentStep >= 2 ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-400' }}">
                             {{ $currentStep >= 2 ? '✓' : '2' }}
                         </div>
                         <span class="text-[9px] text-gray-400 mt-0.5 whitespace-nowrap">Ditanggapi</span>
                     </div>
 
-                    <div class="h-px w-6 mb-3 {{ $currentStep >= 3 && !$isDitolak ? 'bg-emerald-400' : ($isDitolak ? 'bg-red-300' : 'bg-gray-200 dark:bg-gray-700') }}"></div>
+                    <div class="h-px w-6 mb-3 {{ $currentStep >= 3 && !$isDitolak ? 'bg-green-400' : ($isDitolak ? 'bg-red-300' : 'bg-gray-200 dark:bg-gray-700') }}"></div>
 
                     {{-- Step 3: Selesai / Ditolak --}}
                     <div class="flex flex-col items-center">
@@ -66,7 +63,7 @@
                             <span class="text-[9px] text-red-400 mt-0.5 whitespace-nowrap">Ditolak</span>
                         @else
                             <div class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold
-                                {{ $currentStep >= 3 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-400' }}">
+                                {{ $currentStep >= 3 ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-400' }}">
                                 {{ $currentStep >= 3 ? '✓' : '3' }}
                             </div>
                             <span class="text-[9px] text-gray-400 mt-0.5 whitespace-nowrap">Selesai</span>
@@ -78,18 +75,19 @@
             </div>
 
             <div class="flex flex-col items-end gap-2 flex-shrink-0">
-                {{-- Badge Status dengan dot --}}
+                {{-- Badge Status — Vivid --}}
                 @php
                     $badgeConfig = match($p->status) {
-                        'baru'     => ['dot' => 'bg-amber-400', 'class' => 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300', 'label' => 'Baru'],
-                        'diproses' => ['dot' => 'bg-blue-400',  'class' => 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',   'label' => 'Diproses'],
-                        'selesai'  => ['dot' => 'bg-emerald-400','class' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300', 'label' => 'Selesai'],
-                        'ditolak'  => ['dot' => 'bg-red-400',   'class' => 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300',       'label' => 'Ditolak'],
-                        default    => ['dot' => 'bg-gray-400',  'class' => 'bg-gray-100 text-gray-600',                                         'label' => ucfirst($p->status)],
+                        'baru'     => ['dot' => '#FFC107', 'bg' => '#FFF3CD', 'color' => '#856404', 'label' => 'Baru'],
+                        'diproses' => ['dot' => '#007BFF', 'bg' => '#CCE5FF', 'color' => '#004085', 'label' => 'Diproses'],
+                        'selesai'  => ['dot' => '#28A745', 'bg' => '#D4EDDA', 'color' => '#155724', 'label' => 'Selesai'],
+                        'ditolak'  => ['dot' => '#DC3545', 'bg' => '#F8D7DA', 'color' => '#721C24', 'label' => 'Ditolak'],
+                        default    => ['dot' => '#6C757D', 'bg' => '#E2E3E5', 'color' => '#383D41', 'label' => ucfirst($p->status)],
                     };
                 @endphp
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold {{ $badgeConfig['class'] }}">
-                    <span class="w-1.5 h-1.5 rounded-full {{ $badgeConfig['dot'] }}"></span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"
+                    style="background-color: {{ $badgeConfig['bg'] }}; color: {{ $badgeConfig['color'] }};">
+                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{ $badgeConfig['dot'] }};"></span>
                     {{ $badgeConfig['label'] }}
                 </span>
                 <span class="text-lg">{{ $p->prioritasBadge() }}</span>
@@ -98,7 +96,7 @@
 
         @if($p->tanggapan)
         <div class="mt-3 pt-3 border-t border-gray-50 dark:border-gray-800">
-            <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mb-0.5">Tanggapan Admin:</p>
+            <p class="text-xs font-semibold mb-0.5" style="color: #155724;">Tanggapan Admin:</p>
             <p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">{{ $p->tanggapan }}</p>
         </div>
         @endif

@@ -17,23 +17,23 @@
 
         {{-- Header --}}
         <div class="p-5 border-b border-gray-100 dark:border-gray-800">
+            @php
+                $badgeConfig = match($pengaduan->status) {
+                    'baru'     => ['dot' => '#FFC107', 'bg' => '#FFF3CD', 'color' => '#856404', 'label' => 'Baru'],
+                    'diproses' => ['dot' => '#007BFF', 'bg' => '#CCE5FF', 'color' => '#004085', 'label' => 'Diproses'],
+                    'selesai'  => ['dot' => '#28A745', 'bg' => '#D4EDDA', 'color' => '#155724', 'label' => 'Selesai'],
+                    'ditolak'  => ['dot' => '#DC3545', 'bg' => '#F8D7DA', 'color' => '#721C24', 'label' => 'Ditolak'],
+                    default    => ['dot' => '#6C757D', 'bg' => '#E2E3E5', 'color' => '#383D41', 'label' => ucfirst($pengaduan->status)],
+                };
+            @endphp
             <div class="flex items-start justify-between gap-3 flex-wrap">
                 <div>
                     <p class="font-mono text-xs text-brand-600 dark:text-brand-400 mb-1">{{ $pengaduan->nomor_pengaduan }}</p>
                     <h2 class="text-lg font-bold text-gray-800 dark:text-white">{{ $pengaduan->judul }}</h2>
                 </div>
-                {{-- Badge Status dengan dot --}}
-                @php
-                    $badgeConfig = match($pengaduan->status) {
-                        'baru'     => ['dot' => 'bg-amber-400',  'class' => 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',       'label' => 'Baru'],
-                        'diproses' => ['dot' => 'bg-blue-400',   'class' => 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',           'label' => 'Diproses'],
-                        'selesai'  => ['dot' => 'bg-emerald-400','class' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300','label' => 'Selesai'],
-                        'ditolak'  => ['dot' => 'bg-red-400',    'class' => 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300',               'label' => 'Ditolak'],
-                        default    => ['dot' => 'bg-gray-400',   'class' => 'bg-gray-100 text-gray-600',                                                 'label' => ucfirst($pengaduan->status)],
-                    };
-                @endphp
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold {{ $badgeConfig['class'] }}">
-                    <span class="w-2 h-2 rounded-full {{ $badgeConfig['dot'] }}"></span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold"
+                    style="background-color: {{ $badgeConfig['bg'] }}; color: {{ $badgeConfig['color'] }};">
+                    <span class="w-2 h-2 rounded-full" style="background-color: {{ $badgeConfig['dot'] }};"></span>
                     {{ $badgeConfig['label'] }}
                 </span>
             </div>
@@ -57,7 +57,7 @@
                 $timelineSteps = [
                     ['label' => 'Dibuat',     'sub' => $pengaduan->created_at->format('d M Y'),  'step' => 1],
                     ['label' => 'Ditanggapi', 'sub' => $pengaduan->tanggapan ? 'Sudah ditanggapi' : 'Menunggu', 'step' => 2],
-                    ['label' => 'Diproses',   'sub' => $currentStep >= 2 ? 'Sedang ditangani' : 'Menunggu',    'step' => 2],
+                    ['label' => 'Diproses',   'sub' => $currentStep >= 2 ? 'Sedang ditangani' : 'Menunggu', 'step' => 2],
                     ['label' => 'Selesai',    'sub' => $pengaduan->tanggal_selesai ? $pengaduan->tanggal_selesai->format('d M Y') : 'Menunggu', 'step' => 3],
                 ];
             @endphp
@@ -65,36 +65,29 @@
             <div class="flex items-start">
                 @foreach($timelineSteps as $i => $step)
                     <div class="flex flex-col items-center flex-1">
-                        {{-- Circle --}}
                         @if($isDitolak && $i === 3)
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300 border-2 border-red-300 dark:border-red-700">✕</div>
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2"
+                                style="background:#F8D7DA; color:#721C24; border-color:#DC3545;">✕</div>
                         @elseif($currentStep > $step['step'] || ($currentStep === $step['step'] && $i < 2))
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-2 border-emerald-400 dark:border-emerald-600">✓</div>
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2"
+                                style="background:#D4EDDA; color:#155724; border-color:#28A745;">✓</div>
                         @elseif($currentStep === $step['step'])
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 border-2 border-blue-400 dark:border-blue-600">→</div>
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2"
+                                style="background:#CCE5FF; color:#004085; border-color:#007BFF;">→</div>
                         @else
                             <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-400 border-2 border-gray-200 dark:border-gray-700">{{ $i + 1 }}</div>
                         @endif
 
-                        {{-- Label --}}
-                        <p class="text-xs font-semibold mt-1.5 text-center
-                            @if($isDitolak && $i === 3) text-red-500
-                            @elseif($currentStep > $step['step'] || ($currentStep === $step['step'] && $i < 2)) text-emerald-600 dark:text-emerald-400
-                            @elseif($currentStep === $step['step']) text-blue-600 dark:text-blue-400
-                            @else text-gray-400
-                            @endif">
+                        <p class="text-xs font-semibold mt-1.5 text-center"
+                            style="color: {{ $isDitolak && $i === 3 ? '#721C24' : ($currentStep > $step['step'] || ($currentStep === $step['step'] && $i < 2) ? '#155724' : ($currentStep === $step['step'] ? '#004085' : '#9CA3AF')) }}">
                             {{ $isDitolak && $i === 3 ? 'Ditolak' : $step['label'] }}
                         </p>
                         <p class="text-[10px] text-gray-400 text-center mt-0.5 px-1">{{ $step['sub'] }}</p>
                     </div>
 
-                    {{-- Connector line --}}
                     @if($i < count($timelineSteps) - 1)
-                        <div class="h-px flex-1 mt-4
-                            @if($isDitolak && $i === 2) bg-red-300 dark:bg-red-800
-                            @elseif($currentStep > $step['step']) bg-emerald-400 dark:bg-emerald-600
-                            @else bg-gray-200 dark:bg-gray-700
-                            @endif">
+                        <div class="h-px flex-1 mt-4"
+                            style="background: {{ $isDitolak && $i === 2 ? '#DC3545' : ($currentStep > $step['step'] ? '#28A745' : '#E5E7EB') }}">
                         </div>
                     @endif
                 @endforeach
@@ -117,23 +110,23 @@
 
         {{-- Tanggapan Admin --}}
         @if($pengaduan->tanggapan)
-        <div class="p-5 bg-emerald-50 dark:bg-emerald-900/10">
+        <div class="p-5" style="background:#D4EDDA;">
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:#28A745;">
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                <p class="text-sm font-bold text-emerald-800 dark:text-emerald-200">Tanggapan Admin</p>
+                <p class="text-sm font-bold" style="color:#155724;">Tanggapan Admin</p>
             </div>
-            <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{{ $pengaduan->tanggapan }}</p>
+            <p class="text-sm leading-relaxed" style="color:#155724;">{{ $pengaduan->tanggapan }}</p>
             @if($pengaduan->tanggal_selesai)
-            <p class="text-xs text-gray-400 mt-2">{{ $pengaduan->tanggal_selesai->format('d M Y H:i') }}</p>
+            <p class="text-xs mt-2" style="color:#1e7e34;">{{ $pengaduan->tanggal_selesai->format('d M Y H:i') }}</p>
             @endif
         </div>
         @else
-        <div class="p-5 bg-amber-50 dark:bg-amber-900/10">
-            <p class="text-sm text-amber-700 dark:text-amber-300 font-medium">
+        <div class="p-5" style="background:#FFF3CD;">
+            <p class="text-sm font-medium" style="color:#856404;">
                 ⏳ Pengaduan Anda sedang dalam proses penanganan. Kami akan segera menghubungi Anda.
             </p>
         </div>
