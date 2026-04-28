@@ -3,6 +3,10 @@
 @section('title', 'Input Meteran Baru')
 @section('page_title', 'Input Meteran Baru')
 @section('page_subtitle', 'Catat pemakaian air pelanggan bulan ini')
+{{-- memperbaiki fitur input meteran --}}
+Memperbaiki error blade dan menambahkan fitur input meteran
+menambahkan pelanggan pada meteran
+
 
 @section('content')
 
@@ -52,6 +56,7 @@
         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
             <form method="POST" action="{{ route('petugas.meteran.store') }}">
                 @csrf
+                
 
                 {{-- Pilih Pelanggan --}}
                 <div class="mb-5">
@@ -210,7 +215,7 @@
     {{-- PREVIEW TAGIHAN --}}
     <div class="space-y-4">
         {{-- Live Preview --}}
-        <div class="bg-linear-to-br from-brand-800 to-brand-600 rounded-2xl p-5 text-white sticky top-20">
+        <div class="bg-gradient-to-br from-brand-800 to-brand-600 rounded-2xl p-5 text-white sticky top-20">
             <p class="text-brand-200 text-xs font-medium uppercase tracking-wider mb-1">Estimasi Tagihan</p>
             <p class="text-4xl font-extrabold mb-6" x-text="formatRp(totalTagihan)">Rp 0</p>
 
