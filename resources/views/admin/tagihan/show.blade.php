@@ -209,7 +209,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-brand-300">Biaya Admin</span>
-                    <span class="font-semibold">Rp 0</span>
+                    <span class="font-semibold">Rp 2.500</span>
                 </div>
                 <div class="border-t border-brand-500 mt-2 pt-2 flex justify-between">
                     <span class="text-white font-semibold">Total</span>

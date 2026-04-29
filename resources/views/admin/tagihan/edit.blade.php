@@ -18,24 +18,8 @@
 
 <div class="max-w-xl">
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
-
-        {{-- HEADER INFO TAMBAHAN --}}
-        <div class="mb-4">
-            <h2 class="font-bold text-gray-800 dark:text-white text-lg mb-1">Update Status Tagihan</h2>
-            <p class="text-gray-400 text-sm">
-                Tagihan:
-                <span class="font-mono font-semibold text-brand-600">{{ $tagihan->nomor_tagihan }}</span>
-            </p>
-            <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                {{ $tagihan->pelanggan->nama_pelanggan }}
-            </p>
-            <p class="text-xs text-gray-400">
-                {{ $tagihan->pelanggan->nomor_pelanggan }}
-            </p>
-            <p class="text-xs text-gray-400">
-                {{ $tagihan->pelanggan->user->email ?? '-' }}
-            </p>
-        </div>
+        <h2 class="font-bold text-gray-800 dark:text-white text-lg mb-1">Update Status Tagihan</h2>
+        <p class="text-gray-400 text-sm mb-6">Tagihan: <span class="font-mono font-semibold text-brand-600">{{ $tagihan->nomor_tagihan }}</span> — {{ $tagihan->pelanggan->nama_pelanggan }}</p>
 
         <form method="POST" action="{{ route('admin.tagihan.update', $tagihan) }}">
             @csrf @method('PUT')
@@ -43,11 +27,7 @@
             <div class="mb-5">
                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Status Tagihan</label>
                 <div class="space-y-2.5">
-                    @foreach([
-                        'belum_bayar' => ['label' => 'Belum Bayar', 'color' => 'amber', 'icon' => 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
-                        'lunas' => ['label' => 'Lunas', 'color' => 'emerald', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
-                        'terlambat' => ['label' => 'Terlambat', 'color' => 'red', 'icon' => 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z']
-                    ] as $val => $opt)
+                    @foreach(['belum_bayar' => ['label' => 'Belum Bayar', 'color' => 'amber', 'icon' => 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'], 'lunas' => ['label' => 'Lunas', 'color' => 'emerald', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'], 'terlambat' => ['label' => 'Terlambat', 'color' => 'red', 'icon' => 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z']] as $val => $opt)
                     <label class="flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all
                         {{ $tagihan->status === $val ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600' }}">
                         <input type="radio" name="status" value="{{ $val }}" {{ $tagihan->status === $val ? 'checked' : '' }}
