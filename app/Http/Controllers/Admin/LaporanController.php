@@ -125,8 +125,11 @@ class LaporanController extends Controller
             ->get();
 
         $summary = [
-            'total'   => $pembayaran->count(),
-            'nominal' => $pembayaran->sum('jumlah_bayar'),
+            'total'    => $pembayaran->count(),
+            'nominal'  => $pembayaran->sum('jumlah_bayar'),
+            'tunai'    => $pembayaran->where('metode_bayar', 'tunai')->sum('jumlah_bayar'),
+            'transfer' => $pembayaran->where('metode_bayar', 'transfer')->sum('jumlah_bayar'),
+            'lainnya'  => $pembayaran->where('metode_bayar', 'lainnya')->sum('jumlah_bayar'),
         ];
 
         $namaBulan = \App\Services\TagihanService::namaBulan($bulan);

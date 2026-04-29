@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Petugas extends Model
 {
@@ -19,6 +20,14 @@ class Petugas extends Model
         'no_hp',
         'alamat',
         'status',
+        'status_registrasi',
+        'catatan_registrasi',
+        'approved_at',
+        'approved_by',
+    ];
+
+    protected $casts = [
+        'approved_at' => 'datetime',
     ];
 
     // ── Relations ──────────────────────────────────────────────
@@ -32,17 +41,27 @@ class Petugas extends Model
         return $this->hasMany(MeteranAir::class);
     }
 
-    // ── Helpers ────────────────────────────────────────────────
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    // ── Helpers ───────────────────────────────────────────────
     public function totalInputBulanIni(): int
     {
         return $this->meteranAir()
-            ->where('bulan', now()->month)
-            ->where('tahun', now()->year)
+            ->whereMonth('tanggal_baca', now()->month)
+            ->whereYear('tanggal_baca', now()->year)
             ->count();
     }
 
     public function isAktif(): bool
     {
         return $this->status === 'aktif';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status_registrasi === 'pending';
     }
 }

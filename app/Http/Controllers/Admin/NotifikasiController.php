@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Notifikasi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class NotifikasiController extends Controller
 {
@@ -14,7 +13,7 @@ class NotifikasiController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Notifikasi::where('user_id', Auth::id())
+        $query = Notifikasi::where('user_id', auth()->id())
             ->orderByDesc('created_at');
 
         // Filter belum dibaca
@@ -28,7 +27,7 @@ class NotifikasiController extends Controller
         }
 
         $notifikasi   = $query->paginate(20)->withQueryString();
-        $jumlahBelum  = Notifikasi::where('user_id', Auth::id())
+        $jumlahBelum  = Notifikasi::where('user_id', auth()->id())
                             ->where('sudah_dibaca', false)->count();
 
         return view('admin.notifikasi.index', compact('notifikasi', 'jumlahBelum'));
@@ -40,7 +39,7 @@ class NotifikasiController extends Controller
     public function baca(Notifikasi $notifikasi)
     {
         // Guard: hanya boleh akses notif milik sendiri
-        if ($notifikasi->user_id !== Auth::id()) {
+        if ($notifikasi->user_id !== auth()->id()) {
             abort(403);
         }
 
@@ -59,7 +58,7 @@ class NotifikasiController extends Controller
      */
     public function bacaSemua()
     {
-        Notifikasi::where('user_id', Auth::id())
+        Notifikasi::where('user_id', auth()->id())
             ->where('sudah_dibaca', false)
             ->update(['sudah_dibaca' => true]);
 
@@ -71,7 +70,7 @@ class NotifikasiController extends Controller
      */
     public function hapusDibaca()
     {
-        $jumlah = Notifikasi::where('user_id', Auth::id())
+        $jumlah = Notifikasi::where('user_id', auth()->id())
             ->where('sudah_dibaca', true)
             ->delete();
 
@@ -83,7 +82,7 @@ class NotifikasiController extends Controller
      */
     public function jumlah()
     {
-        $jumlah = Notifikasi::where('user_id', Auth::id())
+        $jumlah = Notifikasi::where('user_id', auth()->id())
             ->where('sudah_dibaca', false)
             ->count();
 

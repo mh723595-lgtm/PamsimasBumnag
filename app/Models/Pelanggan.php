@@ -9,7 +9,7 @@ class Pelanggan extends Model
 {
     use HasFactory;
 
-    protected $table = 'pelanggans';
+    protected $table = 'pelanggan';
 
     protected $fillable = [
         'user_id',
@@ -19,16 +19,23 @@ class Pelanggan extends Model
         'rt_rw',
         'desa',
         'kecamatan',
+        'kabupaten',
         'no_hp',
         'no_ktp',
         'meteran_awal',
         'status',
         'tanggal_daftar',
+        // Field registrasi approval
+        'status_registrasi',
+        'catatan_registrasi',
+        'approved_at',
+        'approved_by',
     ];
 
     protected $casts = [
         'tanggal_daftar' => 'date',
         'meteran_awal'   => 'integer',
+        'approved_at'    => 'datetime',
     ];
 
     // ── Relations ──────────────────────────────────────────────
@@ -57,24 +64,36 @@ class Pelanggan extends Model
         return $this->hasMany(Pengaduan::class);
     }
 
-    public function meteranTerakhir()
+    public function approvedBy()
     {
-        return $this->hasOne(MeteranAir::class)->latestOfMany();
+        return $this->belongsTo(User::class, 'approved_by');
     }
 
-    // ── Helpers ────────────────────────────────────────────────
+    // ── Shortcuts ─────────────────────────────────────────────
+    public function meteranTerakhir()
+    {
+        return $this->meteranAir()->orderByDesc('tahun')->orderByDesc('bulan')->first();
+    }
+
     public function tagihanBelumBayar()
     {
-        return $this->tagihanAir()->whereIn('status', ['belum_bayar', 'terlambat']);
+        return $this->tagihanAir()->whereIn('status', ['belum_bayar', 'terlambat'])->get();
     }
 
     public function totalTunggakan(): float
     {
-        return $this->tagihanBelumBayar()->sum('total_tagihan');
+        return $this->tagihanAir()
+            ->whereIn('status', ['belum_bayar', 'terlambat'])
+            ->sum('total_bayar');
     }
 
     public function isAktif(): bool
     {
         return $this->status === 'aktif';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status_registrasi === 'pending';
     }
 }

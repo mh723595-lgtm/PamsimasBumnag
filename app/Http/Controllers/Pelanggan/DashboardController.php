@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Models\TagihanAir;
 use App\Models\MeteranAir;
 use App\Models\Pembayaran;
@@ -13,7 +12,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $pelanggan = Auth::user()->pelanggan;
+        $pelanggan = auth()->user()->pelanggan;
 
         if (!$pelanggan) {
             return redirect('/')->with('error', 'Data pelanggan tidak ditemukan.');

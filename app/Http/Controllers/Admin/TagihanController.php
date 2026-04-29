@@ -26,11 +26,9 @@ class TagihanController extends Controller
 
         if ($request->filled('search')) {
             $s = $request->search;
-            $query->whereHas(
-                'pelanggan',
-                fn($q) =>
+            $query->whereHas('pelanggan', fn($q) =>
                 $q->where('nama_pelanggan', 'like', "%$s%")
-                    ->orWhere('nomor_pelanggan', 'like', "%$s%")
+                  ->orWhere('nomor_pelanggan', 'like', "%$s%")
             )->orWhere('nomor_tagihan', 'like', "%$s%");
         }
 
@@ -54,19 +52,15 @@ class TagihanController extends Controller
         $totalNominal      = TagihanAir::sum('total_tagihan');
 
         return view('admin.tagihan.index', compact(
-            'tagihan',
-            'totalTagihan',
-            'totalLunas',
-            'totalBelumBayar',
-            'totalNominal'
+            'tagihan', 'totalTagihan', 'totalLunas', 'totalBelumBayar', 'totalNominal'
         ));
     }
 
     public function show(TagihanAir $tagihan)
     {
         $tagihan->load(['pelanggan.user', 'meteran.petugas', 'pembayaran.dikonfirmasiOleh']);
-        $rincian = $this->tagihanService->rincianTarif((float) ($tagihan->pemakaian ?? 0));
-        $hasil   = $this->tagihanService->hitungTagihan((float) ($tagihan->pemakaian ?? 0));
+        $rincian = $this->tagihanService->rincianTarif($tagihan->pemakaian);
+        $hasil   = $this->tagihanService->hitungTagihan($tagihan->pemakaian);
 
         return view('admin.tagihan.show', compact('tagihan', 'rincian', 'hasil'));
     }

@@ -12,58 +12,48 @@ class TagihanAir extends Model
     protected $table = 'tagihan_air';
 
     protected $fillable = [
-        'pelanggan_id',
-        'meteran_id',
-        'nomor_tagihan',
-        'bulan',
-        'tahun',
-        'pemakaian',
-        'total_tagihan',
-        'tanggal_tagihan',
-        'tanggal_jatuh_tempo',
-        'status',
+        'pelanggan_id', 'meteran_id', 'nomor_tagihan',
+        'bulan', 'tahun', 'pemakaian',
+        'total_tagihan', 'denda', 'total_bayar', 'tanggal_denda',
+        'tanggal_tagihan', 'tanggal_jatuh_tempo', 'status',
     ];
 
     protected $casts = [
         'tanggal_tagihan'     => 'date',
         'tanggal_jatuh_tempo' => 'date',
+        'tanggal_denda'       => 'date',
         'pemakaian'           => 'decimal:2',
         'total_tagihan'       => 'decimal:2',
+        'denda'               => 'decimal:2',
+        'total_bayar'         => 'decimal:2',
         'bulan'               => 'integer',
         'tahun'               => 'integer',
     ];
 
     // ── Relations ──────────────────────────────────────────────
-    public function pelanggan()
+    public function pelanggan() { return $this->belongsTo(Pelanggan::class); }
+    public function meteran()   { return $this->belongsTo(MeteranAir::class, 'meteran_id'); }
+    public function pembayaran(){ return $this->hasOne(Pembayaran::class, 'tagihan_id'); }
+
+    // ── Auto-set total_bayar sebelum simpan ───────────────────
+    protected static function booted(): void
     {
-        return $this->belongsTo(Pelanggan::class);
+        static::saving(function (self $model) {
+            $model->total_bayar = ($model->total_tagihan ?? 0) + ($model->denda ?? 0);
+        });
     }
 
-    public function meteran()
+    // ── Accessor: total yang harus dibayar ────────────────────
+    public function getTotalHarusBayarAttribute(): float
     {
-        return $this->belongsTo(MeteranAir::class, 'meteran_id');
+        return (float) $this->total_tagihan + (float) $this->denda;
     }
 
-    public function pembayaran()
-    {
-        return $this->hasOne(Pembayaran::class, 'tagihan_id');
-    }
-
-    // ── Status helpers ─────────────────────────────────────────
-    public function isLunas(): bool
-    {
-        return $this->status === 'lunas';
-    }
-
-    public function isBelumBayar(): bool
-    {
-        return $this->status === 'belum_bayar';
-    }
-
-    public function isTerlambat(): bool
-    {
-        return $this->status === 'terlambat';
-    }
+    // ── Status helpers ────────────────────────────────────────
+    public function isLunas(): bool    { return $this->status === 'lunas'; }
+    public function isBelumBayar():bool{ return $this->status === 'belum_bayar'; }
+    public function isTerlambat(): bool{ return $this->status === 'terlambat'; }
+    public function hasDenda(): bool   { return (float) $this->denda > 0; }
 
     public function statusBadge(): string
     {
@@ -90,19 +80,14 @@ class TagihanAir extends Model
         return \App\Services\TagihanService::namaBulan($this->bulan) . ' ' . $this->tahun;
     }
 
-    // ── Scopes ────────────────────────────────────────────────
-    public function scopeLunas($query)
-    {
-        return $query->where('status', 'lunas');
+    // ── Scopes ───────────────────────────────────────────────
+    public function scopeLunas($q)      { return $q->where('status', 'lunas'); }
+    public function scopeBelumLunas($q) { return $q->whereIn('status', ['belum_bayar', 'terlambat']); }
+    public function scopePeriode($q, int $bulan, int $tahun) {
+        return $q->where('bulan', $bulan)->where('tahun', $tahun);
     }
-
-    public function scopeBelumLunas($query)
-    {
-        return $query->whereIn('status', ['belum_bayar', 'terlambat']);
-    }
-
-    public function scopePeriode($query, int $bulan, int $tahun)
-    {
-        return $query->where('bulan', $bulan)->where('tahun', $tahun);
+    public function scopeTerlambat($q) {
+        return $q->where('status', 'terlambat')
+                 ->where('tanggal_jatuh_tempo', '<', now()->toDateString());
     }
 }

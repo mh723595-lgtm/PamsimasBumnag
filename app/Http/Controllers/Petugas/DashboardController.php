@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Petugas;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Models\MeteranAir;
 use App\Models\Pelanggan;
 use App\Models\Pengaduan;
@@ -14,7 +13,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $petugas   = Auth::user()->petugas;
+        $petugas   = auth()->user()->petugas;
         $bulanIni  = now()->month;
         $tahunIni  = now()->year;
 

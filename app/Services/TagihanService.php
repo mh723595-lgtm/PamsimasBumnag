@@ -35,12 +35,12 @@ class TagihanService
         }
 
         // Biaya administrasi
-        // $total += 2500;
+        $total += 2500;
 
         return [
             'pemakaian'   => $pemakaian,
-            'biaya_pokok' => $total,
-            'biaya_admin' => 0,
+            'biaya_pokok' => $total - 2500,
+            'biaya_admin' => 2500,
             'total'       => $total,
             'rincian'     => $this->rincianTarif($pemakaian),
         ];
@@ -88,13 +88,13 @@ class TagihanService
         }
 
         // Biaya admin
-        // $rincian[] = [
-        //     'blok'   => 'Biaya Administrasi',
-        //     'volume' => '-',
-        //     'tarif'  => '-',
-        //     'biaya'  => 2500,
-        //     'note'   => 'Flat',
-        // ];
+        $rincian[] = [
+            'blok'   => 'Biaya Administrasi',
+            'volume' => '-',
+            'tarif'  => '-',
+            'biaya'  => 2500,
+            'note'   => 'Flat',
+        ];
 
         return $rincian;
     }
@@ -114,7 +114,7 @@ class TagihanService
             return $existing;
         }
 
-        $hasil = $this->hitungTagihan((float) ($meteran->pemakaian ?? 0));
+        $hasil = $this->hitungTagihan($meteran->pemakaian);
 
         $tagihan = TagihanAir::create([
             'pelanggan_id'        => $meteran->pelanggan_id,
@@ -171,18 +171,10 @@ class TagihanService
     public static function namaBulan(int $bulan): string
     {
         $bulanArr = [
-            1 => 'Januari',
-            2 => 'Februari',
-            3 => 'Maret',
-            4 => 'April',
-            5 => 'Mei',
-            6 => 'Juni',
-            7 => 'Juli',
-            8 => 'Agustus',
-            9 => 'September',
-            10 => 'Oktober',
-            11 => 'November',
-            12 => 'Desember',
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret',
+            4 => 'April', 5 => 'Mei', 6 => 'Juni',
+            7 => 'Juli', 8 => 'Agustus', 9 => 'September',
+            10 => 'Oktober', 11 => 'November', 12 => 'Desember',
         ];
         return $bulanArr[$bulan] ?? '-';
     }
