@@ -78,4 +78,5 @@ http://127.0.0.1:8000
 | Role       | Email                  | Password |
 |------------|------------------------|----------|
 | Admin      | admin@pamsimas.id      | password |
-|------------|------------------------|----------|
+| Petugas    | petugas@pamsimas.id    | password |
+| Pelanggan  | pelanggan@pamsimas.id  | password |
