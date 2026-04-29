@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // ---- SETTING APLIKASI ----
+        // // ---- SETTING APLIKASI ----
         // $settings = [
         //     ['key' => 'nama_sistem',    'value' => 'PAMSIMAS',                        'label' => 'Nama Sistem',     'tipe' => 'text',     'grup' => 'umum'],
         //     ['key' => 'nama_desa',      'value' => 'Desa Sukamaju',                   'label' => 'Nama Desa',       'tipe' => 'text',     'grup' => 'umum'],
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
         //     ['key' => 'tarif_blok1',    'value' => '20000',                           'label' => 'Tarif Blok 1',    'tipe' => 'number',   'grup' => 'tarif'],
         //     ['key' => 'tarif_blok2',    'value' => '1500',                            'label' => 'Tarif Blok 2',    'tipe' => 'number',   'grup' => 'tarif'],
         //     ['key' => 'tarif_blok3',    'value' => '2000',                            'label' => 'Tarif Blok 3',    'tipe' => 'number',   'grup' => 'tarif'],
-        //     ['key' => 'biaya_admin',    'value' => '0',                            'label' => 'Biaya Admin',     'tipe' => 'number',   'grup' => 'tarif'],
+        //     ['key' => 'biaya_admin',    'value' => '2500',                            'label' => 'Biaya Admin',     'tipe' => 'number',   'grup' => 'tarif'],
         //     ['key' => 'jatuh_tempo',    'value' => '20',                              'label' => 'Hari Jatuh Tempo','tipe' => 'number',   'grup' => 'tagihan'],
         // ];
         // foreach ($settings as $s) {
@@ -60,12 +60,14 @@ class DatabaseSeeder extends Seeder
 
         // // ---- PETUGAS ----
         // $petugas = Petugas::updateOrCreate(['user_id' => $petugasUser->id], [
-        //     'nip'         => 'PTG-001',
-        //     'nama_petugas'=> 'Ahmad Fauzi',
-        //     'jabatan'     => 'Teknisi Lapangan',
-        //     'no_hp'       => '081234567891',
-        //     'alamat'      => 'Jl. Petugas No. 5, RT 02',
-        //     'status'      => 'aktif',
+        //     'nip'               => 'PTG-001',
+        //     'nama_petugas'      => 'Ahmad Fauzi',
+        //     'jabatan'           => 'Teknisi Lapangan',
+        //     'no_hp'             => '081234567891',
+        //     'alamat'            => 'Jl. Petugas No. 5, RT 02',
+        //     'status'            => 'aktif',
+        //     'status_registrasi' => 'approved',
+        //     'approved_at'       => Carbon::now()->subMonths(6),
         // ]);
 
         // // ---- PELANGGAN (10 data) ----
@@ -79,6 +81,7 @@ class DatabaseSeeder extends Seeder
         //     ['name' => 'Bambang Purnomo', 'email' => 'bambang@pamsimas.id',     'nomor' => 'PLG-0007', 'alamat' => 'Jl. Tulip No. 2 RT 04/01'],
         //     ['name' => 'Rina Marlina',    'email' => 'rina@pamsimas.id',        'nomor' => 'PLG-0008', 'alamat' => 'Jl. Bougenville No. 9 RT 04/02'],
         //     ['name' => 'Doni Prasetyo',   'email' => 'doni@pamsimas.id',        'nomor' => 'PLG-0009', 'alamat' => 'Jl. Flamboyan No. 5 RT 05/01'],
+        //     ['name' => 'Yuni Astuti',     'email' => 'yuni@pamsimas.id',        'nomor' => 'PLG-0010', 'alamat' => 'Jl. Sakura No. 11 RT 05/02'],
         // ];
 
         // $pelangganList = [];
@@ -98,7 +101,9 @@ class DatabaseSeeder extends Seeder
         //         'kecamatan'      => 'Sukajaya',
         //         'no_hp'          => '0812' . rand(10000000, 99999999),
         //         'meteran_awal'   => rand(100, 500),
-        //         'status'         => 'aktif',
+        //         'status'              => 'aktif',
+        //         'status_registrasi'   => 'approved',
+        //         'approved_at'         => Carbon::now()->subMonths(rand(1,6)),
         //         'tanggal_daftar' => Carbon::now()->subMonths(rand(6, 24))->toDateString(),
         //     ]);
         //     $pelangganList[] = $pl;
