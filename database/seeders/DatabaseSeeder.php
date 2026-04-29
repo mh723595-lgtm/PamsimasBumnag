@@ -28,7 +28,23 @@ class DatabaseSeeder extends Seeder
             'is_active'=> true,
         ]);
 
+        $petugasUser = User::updateOrCreate(['email' => 'petugas@pamsimas.id'], [
+            'name'     => 'Ahmad Fauzi',
+            'password' => Hash::make('password'),
+            'role'     => 'petugas',
+            'is_active'=> true,
+        ]);
+
+        $pelangganUser = User::updateOrCreate(['email' => 'pelanggan@pamsimas.id'], [
+            'name'     => 'Budi Santoso',
+            'password' => Hash::make('password'),
+            'role'     => 'pelanggan',
+            'is_active'=> true,
+        ]);
+
 
         $this->command->info('✅ Seeder berhasil! Login: admin@pamsimas.id / password');
+        $this->command->info('✅ Petugas: petugas@pamsimas.id / password');
+        $this->command->info('✅ Pelanggan: pelanggan@pamsimas.id / password');
     }
 }
