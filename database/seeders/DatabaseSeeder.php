@@ -81,7 +81,6 @@ class DatabaseSeeder extends Seeder
         //     ['name' => 'Bambang Purnomo', 'email' => 'bambang@pamsimas.id',     'nomor' => 'PLG-0007', 'alamat' => 'Jl. Tulip No. 2 RT 04/01'],
         //     ['name' => 'Rina Marlina',    'email' => 'rina@pamsimas.id',        'nomor' => 'PLG-0008', 'alamat' => 'Jl. Bougenville No. 9 RT 04/02'],
         //     ['name' => 'Doni Prasetyo',   'email' => 'doni@pamsimas.id',        'nomor' => 'PLG-0009', 'alamat' => 'Jl. Flamboyan No. 5 RT 05/01'],
-        //     ['name' => 'Yuni Astuti',     'email' => 'yuni@pamsimas.id',        'nomor' => 'PLG-0010', 'alamat' => 'Jl. Sakura No. 11 RT 05/02'],
         // ];
 
         // $pelangganList = [];
