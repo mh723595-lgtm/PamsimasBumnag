@@ -22,8 +22,8 @@ class MeteranController extends Controller
 
     public function index(Request $request)
     {
-        $bulan = (int) $request->get('bulan', now()->month);
-        $tahun = (int) $request->get('tahun', now()->year);
+        $bulan = (int) $request->input('bulan', now()->month);
+        $tahun = (int) $request->input('tahun', now()->year);
 
         $pelangganList = Pelanggan::where('status', 'aktif')
             ->with(['meteranAir' => fn($q) => $q->where('bulan', $bulan)->where('tahun', $tahun)])
@@ -48,8 +48,8 @@ class MeteranController extends Controller
             $selectedPelanggan = Pelanggan::find($request->pelanggan_id);
 
             if ($selectedPelanggan) {
-                $bulan = (int) $request->get('bulan', now()->month);
-                $tahun = (int) $request->get('tahun', now()->year);
+                $bulan = (int) $request->input('bulan', now()->month);
+                $tahun = (int) $request->input('tahun', now()->year);
 
                 $meteranSebelumnya = MeteranAir::where('pelanggan_id', $selectedPelanggan->id)
                     ->where(function ($q) use ($bulan, $tahun) {

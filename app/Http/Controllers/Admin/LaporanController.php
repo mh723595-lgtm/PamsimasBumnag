@@ -20,8 +20,8 @@ class LaporanController extends Controller
 
     public function tagihan(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $tagihan = TagihanAir::with('pelanggan')
             ->where('bulan', $bulan)
@@ -42,8 +42,8 @@ class LaporanController extends Controller
 
     public function pembayaran(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $pembayaran = Pembayaran::with(['pelanggan', 'tagihan'])
             ->whereMonth('tanggal_bayar', $bulan)
@@ -64,8 +64,8 @@ class LaporanController extends Controller
 
     public function pemakaian(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $meteran = MeteranAir::with(['pelanggan', 'petugas'])
             ->where('bulan', $bulan)
@@ -87,8 +87,8 @@ class LaporanController extends Controller
 
     public function tagihanPdf(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $tagihan = TagihanAir::with('pelanggan')
             ->where('bulan', $bulan)
@@ -114,8 +114,8 @@ class LaporanController extends Controller
 
     public function pembayaranPdf(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $pembayaran = Pembayaran::with(['pelanggan', 'tagihan'])
             ->whereMonth('tanggal_bayar', $bulan)

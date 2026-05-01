@@ -18,7 +18,7 @@ class RegistrasiController extends Controller
      */
     public function index(Request $request)
     {
-        $tab = $request->get('tab', 'semua');
+        $tab = $request->input('tab', 'semua');
 
         $pelangganPending = Pelanggan::with('user')
             ->where('status_registrasi', 'pending')
