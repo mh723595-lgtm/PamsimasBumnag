@@ -7,6 +7,7 @@ use App\Models\Notifikasi;
 use App\Services\DendaService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -21,7 +22,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             $dendaService = app(DendaService::class);
             $hasil = $dendaService->prosesSemuaDenda();
-            \Log::info("[PAMSIMAS Scheduler] Denda: {$hasil['diproses']} tagihan diproses, total Rp " . number_format($hasil['total_denda'], 0, ',', '.'));
+            Log::info("[PAMSIMAS Scheduler] Denda: {$hasil['diproses']} tagihan diproses, total Rp " . number_format($hasil['total_denda'], 0, ',', '.'));
         })->dailyAt('00:30')
           ->name('proses-denda-otomatis')
           ->withoutOverlapping()
@@ -35,7 +36,7 @@ class Kernel extends ConsoleKernel
                 ->update(['status' => 'terlambat']);
 
             if ($updated > 0) {
-                \Log::info("[PAMSIMAS] {$updated} tagihan diubah ke status terlambat.");
+                Log::info("[PAMSIMAS] {$updated} tagihan diubah ke status terlambat.");
             }
         })->dailyAt('00:05')
           ->name('update-tagihan-terlambat')
@@ -67,7 +68,7 @@ class Kernel extends ConsoleKernel
                 }
             }
 
-            \Log::info("[PAMSIMAS] Notifikasi H-{$hariMinus} terkirim ke {$tagihan->count()} pelanggan.");
+            Log::info("[PAMSIMAS] Notifikasi H-{$hariMinus} terkirim ke {$tagihan->count()} pelanggan.");
         })->dailyAt('08:00')
           ->name('notif-jatuh-tempo')
           ->withoutOverlapping()
@@ -78,7 +79,7 @@ class Kernel extends ConsoleKernel
             $n = \App\Models\Notifikasi::where('sudah_dibaca', true)
                 ->where('created_at', '<', now()->subDays(30))->delete();
             $l = \App\Models\AktivitasLog::where('created_at', '<', now()->subDays(90))->delete();
-            \Log::info("[PAMSIMAS] Cleanup: {$n} notifikasi & {$l} log lama dihapus.");
+            Log::info("[PAMSIMAS] Cleanup: {$n} notifikasi & {$l} log lama dihapus.");
         })->weekly()->sundays()->at('03:00')
           ->name('cleanup-data-lama')
           ->description('Bersihkan notifikasi & log lama');
