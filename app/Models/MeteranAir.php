@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property string|null $pemakaian
+ * @property string|null $angka_awal
+ * @property string|null $angka_akhir
+ */
+
 class MeteranAir extends Model
 {
     use HasFactory;
