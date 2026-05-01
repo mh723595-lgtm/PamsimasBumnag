@@ -76,7 +76,7 @@ class Kernel extends ConsoleKernel
 
         // ── 4. BERSIHKAN DATA LAMA ────────────────────────────────
         $schedule->call(function () {
-            $n = \App\Models\Notifikasi::where('sudah_dibaca', true)
+            $n = Notifikasi::where('sudah_dibaca', true)
                 ->where('created_at', '<', now()->subDays(30))->delete();
             $l = \App\Models\AktivitasLog::where('created_at', '<', now()->subDays(90))->delete();
             Log::info("[PAMSIMAS] Cleanup: {$n} notifikasi & {$l} log lama dihapus.");
