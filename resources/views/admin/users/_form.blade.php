@@ -36,13 +36,8 @@
 
 <div>
     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-    Password 
-    @if($editing)
-        <span class="text-gray-400 font-normal text-xs">(kosongkan jika tidak diubah)</span>
-    @else
-        <span class="text-red-500">*</span>
-    @endif
-</label>
+        Password {{ $editing ? '<span class="text-gray-400 font-normal text-xs">(kosongkan jika tidak diubah)</span>' : '<span class="text-red-500">*</span>' }}
+    </label>
     <input type="password" name="password" {{ $editing ? '' : 'required' }}
         placeholder="{{ $editing ? 'Biarkan kosong jika tidak diubah' : 'Minimal 6 karakter' }}"
         class="w-full py-2.5 px-4 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
