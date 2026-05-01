@@ -9,6 +9,7 @@ use App\Models\AktivitasLog;
 use App\Services\TagihanService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class MeteranController extends Controller
 {
@@ -133,7 +134,7 @@ class MeteranController extends Controller
             $fotoPath = $request->file('foto_meter')->store('meteran', 'public');
         }
 
-        $petugas = auth()->user()->petugas;
+        $petugas = Auth::user()->petugas;
 
         $meteran = MeteranAir::create([
             'pelanggan_id' => $request->pelanggan_id,
@@ -161,7 +162,7 @@ class MeteranController extends Controller
 
         return redirect()
             ->route('petugas.meteran.show', $meteran)
-            ->with('success', "✅ Meteran berhasil diinput! Pemakaian: {$meteran->pemakaian} m³ — Tagihan: " . TagihanService::formatRupiah($tagihan->total_tagihan));
+            ->with('success', "✅ Meteran berhasil diinput! Pemakaian: {$meteran->pemakaian} m³ — Tagihan: " . TagihanService::formatRupiah((float) $tagihan->total_tagihan));
     }
 
     public function show(MeteranAir $meteranAir)
@@ -170,7 +171,7 @@ class MeteranController extends Controller
 
         $rincian = null;
         if ($meteranAir->tagihan) {
-            $rincian = $this->tagihanService->rincianTarif($meteranAir->pemakaian);
+            $rincian = $this->tagihanService->rincianTarif((float) $meteranAir->pemakaian);
         }
 
         return view('petugas.meteran.show', compact('meteranAir', 'rincian'));
