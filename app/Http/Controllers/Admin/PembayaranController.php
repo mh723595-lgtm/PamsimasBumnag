@@ -9,6 +9,7 @@ use App\Models\Notifikasi;
 use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class PembayaranController extends Controller
 {
@@ -68,7 +69,7 @@ class PembayaranController extends Controller
             'tanggal_bayar'    => $request->tanggal_bayar,
             'metode_bayar'     => $request->metode_bayar,
             'status'           => 'konfirmasi',
-            'dikonfirmasi_oleh'=> auth()->id(),
+            'dikonfirmasi_oleh'=> Auth::id(),
             'catatan'          => $request->catatan,
         ]);
 
@@ -99,7 +100,7 @@ class PembayaranController extends Controller
         $old = $pembayaran->status;
         $pembayaran->update([
             'status'           => $request->status,
-            'dikonfirmasi_oleh'=> auth()->id(),
+            'dikonfirmasi_oleh'=> Auth::id(),
         ]);
 
         if ($request->status === 'konfirmasi' && $old !== 'konfirmasi') {

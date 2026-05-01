@@ -7,6 +7,7 @@ use App\Models\Pengaduan;
 use App\Models\Notifikasi;
 use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PengaduanController extends Controller
 {
@@ -56,7 +57,7 @@ class PengaduanController extends Controller
             'status'         => $request->status,
             'prioritas'      => $request->prioritas,
             'tanggapan'      => $request->tanggapan,
-            'ditangani_oleh' => auth()->id(),
+            'ditangani_oleh' => Auth::id(),
             'tanggal_selesai'=> in_array($request->status, ['selesai','ditolak']) ? now() : null,
         ]);
 

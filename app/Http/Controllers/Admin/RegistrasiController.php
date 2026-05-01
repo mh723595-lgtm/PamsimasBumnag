@@ -9,6 +9,7 @@ use App\Models\Petugas;
 use App\Models\Notifikasi;
 use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RegistrasiController extends Controller
 {
@@ -87,7 +88,7 @@ class RegistrasiController extends Controller
                 'status_registrasi'   => 'approved',
                 'catatan_registrasi'  => $request->catatan,
                 'approved_at'         => now(),
-                'approved_by'         => auth()->id(),
+                'approved_by'         => Auth::id(),
                 'meteran_awal'        => $request->meteran_awal ?? 0,
             ]);
 
@@ -114,7 +115,7 @@ class RegistrasiController extends Controller
                 'status_registrasi'   => 'approved',
                 'catatan_registrasi'  => $request->catatan,
                 'approved_at'         => now(),
-                'approved_by'         => auth()->id(),
+                'approved_by'         => Auth::id(),
             ]);
 
             $data->user->update(['is_active' => true]);
@@ -153,7 +154,7 @@ class RegistrasiController extends Controller
             $data->update([
                 'status_registrasi'  => 'rejected',
                 'catatan_registrasi' => $request->catatan,
-                'approved_by'        => auth()->id(),
+                'approved_by'        => Auth::id(),
                 'approved_at'        => now(),
             ]);
 
@@ -171,7 +172,7 @@ class RegistrasiController extends Controller
             $data->update([
                 'status_registrasi'  => 'rejected',
                 'catatan_registrasi' => $request->catatan,
-                'approved_by'        => auth()->id(),
+                'approved_by'        => Auth::id(),
                 'approved_at'        => now(),
             ]);
 
