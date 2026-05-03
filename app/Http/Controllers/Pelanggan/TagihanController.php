@@ -6,13 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\TagihanAir;
 use App\Services\TagihanService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TagihanController extends Controller
 {
     public function index()
     {
-        $pelanggan = Auth::user()->pelanggan;
+        $pelanggan = auth()->user()->pelanggan;
 
         $tagihan = TagihanAir::where('pelanggan_id', $pelanggan->id)
             ->orderByDesc('tahun')->orderByDesc('bulan')
@@ -30,7 +29,7 @@ class TagihanController extends Controller
 
     public function show(TagihanAir $tagihan)
     {
-        $pelanggan = Auth::user()->pelanggan;
+        $pelanggan = auth()->user()->pelanggan;
 
         // Guard: hanya bisa lihat tagihan milik sendiri
         if ($tagihan->pelanggan_id !== $pelanggan->id) {
@@ -39,8 +38,8 @@ class TagihanController extends Controller
 
         $tagihan->load(['meteran', 'pembayaran']);
         $tagihanService = app(TagihanService::class);
-        $rincian = $tagihanService->rincianTarif((float) $tagihan->pemakaian);
-        $hasil   = $tagihanService->hitungTagihan((float) $tagihan->pemakaian);
+        $rincian = $tagihanService->rincianTarif($tagihan->pemakaian);
+        $hasil   = $tagihanService->hitungTagihan($tagihan->pemakaian);
 
         return view('pelanggan.tagihan.show', compact('tagihan', 'rincian', 'hasil'));
     }

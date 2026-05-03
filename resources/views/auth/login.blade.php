@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — PAMSIMAS.ID</title>
+    <title>Login — PAMSIMAS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config={darkMode:'class',theme:{extend:{colors:{brand:{50:'#eff8ff',100:'#dbeffe',200:'#bfe3fd',300:'#93d0fb',400:'#60b4f7',500:'#3b93f2',600:'#2574e6',700:'#1d5fd4',800:'#1e4dab',900:'#1e4287',950:'#172a53'}},fontFamily:{display:['"Plus Jakarta Sans"','sans-serif'],body:['"DM Sans"','sans-serif']}}}}
