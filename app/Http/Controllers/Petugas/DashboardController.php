@@ -8,12 +8,13 @@ use App\Models\Pelanggan;
 use App\Models\Pengaduan;
 use App\Models\TagihanAir;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $petugas   = auth()->user()->petugas;
+        $petugas   = Auth::user()->petugas;
         $bulanIni  = now()->month;
         $tahunIni  = now()->year;
 

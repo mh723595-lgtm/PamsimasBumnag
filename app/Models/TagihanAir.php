@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+
+/**
+ * @property string|null $total_tagihan
+ * @property string|null $denda
+ * @property string|null $total_bayar
+ */
 
 class TagihanAir extends Model
 {
@@ -81,12 +88,12 @@ class TagihanAir extends Model
     }
 
     // ── Scopes ───────────────────────────────────────────────
-    public function scopeLunas($q)      { return $q->where('status', 'lunas'); }
-    public function scopeBelumLunas($q) { return $q->whereIn('status', ['belum_bayar', 'terlambat']); }
-    public function scopePeriode($q, int $bulan, int $tahun) {
+    public function scopeLunas(Builder $q)      { return $q->where('status', 'lunas'); }
+    public function scopeBelumLunas(Builder $q) { return $q->whereIn('status', ['belum_bayar', 'terlambat']); }
+    public function scopePeriode(Builder $q, int $bulan, int $tahun) {
         return $q->where('bulan', $bulan)->where('tahun', $tahun);
     }
-    public function scopeTerlambat($q) {
+    public function scopeTerlambat(Builder $q) {
         return $q->where('status', 'terlambat')
                  ->where('tanggal_jatuh_tempo', '<', now()->toDateString());
     }

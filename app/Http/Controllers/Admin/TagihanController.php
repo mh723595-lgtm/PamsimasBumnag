@@ -59,8 +59,8 @@ class TagihanController extends Controller
     public function show(TagihanAir $tagihan)
     {
         $tagihan->load(['pelanggan.user', 'meteran.petugas', 'pembayaran.dikonfirmasiOleh']);
-        $rincian = $this->tagihanService->rincianTarif($tagihan->pemakaian);
-        $hasil   = $this->tagihanService->hitungTagihan($tagihan->pemakaian);
+        $rincian = $this->tagihanService->rincianTarif((float) $tagihan->pemakaian);
+        $hasil   = $this->tagihanService->hitungTagihan((float) $tagihan->pemakaian);
 
         return view('admin.tagihan.show', compact('tagihan', 'rincian', 'hasil'));
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class AktivitasLog extends Model
 {
@@ -43,7 +44,7 @@ class AktivitasLog extends Model
         ?int    $modelId = null
     ): void {
         self::create([
-            'user_id'    => auth()->id(),
+            'user_id'    => Auth::id(),
             'aksi'       => $aksi,
             'model'      => $model,
             'model_id'   => $modelId,

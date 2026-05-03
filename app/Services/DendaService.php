@@ -97,6 +97,8 @@ class DendaService
         $diproses   = 0;
         $totalDenda = 0;
 
+
+        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\TagihanAir> $tagihan */
         // Ambil semua tagihan yang sudah melewati jatuh tempo dan belum lunas
         $tagihan = TagihanAir::with('pelanggan.user')
             ->whereIn('status', ['belum_bayar', 'terlambat'])
@@ -109,7 +111,7 @@ class DendaService
 
                 if ($hasil['denda'] <= 0) continue;
 
-                $totalBayar = $t->total_tagihan + $hasil['denda'];
+                $totalBayar = (float) $t->total_tagihan + (float) $hasil['denda'];
 
                 // Update tagihan
                 $needsNotif = $t->status !== 'terlambat' || abs($t->denda - $hasil['denda']) > 1;

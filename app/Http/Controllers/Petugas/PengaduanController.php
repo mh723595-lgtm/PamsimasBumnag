@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pengaduan;
 use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PengaduanController extends Controller
 {
@@ -35,7 +36,7 @@ class PengaduanController extends Controller
         $pengaduan->update([
             'status'         => $request->status,
             'tanggapan'      => $request->catatan,
-            'ditangani_oleh' => auth()->id(),
+            'ditangani_oleh' => Auth::id(),
             'tanggal_selesai'=> $request->status === 'selesai' ? now() : null,
         ]);
 

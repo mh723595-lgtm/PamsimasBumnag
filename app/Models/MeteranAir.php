@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+
+/**
+ * @property string|null $pemakaian
+ * @property string|null $angka_awal
+ * @property string|null $angka_akhir
+ */
 
 class MeteranAir extends Model
 {
@@ -56,6 +63,6 @@ class MeteranAir extends Model
 
     public function fotoUrl(): ?string
     {
-        return $this->foto_meter ? \Storage::url($this->foto_meter) : null;
+        return $this->foto_meter ? Storage::url($this->foto_meter) : null;
     }
 }
