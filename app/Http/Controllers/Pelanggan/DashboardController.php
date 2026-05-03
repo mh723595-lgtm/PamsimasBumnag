@@ -7,16 +7,17 @@ use App\Models\TagihanAir;
 use App\Models\MeteranAir;
 use App\Models\Pembayaran;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $pelanggan = auth()->user()->pelanggan;
+        $pelanggan = Auth::user()->pelanggan;
 
         if (!$pelanggan) {
-            return redirect('/')->with('error', 'Data pelanggan tidak ditemukan.');
-        }
+    abort(403, 'Data pelanggan tidak ditemukan.');
+}
 
         // Tagihan belum bayar
         $tagihanBelumBayar = TagihanAir::where('pelanggan_id', $pelanggan->id)
