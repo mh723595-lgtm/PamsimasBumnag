@@ -7,12 +7,13 @@ use App\Models\Pengaduan;
 use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class PengaduanController extends Controller
 {
     public function index()
     {
-        $pelanggan = auth()->user()->pelanggan;
+        $pelanggan = Auth::user()->pelanggan;
 
         $pengaduan = Pengaduan::where('pelanggan_id', $pelanggan->id)
             ->orderByDesc('created_at')
@@ -41,7 +42,7 @@ class PengaduanController extends Controller
             'foto.max'           => 'Ukuran foto maksimal 2MB.',
         ]);
 
-        $pelanggan = auth()->user()->pelanggan;
+        $pelanggan = Auth::user()->pelanggan;
 
         // Generate nomor pengaduan
         $nomorPengaduan = 'PGD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4));
@@ -71,7 +72,7 @@ class PengaduanController extends Controller
 
     public function show(Pengaduan $pengaduan)
     {
-        $pelanggan = auth()->user()->pelanggan;
+        $pelanggan = Auth::user()->pelanggan;
 
         if ($pengaduan->pelanggan_id !== $pelanggan->id) {
             abort(403);

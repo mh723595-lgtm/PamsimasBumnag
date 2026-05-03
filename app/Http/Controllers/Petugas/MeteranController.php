@@ -9,6 +9,7 @@ use App\Models\AktivitasLog;
 use App\Services\TagihanService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class MeteranController extends Controller
 {
@@ -21,8 +22,8 @@ class MeteranController extends Controller
 
     public function index(Request $request)
     {
-        $bulan = (int) $request->get('bulan', now()->month);
-        $tahun = (int) $request->get('tahun', now()->year);
+        $bulan = (int) $request->input('bulan', now()->month);
+        $tahun = (int) $request->input('tahun', now()->year);
 
         $pelangganList = Pelanggan::where('status', 'aktif')
             ->with(['meteranAir' => fn($q) => $q->where('bulan', $bulan)->where('tahun', $tahun)])
@@ -47,8 +48,8 @@ class MeteranController extends Controller
             $selectedPelanggan = Pelanggan::find($request->pelanggan_id);
 
             if ($selectedPelanggan) {
-                $bulan = (int) $request->get('bulan', now()->month);
-                $tahun = (int) $request->get('tahun', now()->year);
+                $bulan = (int) $request->input('bulan', now()->month);
+                $tahun = (int) $request->input('tahun', now()->year);
 
                 $meteranSebelumnya = MeteranAir::where('pelanggan_id', $selectedPelanggan->id)
                     ->where(function ($q) use ($bulan, $tahun) {
@@ -133,7 +134,7 @@ class MeteranController extends Controller
             $fotoPath = $request->file('foto_meter')->store('meteran', 'public');
         }
 
-        $petugas = auth()->user()->petugas;
+        $petugas = Auth::user()->petugas;
 
         $meteran = MeteranAir::create([
             'pelanggan_id' => $request->pelanggan_id,
@@ -161,7 +162,7 @@ class MeteranController extends Controller
 
         return redirect()
             ->route('petugas.meteran.show', $meteran)
-            ->with('success', "✅ Meteran berhasil diinput! Pemakaian: {$meteran->pemakaian} m³ — Tagihan: " . TagihanService::formatRupiah($tagihan->total_tagihan));
+            ->with('success', "✅ Meteran berhasil diinput! Pemakaian: {$meteran->pemakaian} m³ — Tagihan: " . TagihanService::formatRupiah((float) $tagihan->total_tagihan));
     }
 
     public function show(MeteranAir $meteranAir)
@@ -170,7 +171,7 @@ class MeteranController extends Controller
 
         $rincian = null;
         if ($meteranAir->tagihan) {
-            $rincian = $this->tagihanService->rincianTarif($meteranAir->pemakaian);
+            $rincian = $this->tagihanService->rincianTarif((float) $meteranAir->pemakaian);
         }
 
         return view('petugas.meteran.show', compact('meteranAir', 'rincian'));

@@ -7,6 +7,7 @@ use App\Models\TagihanAir;
 use App\Models\Pembayaran;
 use App\Models\MeteranAir;
 use App\Models\Pelanggan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -19,8 +20,8 @@ class LaporanController extends Controller
 
     public function tagihan(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $tagihan = TagihanAir::with('pelanggan')
             ->where('bulan', $bulan)
@@ -41,8 +42,8 @@ class LaporanController extends Controller
 
     public function pembayaran(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $pembayaran = Pembayaran::with(['pelanggan', 'tagihan'])
             ->whereMonth('tanggal_bayar', $bulan)
@@ -63,8 +64,8 @@ class LaporanController extends Controller
 
     public function pemakaian(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $meteran = MeteranAir::with(['pelanggan', 'petugas'])
             ->where('bulan', $bulan)
@@ -86,8 +87,8 @@ class LaporanController extends Controller
 
     public function tagihanPdf(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $tagihan = TagihanAir::with('pelanggan')
             ->where('bulan', $bulan)
@@ -105,7 +106,7 @@ class LaporanController extends Controller
 
         $namaBulan = \App\Services\TagihanService::namaBulan($bulan);
 
-        $pdf = app('dompdf.wrapper')->loadView('admin.laporan.pdf.tagihan', compact('tagihan', 'summary', 'bulan', 'tahun', 'namaBulan'))
+        $pdf = Pdf::loadView('admin.laporan.pdf.tagihan', compact('tagihan', 'summary', 'bulan', 'tahun', 'namaBulan'))
             ->setPaper('a4', 'landscape');
 
         return $pdf->download("laporan-tagihan-{$namaBulan}-{$tahun}.pdf");
@@ -113,8 +114,8 @@ class LaporanController extends Controller
 
     public function pembayaranPdf(Request $request)
     {
-        $bulan = $request->get('bulan', now()->month);
-        $tahun = $request->get('tahun', now()->year);
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
 
         $pembayaran = Pembayaran::with(['pelanggan', 'tagihan'])
             ->whereMonth('tanggal_bayar', $bulan)
@@ -133,7 +134,7 @@ class LaporanController extends Controller
 
         $namaBulan = \App\Services\TagihanService::namaBulan($bulan);
 
-        $pdf = app('dompdf.wrapper')->loadView('admin.laporan.pdf.pembayaran', compact('pembayaran', 'summary', 'bulan', 'tahun', 'namaBulan'))
+        $pdf = Pdf::loadView('admin.laporan.pdf.pembayaran', compact('pembayaran', 'summary', 'bulan', 'tahun', 'namaBulan'))
             ->setPaper('a4', 'landscape');
 
         return $pdf->download("laporan-pembayaran-{$namaBulan}-{$tahun}.pdf");

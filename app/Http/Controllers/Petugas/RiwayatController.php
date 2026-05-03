@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Petugas;
 use App\Http\Controllers\Controller;
 use App\Models\MeteranAir;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RiwayatController extends Controller
 {
     public function index(Request $request)
     {
-        $petugas = auth()->user()->petugas;
+        $petugas = Auth::user()->petugas;
 
         $query = MeteranAir::with(['pelanggan', 'tagihan'])
             ->where('petugas_id', $petugas?->id)
