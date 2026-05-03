@@ -16,8 +16,8 @@ class DashboardController extends Controller
         $pelanggan = Auth::user()->pelanggan;
 
         if (!$pelanggan) {
-            return redirect('/')->with('error', 'Data pelanggan tidak ditemukan.');
-        }
+    abort(403, 'Data pelanggan tidak ditemukan.');
+}
 
         // Tagihan belum bayar
         $tagihanBelumBayar = TagihanAir::where('pelanggan_id', $pelanggan->id)
