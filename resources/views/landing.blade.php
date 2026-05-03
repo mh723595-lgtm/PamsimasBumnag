@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAMSIMAS Sistem Air Minum Berbasis Masyarakat </title>
+    <title>PAMSIMAS – Sistem Air Minum Berbasis Masyarakat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -328,20 +328,20 @@
             <div class="text-center mb-16">
                 <span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-sm font-semibold mb-4">Fitur Unggulan</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Semua yang Anda Butuhkan</h2>
-                <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto">Platform terpadu untuk pengelolaan air bersih — Mulai dari pencatatan meter hingga pelaporan keuangan secara otomatis dan real-time.</p>
+                <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto">Platform lengkap untuk pengelolaan air bersih — dari pencatatan meter hingga pelaporan keuangan</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @php
                 $features = [
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>', 'title' => 'Manajemen Tagihan', 'desc' => 'Hitung dan kelola tagihan air secara otomatis berdasarkan pemakaian meter, dengan sistem tarif bertingkat yang fleksibel dan akurat.', 'color' => 'from-blue-500 to-brand-600', 'bg' => 'bg-blue-50 dark:bg-blue-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>', 'title' => 'Monitoring Pemakaian', 'desc' => 'Pantau penggunaan air secara real-time melalui grafik interaktif dan analisis data yang mudah dipahami.', 'color' => 'from-teal-500 to-emerald-600', 'bg' => 'bg-teal-50 dark:bg-teal-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>', 'title' => 'Pengaduan Online', 'desc' => 'Laporkan gangguan layanan kapan saja dengan mudah, dilengkapi fitur unggah foto sebagai bukti pendukung.', 'color' => 'from-orange-500 to-red-500', 'bg' => 'bg-orange-50 dark:bg-orange-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>', 'title' => 'Dashboard Real-time', 'desc' => 'Akses visualisasi data lengkap melalui dashboard interaktif yang informatif untuk admin, petugas, dan pelanggan.', 'color' => 'from-purple-500 to-indigo-600', 'bg' => 'bg-purple-50 dark:bg-purple-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>', 'title' => 'Pembayaran Digital', 'desc' => 'Kelola dan konfirmasi pembayaran tagihan dengan cepat, dilengkapi riwayat transaksi yang transparan dan terorganisir.', 'color' => 'from-green-500 to-teal-600', 'bg' => 'bg-green-50 dark:bg-green-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>', 'title' => 'Laporan PDF', 'desc' => 'Generate dan unduh laporan keuangan, tagihan, serta data pemakaian dalam format PDF yang siap cetak.', 'color' => 'from-pink-500 to-rose-600', 'bg' => 'bg-pink-50 dark:bg-pink-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>', 'title' => 'Notifikasi Otomatis', 'desc' => 'Dapatkan pemberitahuan otomatis untuk tagihan jatuh tempo, status pengaduan, dan informasi penting lainnya.', 'color' => 'from-yellow-500 to-amber-600', 'bg' => 'bg-yellow-50 dark:bg-yellow-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>', 'title' => 'Multi Role', 'desc' => 'Sistem manajemen akses berbasis peran untuk Admin, Petugas, dan Pelanggan, dengan kontrol hak akses yang aman dan terstruktur.', 'color' => 'from-brand-500 to-cyan-600', 'bg' => 'bg-brand-50 dark:bg-brand-900/20'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>', 'title' => 'Manajemen Tagihan', 'desc' => 'Hitung tagihan otomatis berdasarkan pemakaian meter air dengan tarif bertingkat yang fleksibel.', 'color' => 'from-blue-500 to-brand-600', 'bg' => 'bg-blue-50 dark:bg-blue-900/20'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>', 'title' => 'Monitoring Pemakaian', 'desc' => 'Pantau pemakaian air secara real-time dengan grafik dan analitik yang mudah dipahami.', 'color' => 'from-teal-500 to-emerald-600', 'bg' => 'bg-teal-50 dark:bg-teal-900/20'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>', 'title' => 'Pengaduan Online', 'desc' => 'Pelanggan dapat melaporkan gangguan layanan kapan saja dengan foto pendukung.', 'color' => 'from-orange-500 to-red-500', 'bg' => 'bg-orange-50 dark:bg-orange-900/20'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>', 'title' => 'Dashboard Real-time', 'desc' => 'Visualisasi data lengkap dengan chart interaktif untuk admin, petugas, dan pelanggan.', 'color' => 'from-purple-500 to-indigo-600', 'bg' => 'bg-purple-50 dark:bg-purple-900/20'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>', 'title' => 'Pembayaran Digital', 'desc' => 'Catat dan konfirmasi pembayaran tagihan dengan histori lengkap dan bukti transaksi.', 'color' => 'from-green-500 to-teal-600', 'bg' => 'bg-green-50 dark:bg-green-900/20'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>', 'title' => 'Laporan PDF', 'desc' => 'Export laporan keuangan, tagihan, dan pemakaian dalam format PDF yang siap cetak.', 'color' => 'from-pink-500 to-rose-600', 'bg' => 'bg-pink-50 dark:bg-pink-900/20'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>', 'title' => 'Notifikasi Otomatis', 'desc' => 'Pemberitahuan tagihan jatuh tempo, status pengaduan, dan informasi sistem secara otomatis.', 'color' => 'from-yellow-500 to-amber-600', 'bg' => 'bg-yellow-50 dark:bg-yellow-900/20'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>', 'title' => 'Multi Role', 'desc' => 'Manajemen akses bertingkat untuk Admin, Petugas, dan Pelanggan dengan hak akses yang tepat.', 'color' => 'from-brand-500 to-cyan-600', 'bg' => 'bg-brand-50 dark:bg-brand-900/20'],
                 ];
                 @endphp
 
@@ -368,16 +368,16 @@
             <div class="text-center mb-16">
                 <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 text-brand-200 text-sm font-semibold mb-4">Data Terkini</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Angka Berbicara</h2>
-                <p class="text-brand-300 text-lg">Gambaran performa sistem PAMSIMAS dalam memberikan layanan terbaik kepada masyarakat secara real-time.</p>
+                <p class="text-brand-300 text-lg">Performa sistem PAMSIMAS dalam melayani masyarakat</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 @php
                 $stats = [
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>', 'label' => 'Total Pelanggan', 'value' => '1.247', 'unit' => 'KK', 'change' => 'Pertumbuhan +124 pelanggan baru tahun ini.', 'color' => 'from-blue-400 to-brand-500'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>', 'label' => 'Volume Air (m³)', 'value' => '58.430', 'unit' => 'm³', 'change' => 'Total pemakaian air pada bulan berjalan.', 'color' => 'from-teal-400 to-emerald-500'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>', 'label' => 'Total Pendapatan', 'value' => 'Rp 87,6Jt', 'unit' => '', 'change' => 'Meningkat +8% dibandingkan bulan sebelumnya.', 'color' => 'from-green-400 to-teal-500'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>', 'label' => 'Tagihan Lunas', 'value' => '87,3%', 'unit' => '', 'change' => 'Sebanyak 1.089 dari 1.247 pelanggan telah menyelesaikan pembayaran.', 'color' => 'from-purple-400 to-pink-500'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>', 'label' => 'Total Pelanggan', 'value' => '1.247', 'unit' => 'KK', 'change' => '+124 tahun ini', 'color' => 'from-blue-400 to-brand-500'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>', 'label' => 'Volume Air (m³)', 'value' => '58.430', 'unit' => 'm³', 'change' => 'Bulan ini', 'color' => 'from-teal-400 to-emerald-500'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>', 'label' => 'Total Pendapatan', 'value' => 'Rp 87,6Jt', 'unit' => '', 'change' => '+8% dari bulan lalu', 'color' => 'from-green-400 to-teal-500'],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>', 'label' => 'Tagihan Lunas', 'value' => '87,3%', 'unit' => '', 'change' => '1.089 dari 1.247', 'color' => 'from-purple-400 to-pink-500'],
                 ];
                 @endphp
 
@@ -420,16 +420,16 @@
             <div class="text-center mb-16">
                 <span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-sm font-semibold mb-4">Alur Sistem</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Cara Kerja PAMSIMAS</h2>
-                <p class="text-gray-500 dark:text-gray-400 text-lg max-w-xl mx-auto">Proses pengelolaan air bersih yang sederhana, transparan, dan terintegrasi — mulai dari pencatatan meter hingga pembayaran tagihan.</p>
+                <p class="text-gray-500 dark:text-gray-400 text-lg max-w-xl mx-auto">Proses sederhana dan transparan dari pencatatan hingga pembayaran</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
                 @php
                 $steps = [
                     ['no' => '01', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>', 'title' => 'Input Meteran', 'desc' => 'Petugas lapangan mencatat angka meter air pelanggan setiap bulan secara akurat.', 'color' => 'bg-brand-600'],
-                    ['no' => '02', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/>', 'title' => 'Hitung Tagihan', 'desc' => 'Sistem secara otomatis menghitung besaran tagihan berdasarkan volume pemakaian air dengan skema tarif bertingkat yang telah ditetapkan.', 'color' => 'bg-teal-600'],
-                    ['no' => '03', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>', 'title' => 'Bayar Tagihan', 'desc' => 'Pelanggan melakukan pembayaran tagihan, kemudian petugas mencatat dan memverifikasi transaksi pembayaran langsung di dalam sistem.', 'color' => 'bg-green-600'],
-                    ['no' => '04', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>', 'title' => 'Monitoring Admin', 'desc' => 'Admin memantau seluruh aktivitas sistem, mulai dari data pemakaian, status pembayaran, laporan keuangan, hingga performa layanan secara real-time.', 'color' => 'bg-purple-600'],
+                    ['no' => '02', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/>', 'title' => 'Hitung Tagihan', 'desc' => 'Sistem otomatis menghitung tagihan berdasarkan pemakaian dengan tarif bertingkat.', 'color' => 'bg-teal-600'],
+                    ['no' => '03', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>', 'title' => 'Bayar Tagihan', 'desc' => 'Pelanggan membayar tagihan dan petugas mencatat pembayaran di sistem.', 'color' => 'bg-green-600'],
+                    ['no' => '04', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>', 'title' => 'Monitoring Admin', 'desc' => 'Admin memantau seluruh aktivitas, laporan keuangan, dan performa sistem secara real-time.', 'color' => 'bg-purple-600'],
                 ];
                 @endphp
 
@@ -459,16 +459,16 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <span class="inline-block px-4 py-1.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-sm font-semibold mb-4">Testimoni</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Apa Kata Mereka</h2>
-                <p class="text-gray-500 dark:text-gray-400 text-lg">Pengalaman nyata dari pengguna sistem PAMSIMAS dalam mendukung pelayanan yang lebih mudah, cepat, dan transparan.</p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Kata Mereka</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-lg">Pengalaman nyata pengguna sistem PAMSIMAS</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @php
                 $testimonials = [
-                    ['name' => 'Budi Santoso', 'role' => 'Pelanggan — RT 03', 'avatar' => 'BS', 'color' => 'from-blue-500 to-brand-600', 'text' => 'Sejak menggunakan sistem ini, saya tidak perlu lagi repot datang ke kantor hanya untuk mengecek tagihan air. Sekarang semuanya bisa diakses langsung dari HP kapan saja dan di mana saja. Informasi tagihan juga lebih jelas, dan proses pembayaran jadi jauh lebih praktis. Setelah bayar, konfirmasi langsung masuk, jadi saya tidak perlu khawatir lagi soal keterlambatan atau kesalahan pencatatan.', 'rating' => 5],
-                    ['name' => 'Siti Rahayu', 'role' => 'Ketua RT 07', 'avatar' => 'SR', 'color' => 'from-pink-500 to-rose-600', 'text' => 'Sebagai ketua RT, sistem ini sangat membantu dalam memantau kondisi pelayanan air di lingkungan saya. Saya bisa melihat laporan dengan lebih transparan dan cepat tanpa harus menunggu lama. Selain itu, pengaduan dari warga juga bisa langsung masuk ke sistem dan diproses lebih cepat. Adanya notifikasi membuat koordinasi menjadi lebih efektif dan pelayanan ke warga jadi lebih optimal.', 'rating' => 5],
-                    ['name' => 'Ahmad Fauzi', 'role' => 'Petugas Lapangan', 'avatar' => 'AF', 'color' => 'from-green-500 to-teal-600', 'text' => 'Dari sisi petugas lapangan, sistem ini sangat mempermudah pekerjaan kami dalam mencatat angka meter air pelanggan. Proses pencatatan menjadi lebih cepat, akurat, dan tidak lagi bergantung pada pencatatan manual yang rawan kesalahan. Data yang masuk juga langsung tersimpan di sistem, sehingga lebih aman dan mudah diakses kembali saat dibutuhkan untuk pelaporan maupun pengecekan.', 'rating' => 5],
+                    ['name' => 'Budi Santoso', 'role' => 'Pelanggan — RT 03', 'avatar' => 'BS', 'color' => 'from-blue-500 to-brand-600', 'text' => 'Sekarang saya bisa cek tagihan air dari HP kapan saja. Tidak perlu repot datang ke kantor lagi. Bayar tagihan juga lebih mudah dan langsung dapat konfirmasi.', 'rating' => 5],
+                    ['name' => 'Siti Rahayu', 'role' => 'Ketua RT 07', 'avatar' => 'SR', 'color' => 'from-pink-500 to-rose-600', 'text' => 'Sebagai ketua RT, saya sangat terbantu dengan laporan yang bisa langsung diakses. Pengaduan warga juga lebih cepat ditangani dan ada notifikasinya.', 'rating' => 5],
+                    ['name' => 'Ahmad Fauzi', 'role' => 'Petugas Lapangan', 'avatar' => 'AF', 'color' => 'from-green-500 to-teal-600', 'text' => 'Input meteran sekarang lebih praktis, langsung masuk sistem dan tagihan terhitung otomatis. Pekerjaan saya jadi lebih efisien dan tidak ada salah hitung lagi.', 'rating' => 5],
                 ];
                 @endphp
 
@@ -511,9 +511,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                 </div>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Siap Memulai?</h2>
-                <p class="text-brand-200 text-lg mb-8 max-w-xl mx-auto">Kelola layanan air bersih Anda dengan lebih mudah, cepat, dan transparan melalui sistem PAMSIMAS yang terintegrasi.
-Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — semuanya dapat diakses dalam satu platform yang modern dan efisien.</p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Siap Mulai?</h2>
+                <p class="text-brand-200 text-lg mb-8 max-w-xl mx-auto">Masuk ke sistem PAMSIMAS dan kelola layanan air bersih dengan lebih efisien, transparan, dan modern.</p>
                 <div class="flex flex-wrap justify-center gap-4">
                     <a href="/login" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-700 font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:bg-brand-50 transition-all duration-200">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -552,18 +551,18 @@ Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — se
                         </div>
                         <div>
                             <p class="text-white font-bold">PAMSIMAS</p>
-                            <p class="text-gray-500 text-xs">Program Penyediaan dan Pengelolaan Air Minum Berbasis Masyarakat</p>
+                            <p class="text-gray-500 text-xs">Sistem Air Minum Berbasis Masyarakat</p>
                         </div>
                     </div>
-                    <p class="text-gray-400 text-sm leading-relaxed max-w-sm">Platform digital terpadu yang dirancang untuk mendukung pengelolaan sistem air minum berbasis masyarakat secara efisien, transparan, dan akuntabel. Dari pencatatan konsumsi air, pemantauan jaringan distribusi, hingga pelaporan keuangan — semua terintegrasi dalam satu sistem yang mudah diakses oleh seluruh pemangku kepentingan.</p>
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-sm">Platform digital untuk pengelolaan sistem air minum berbasis masyarakat yang efisien, transparan, dan akuntabel.</p>
                 </div>
                 <!-- Links -->
                 <div>
-                    <p class="text-white font-semibold text-sm mb-3">Tentang Sistem</p>
+                    <p class="text-white font-semibold text-sm mb-3">Sistem</p>
                     <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="/login" class="hover:text-brand-400 transition-colors">Masuk ke akun</a></li>
-                        <li><a href="#fitur" class="hover:text-brand-400 transition-colors">Layanan & Fitur</a></li>
-                        <li><a href="#cara-kerja" class="hover:text-brand-400 transition-colors">Pengaduan dan Cara Kerja</a></li>
+                        <li><a href="/login" class="hover:text-brand-400 transition-colors">Login</a></li>
+                        <li><a href="#fitur" class="hover:text-brand-400 transition-colors">Fitur</a></li>
+                        <li><a href="#cara-kerja" class="hover:text-brand-400 transition-colors">Cara Kerja</a></li>
                     </ul>
                 </div>
                 <div>
@@ -576,7 +575,7 @@ Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — se
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <p class="text-gray-500 text-sm">© {{ date('Y') }} Sistem Informasi PAMSIMAS – Penyediaan Air Minum Berbasis Masyarakat.</p>
+                <p class="text-gray-500 text-sm">© {{ date('Y') }} Sistem Informasi PAMSIMAS. Hak Cipta Dilindungi.</p>
                 <p class="text-gray-600 text-xs">Dibangun dengan Laravel & Tailwind CSS</p>
             </div>
         </div>

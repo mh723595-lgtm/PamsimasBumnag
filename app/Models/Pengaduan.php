@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Pengaduan extends Model
 {
@@ -74,12 +73,12 @@ class Pengaduan extends Model
     }
 
     // ── Scopes ────────────────────────────────────────────────
-    public function scopeBaru(Builder $query)
+    public function scopeBaru($query)
     {
         return $query->where('status', 'baru');
     }
 
-    public function scopeAktif(Builder $query)
+    public function scopeAktif($query)
     {
         return $query->whereIn('status', ['baru', 'diproses']);
     }

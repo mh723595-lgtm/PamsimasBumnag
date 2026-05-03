@@ -46,7 +46,7 @@ class PengaturanController extends Controller
             SettingAplikasi::firstOrCreate(['key' => $d['key']], $d);
         }
 
-        $settings = SettingAplikasi::query()->orderBy('grup')->orderBy('id')->get()->groupBy('grup');
+        $settings = SettingAplikasi::orderBy('grup')->orderBy('id')->get()->groupBy('grup');
         return view('admin.pengaturan.index', compact('settings'));
     }
 

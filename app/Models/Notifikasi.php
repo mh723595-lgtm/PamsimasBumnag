@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Notifikasi extends Model
 {
@@ -53,7 +52,7 @@ class Notifikasi extends Model
     }
 
     // ── Scopes ────────────────────────────────────────────────
-    public function scopeBelumDibaca(Builder $query)
+    public function scopeBelumDibaca($query)
     {
         return $query->where('sudah_dibaca', false);
     }
