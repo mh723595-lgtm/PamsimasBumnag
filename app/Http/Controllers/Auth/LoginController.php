@@ -63,7 +63,7 @@ class LoginController extends Controller
             return back()->withErrors(['email' => $pesan])->withInput($request->only('email'));
         }
 
-        AktivitasLog::catat('login', 'User berhasil login ke sistem');
+       // AktivitasLog::catat('login', 'User berhasil login ke sistem');
 
         return $this->redirectByRole($user->role);
     }
