@@ -8,7 +8,6 @@ use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -101,7 +100,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->id === Auth::id()) {
+        if ($user->id === auth()->id()) {
             return back()->with('error', 'Tidak dapat menghapus akun sendiri.');
         }
 

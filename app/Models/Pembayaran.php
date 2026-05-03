@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Pembayaran extends Model
 {
@@ -68,12 +67,12 @@ class Pembayaran extends Model
     }
 
     // ── Scopes ────────────────────────────────────────────────
-    public function scopeKonfirmasi(Builder $query)
+    public function scopeKonfirmasi($query)
     {
         return $query->where('status', 'konfirmasi');
     }
 
-    public function scopePending(Builder $query)
+    public function scopePending($query)
     {
         return $query->where('status', 'pending');
     }
