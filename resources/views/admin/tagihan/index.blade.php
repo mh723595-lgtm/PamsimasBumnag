@@ -22,7 +22,7 @@
     </div>
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800 shadow-sm">
         <p class="text-xs text-gray-400 mb-1">Total Nominal</p>
-        <p class="text-xl font-extrabold text-brand-600 dark:text-brand-400">Rp {{ number_format($totalNominal/1000000, 1) }}Jt</p>
+        <p class="text-xl font-extrabold text-brand-600 dark:text-brand-400">Rp {{ number_format($totalTagihan/1000000, 1) }}Jt</p>
     </div>
 </div>
 
