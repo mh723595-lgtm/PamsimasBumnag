@@ -23,7 +23,7 @@ class PengaturanController extends Controller
         ['key'=>'tarif_blok1',   'value'=>'20000','label'=>'Tarif Blok 1 (0-10 m³) — Flat Rp',   'tipe'=>'number','grup'=>'tarif'],
         ['key'=>'tarif_blok2',   'value'=>'1500', 'label'=>'Tarif Blok 2 (11-20 m³) — per m³ Rp','tipe'=>'number','grup'=>'tarif'],
         ['key'=>'tarif_blok3',   'value'=>'2000', 'label'=>'Tarif Blok 3 (>20 m³) — per m³ Rp',  'tipe'=>'number','grup'=>'tarif'],
-        ['key'=>'biaya_admin',   'value'=>'2500', 'label'=>'Biaya Administrasi (flat) Rp',         'tipe'=>'number','grup'=>'tarif'],
+        ['key'=>'biaya_admin',   'value'=>'0',    'label'=>'Biaya Administrasi (flat) Rp — isi 0 jika tidak ada',  'tipe'=>'number','grup'=>'tarif'],
         // Tagihan
         ['key'=>'hari_jatuh_tempo','value'=>'20','label'=>'Tanggal Jatuh Tempo (tgl berapa tiap bulan)','tipe'=>'number','grup'=>'tagihan'],
         ['key'=>'notif_h_minus',  'value'=>'3',  'label'=>'Kirim notifikasi H- hari sebelum jatuh tempo','tipe'=>'number','grup'=>'tagihan'],
