@@ -18,6 +18,7 @@ class Pelanggan extends Model
         'alamat',
         'rt_rw',
         'desa',
+        'provinsi',
         'kecamatan',
         'kabupaten',
         'no_hp',

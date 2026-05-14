@@ -9,8 +9,6 @@ use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
-use Carbon\Carbon;
 
 class PelangganController extends Controller
 {
@@ -41,7 +39,6 @@ class PelangganController extends Controller
 
     public function create()
     {
-        // Generate nomor pelanggan otomatis
         $last = Pelanggan::orderByDesc('id')->first();
         $nextNo = $last ? (int) substr($last->nomor_pelanggan, 4) + 1 : 1;
         $nomorPelanggan = 'PLG-' . str_pad($nextNo, 4, '0', STR_PAD_LEFT);
@@ -52,18 +49,24 @@ class PelangganController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_pelanggan' => 'required|string|max:100',
-            'email'          => 'required|email|unique:users,email',
-            'password'       => 'required|min:6',
-            'alamat'         => 'required|string',
-            'rt_rw'          => 'nullable|string|max:20',
-            'desa'           => 'nullable|string|max:100',
-            'kecamatan'      => 'nullable|string|max:100',
-            'no_hp'          => 'nullable|string|max:20',
-            'no_ktp'         => 'nullable|string|max:20',
-            'meteran_awal'   => 'required|integer|min:0',
-            'tanggal_daftar' => 'required|date',
-            'status'         => 'required|in:aktif,nonaktif,tutup',
+            'nama_pelanggan'           => 'required|string|max:150',
+            'email'                    => 'required|email|unique:users,email',
+            'password'                 => 'required|min:6',
+            'alamat'                   => 'required|string',
+            'rt_rw'                    => 'nullable|string|max:20',
+            'provinsi'                 => 'nullable|string|max:100',
+            'kabupaten'                => 'nullable|string|max:100',
+            'kecamatan'                => 'nullable|string|max:100',
+            'desa'                     => 'nullable|string|max:100',
+            'no_hp'                    => 'nullable|string|max:20',
+            'no_ktp'                   => 'nullable|string|max:20',
+            'meteran_awal'             => 'required|integer|min:0',
+            'nomor_meteran'            => 'nullable|string|max:50|unique:pelanggan,nomor_meteran',
+            'nomor_pelanggan_external' => 'nullable|string|max:50',
+            'latitude'                 => 'nullable|numeric|between:-90,90',
+            'longitude'                => 'nullable|numeric|between:-180,180',
+            'tanggal_daftar'           => 'required|date',
+            'status'                   => 'required|in:aktif,nonaktif,tutup',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -80,18 +83,27 @@ class PelangganController extends Controller
             $nomorPelanggan = 'PLG-' . str_pad($nextNo, 4, '0', STR_PAD_LEFT);
 
             Pelanggan::create([
-                'user_id'        => $user->id,
-                'nomor_pelanggan'=> $nomorPelanggan,
-                'nama_pelanggan' => $request->nama_pelanggan,
-                'alamat'         => $request->alamat,
-                'rt_rw'          => $request->rt_rw,
-                'desa'           => $request->desa,
-                'kecamatan'      => $request->kecamatan,
-                'no_hp'          => $request->no_hp,
-                'no_ktp'         => $request->no_ktp,
-                'meteran_awal'   => $request->meteran_awal,
-                'tanggal_daftar' => $request->tanggal_daftar,
-                'status'         => $request->status,
+                'user_id'                  => $user->id,
+                'nomor_pelanggan'          => $nomorPelanggan,
+                'nama_pelanggan'           => $request->nama_pelanggan,
+                'alamat'                   => $request->alamat,
+                'rt_rw'                    => $request->rt_rw,
+                'provinsi'                 => $request->provinsi,
+                'kabupaten'                => $request->kabupaten,
+                'kecamatan'                => $request->kecamatan,
+                'desa'                     => $request->desa,
+                'no_hp'                    => $request->no_hp,
+                'no_ktp'                   => $request->no_ktp,
+                'meteran_awal'             => $request->meteran_awal,
+                'nomor_meteran'            => $request->nomor_meteran,
+                'nomor_pelanggan_external' => $request->nomor_pelanggan_external,
+                'latitude'                 => $request->latitude ?: null,
+                'longitude'                => $request->longitude ?: null,
+                'tanggal_daftar'           => $request->tanggal_daftar,
+                'status'                   => $request->status,
+                'status_registrasi'        => 'approved',
+                'approved_at'              => now(),
+                'approved_by'              => auth()->id(),
             ]);
         });
 
@@ -115,22 +127,42 @@ class PelangganController extends Controller
     public function update(Request $request, Pelanggan $pelanggan)
     {
         $request->validate([
-            'nama_pelanggan' => 'required|string|max:100',
-            'alamat'         => 'required|string',
-            'rt_rw'          => 'nullable|string|max:20',
-            'desa'           => 'nullable|string|max:100',
-            'kecamatan'      => 'nullable|string|max:100',
-            'no_hp'          => 'nullable|string|max:20',
-            'no_ktp'         => 'nullable|string|max:20',
-            'meteran_awal'   => 'required|integer|min:0',
-            'tanggal_daftar' => 'required|date',
-            'status'         => 'required|in:aktif,nonaktif,tutup',
+            'nama_pelanggan'           => 'required|string|max:150',
+            'alamat'                   => 'required|string',
+            'rt_rw'                    => 'nullable|string|max:20',
+            'provinsi'                 => 'nullable|string|max:100',
+            'kabupaten'                => 'nullable|string|max:100',
+            'kecamatan'                => 'nullable|string|max:100',
+            'desa'                     => 'nullable|string|max:100',
+            'no_hp'                    => 'nullable|string|max:20',
+            'no_ktp'                   => 'nullable|string|max:20',
+            'meteran_awal'             => 'required|integer|min:0',
+            'nomor_meteran'            => 'nullable|string|max:50|unique:pelanggan,nomor_meteran,' . $pelanggan->id,
+            'nomor_pelanggan_external' => 'nullable|string|max:50',
+            'latitude'                 => 'nullable|numeric|between:-90,90',
+            'longitude'                => 'nullable|numeric|between:-180,180',
+            'tanggal_daftar'           => 'required|date',
+            'status'                   => 'required|in:aktif,nonaktif,tutup',
         ]);
 
-        $pelanggan->update($request->only([
-            'nama_pelanggan','alamat','rt_rw','desa','kecamatan',
-            'no_hp','no_ktp','meteran_awal','tanggal_daftar','status'
-        ]));
+        $pelanggan->update([
+            'nama_pelanggan'           => $request->nama_pelanggan,
+            'alamat'                   => $request->alamat,
+            'rt_rw'                    => $request->rt_rw,
+            'provinsi'                 => $request->provinsi,
+            'kabupaten'                => $request->kabupaten,
+            'kecamatan'                => $request->kecamatan,
+            'desa'                     => $request->desa,
+            'no_hp'                    => $request->no_hp,
+            'no_ktp'                   => $request->no_ktp,
+            'meteran_awal'             => $request->meteran_awal,
+            'nomor_meteran'            => $request->nomor_meteran,
+            'nomor_pelanggan_external' => $request->nomor_pelanggan_external,
+            'latitude'                 => $request->latitude ?: null,
+            'longitude'                => $request->longitude ?: null,
+            'tanggal_daftar'           => $request->tanggal_daftar,
+            'status'                   => $request->status,
+        ]);
 
         $pelanggan->user->update(['name' => $request->nama_pelanggan]);
 
@@ -143,7 +175,7 @@ class PelangganController extends Controller
     public function destroy(Pelanggan $pelanggan)
     {
         AktivitasLog::catat('delete_pelanggan', "Hapus pelanggan: {$pelanggan->nomor_pelanggan}", 'Pelanggan', $pelanggan->id);
-        $pelanggan->user->delete(); // cascade ke pelanggan juga
+        $pelanggan->user->delete();
         return redirect()->route('admin.pelanggan.index')
             ->with('success', 'Pelanggan berhasil dihapus.');
     }
