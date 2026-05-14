@@ -3,124 +3,131 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pembayaran;
-use App\Models\TagihanAir;
-use App\Models\Notifikasi;
-use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
+use App\Models\TagihanAir;
+use App\Models\Pembayaran;
+use App\Models\Pelanggan;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class PembayaranController extends Controller
 {
-    public function index(Request $request)
+    public function __construct()
     {
-        $query = Pembayaran::with(['pelanggan', 'tagihan'])->orderByDesc('created_at');
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
+    }
 
-        if ($request->filled('status'))  $query->where('status', $request->status);
-        if ($request->filled('metode'))  $query->where('metode_bayar', $request->metode);
-        if ($request->filled('search')) {
-            $s = $request->search;
-            $query->where(fn($q) =>
-                $q->where('nomor_pembayaran', 'like', "%$s%")
-                  ->orWhereHas('pelanggan', fn($q2) => $q2->where('nama_pelanggan', 'like', "%$s%"))
-            );
-        }
+    public function index()
+    {
+        $pelanggan = Pelanggan::select('id','nama_pelanggan','nomor_pelanggan')->orderBy('nama_pelanggan')->get();
 
-        $pembayaran = $query->paginate(15)->withQueryString();
+        $tagihan = TagihanAir::whereIn('status', ['belum_bayar', 'terlambat'])->with('pelanggan')->get();
 
         $stats = [
-            'pending'    => Pembayaran::where('status','pending')->count(),
-            'konfirmasi' => Pembayaran::where('status','konfirmasi')->count(),
-            'ditolak'    => Pembayaran::where('status','ditolak')->count(),
-            'total'      => Pembayaran::where('status','konfirmasi')->sum('jumlah_bayar'),
+            'pending'    => TagihanAir::whereIn('status', ['belum_bayar', 'terlambat'])->count(),
+            'konfirmasi' => Pembayaran::where('status', 'konfirmasi')->count(),
+            'ditolak'    => Pembayaran::where('status', 'ditolak')->count(),
+            'total'      => Pembayaran::where('status', 'konfirmasi')->sum('jumlah_bayar'),
         ];
 
-        return view('admin.pembayaran.index', compact('pembayaran', 'stats'));
+        return view('admin.pembayaran.index', compact('tagihan', 'stats', 'pelanggan'));
+    }
+
+    public function tagihanPelanggan(Pelanggan $pelanggan)
+    {
+        $tagihan = TagihanAir::where('pelanggan_id', $pelanggan->id)
+            ->orderBy('tahun')->orderBy('bulan')
+            ->get(['id','bulan','tahun','total_tagihan','total_bayar','status','nomor_tagihan','denda']);
+
+        return response()->json([
+            'pelanggan' => $pelanggan,
+            'tagihan'   => $tagihan,
+        ]);
+    }
+
+    public function bayarTunai(Request $request)
+    {
+        $tagihan = TagihanAir::findOrFail($request->tagihan_id);
+
+        Pembayaran::create([
+            'nomor_pembayaran' => 'PAY-' . date('Ymd') . '-' . str_pad($tagihan->id, 4, '0', STR_PAD_LEFT),
+            'tagihan_id'       => $tagihan->id,
+            'pelanggan_id'     => $tagihan->pelanggan_id,
+            'jumlah_bayar'     => $tagihan->total_tagihan,
+            'metode'           => 'tunai',
+            'status'           => 'konfirmasi',
+            'tanggal_bayar'    => now(),
+        ]);
+
+        $tagihan->update(['status' => 'lunas']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran tunai berhasil!'
+        ]);
+    }
+
+    public function bayarMidtrans(Request $request)
+    {
+        $tagihan = TagihanAir::findOrFail($request->tagihan_id);
+
+        $params = [
+            'transaction_details' => [
+                'order_id'     => 'PAM-' . $tagihan->id . '-' . time(),
+                'gross_amount' => (int) $tagihan->total_bayar,
+            ],
+            'customer_details' => [
+                'first_name' => $tagihan->pelanggan->nama_pelanggan,
+                'phone'      => $tagihan->pelanggan->no_hp ?? '08000000000',
+            ],
+        ];
+
+        $snapToken = Snap::getSnapToken($params);
+
+        return response()->json([
+            'success'    => true,
+            'snap_token' => $snapToken,
+            'client_key' => config('services.midtrans.client_key'),
+        ]);
+    }
+
+    public function notifikasi(Request $request)
+    {
+        $notif     = new \Midtrans\Notification();
+        $status    = $notif->transaction_status;
+        $orderId   = $notif->order_id;
+
+        $tagihanId = explode('-', $orderId)[1];
+        $tagihan   = TagihanAir::find($tagihanId);
+
+        if ($tagihan && in_array($status, ['capture', 'settlement'])) {
+            $tagihan->update(['status' => 'lunas']);
+            Pembayaran::create([
+                'nomor_pembayaran' => 'PAY-' . date('Ymd') . '-' . str_pad($tagihan->id, 4, '0', STR_PAD_LEFT),
+                'tagihan_id'       => $tagihan->id,
+                'pelanggan_id'     => $tagihan->pelanggan_id,
+                'jumlah_bayar'     => $tagihan->total_bayar,
+                'metode'           => 'midtrans',
+                'status'           => 'konfirmasi',
+                'tanggal_bayar'    => now(),
+            ]);
+        }
+
+        return response()->json(['success' => true]);
     }
 
     public function show(Pembayaran $pembayaran)
     {
-        $pembayaran->load(['pelanggan', 'tagihan.meteran', 'dikonfirmasiOleh']);
+        $pembayaran->load(['tagihan', 'pelanggan']);
         return view('admin.pembayaran.show', compact('pembayaran'));
     }
 
-    public function konfirmasi(Request $request, TagihanAir $tagihan)
+    public function struk(Pembayaran $pembayaran)
     {
-        $request->validate([
-            'jumlah_bayar' => 'required|numeric|min:1',
-            'tanggal_bayar'=> 'required|date',
-            'metode_bayar' => 'required|in:tunai,transfer,lainnya',
-            'catatan'      => 'nullable|string|max:500',
-        ]);
-
-        // Cek sudah ada pembayaran
-        if ($tagihan->pembayaran && $tagihan->pembayaran->status === 'konfirmasi') {
-            return back()->with('error', 'Tagihan ini sudah dikonfirmasi pembayarannya.');
-        }
-
-        $nomorPembayaran = 'PAY-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5));
-
-        $pembayaran = Pembayaran::create([
-            'tagihan_id'       => $tagihan->id,
-            'pelanggan_id'     => $tagihan->pelanggan_id,
-            'nomor_pembayaran' => $nomorPembayaran,
-            'jumlah_bayar'     => $request->jumlah_bayar,
-            'tanggal_bayar'    => $request->tanggal_bayar,
-            'metode_bayar'     => $request->metode_bayar,
-            'status'           => 'konfirmasi',
-            'dikonfirmasi_oleh'=> Auth::id(),
-            'catatan'          => $request->catatan,
-        ]);
-
-        // Update status tagihan
-        $tagihan->update(['status' => 'lunas']);
-
-        // Notifikasi pelanggan
-        Notifikasi::create([
-            'user_id'     => $tagihan->pelanggan->user_id,
-            'judul'       => 'Pembayaran Dikonfirmasi',
-            'pesan'       => "Pembayaran tagihan {$tagihan->nomor_tagihan} sebesar Rp " . number_format($request->jumlah_bayar, 0, ',', '.') . " telah dikonfirmasi.",
-            'tipe'        => 'success',
-            'sudah_dibaca'=> false,
-        ]);
-
-        AktivitasLog::catat('konfirmasi_pembayaran', "Konfirmasi pembayaran {$nomorPembayaran} untuk tagihan {$tagihan->nomor_tagihan}", 'Pembayaran', $pembayaran->id);
-
-        return redirect()->route('admin.tagihan.show', $tagihan)
-            ->with('success', "Pembayaran {$nomorPembayaran} berhasil dikonfirmasi. Tagihan status diubah ke Lunas.");
-    }
-
-    public function update(Request $request, Pembayaran $pembayaran)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,konfirmasi,ditolak',
-        ]);
-
-        $old = $pembayaran->status;
-        $pembayaran->update([
-            'status'           => $request->status,
-            'dikonfirmasi_oleh'=> Auth::id(),
-        ]);
-
-        if ($request->status === 'konfirmasi' && $old !== 'konfirmasi') {
-            $pembayaran->tagihan->update(['status' => 'lunas']);
-        } elseif ($request->status === 'ditolak' && $old === 'konfirmasi') {
-            $pembayaran->tagihan->update(['status' => 'belum_bayar']);
-        }
-
-        return redirect()->route('admin.pembayaran.show', $pembayaran)
-            ->with('success', 'Status pembayaran diperbarui.');
-    }
-
-    public function destroy(Pembayaran $pembayaran)
-    {
-        if ($pembayaran->status === 'konfirmasi') {
-            $pembayaran->tagihan->update(['status' => 'belum_bayar']);
-        }
-        $pembayaran->delete();
-
-        return redirect()->route('admin.pembayaran.index')
-            ->with('success', 'Data pembayaran dihapus.');
+        $pembayaran->load(['tagihan.pelanggan', 'pelanggan']);
+        return view('admin.pembayaran.struk', compact('pembayaran'));
     }
 }

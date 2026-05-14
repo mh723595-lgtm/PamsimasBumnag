@@ -23,9 +23,12 @@ class Pelanggan extends Model
         'no_hp',
         'no_ktp',
         'meteran_awal',
+        'nomor_meteran',
+        'nomor_pelanggan_external',
+        'latitude',
+        'longitude',
         'status',
         'tanggal_daftar',
-        // Field registrasi approval
         'status_registrasi',
         'catatan_registrasi',
         'approved_at',
@@ -36,38 +39,17 @@ class Pelanggan extends Model
         'tanggal_daftar' => 'date',
         'meteran_awal'   => 'integer',
         'approved_at'    => 'datetime',
+        'latitude'       => 'decimal:7',
+        'longitude'      => 'decimal:7',
     ];
 
     // ── Relations ──────────────────────────────────────────────
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function meteranAir()
-    {
-        return $this->hasMany(MeteranAir::class);
-    }
-
-    public function tagihanAir()
-    {
-        return $this->hasMany(TagihanAir::class);
-    }
-
-    public function pembayaran()
-    {
-        return $this->hasMany(Pembayaran::class);
-    }
-
-    public function pengaduan()
-    {
-        return $this->hasMany(Pengaduan::class);
-    }
-
-    public function approvedBy()
-    {
-        return $this->belongsTo(User::class, 'approved_by');
-    }
+    public function user()        { return $this->belongsTo(User::class); }
+    public function meteranAir()  { return $this->hasMany(MeteranAir::class); }
+    public function tagihanAir()  { return $this->hasMany(TagihanAir::class); }
+    public function pembayaran()  { return $this->hasMany(Pembayaran::class); }
+    public function pengaduan()   { return $this->hasMany(Pengaduan::class); }
+    public function approvedBy()  { return $this->belongsTo(User::class, 'approved_by'); }
 
     // ── Shortcuts ─────────────────────────────────────────────
     public function meteranTerakhir()
@@ -87,13 +69,19 @@ class Pelanggan extends Model
             ->sum('total_bayar');
     }
 
-    public function isAktif(): bool
+    public function hasKoordinat(): bool
     {
-        return $this->status === 'aktif';
+        return !is_null($this->latitude) && !is_null($this->longitude);
     }
 
-    public function isPending(): bool
+    public function googleMapsUrl(): string
     {
-        return $this->status_registrasi === 'pending';
+        if ($this->hasKoordinat()) {
+            return "https://www.google.com/maps?q={$this->latitude},{$this->longitude}";
+        }
+        return '#';
     }
+
+    public function isAktif(): bool  { return $this->status === 'aktif'; }
+    public function isPending(): bool { return $this->status_registrasi === 'pending'; }
 }

@@ -70,119 +70,81 @@ $totalTerlambat = TagihanAir::where('status', 'terlambat')
     }
 
     public function edit(TagihanAir $tagihan)
-    {
-        $tagihan->load('pelanggan');
-        return view('admin.tagihan.edit', compact('tagihan'));
-    }
-
-    /**
-     * FIX: Update status tagihan.
-     * Jika diubah ke 'lunas' dan belum ada record Pembayaran → auto-create Pembayaran konfirmasi.
-     * Jika sudah ada Pembayaran, update statusnya.
-     */
-    public function update(Request $request, TagihanAir $tagihan)
-    {
-        $request->validate([
-            'status'        => 'required|in:belum_bayar,lunas,terlambat',
-            'metode_bayar'  => 'nullable|in:tunai,transfer,lainnya',
-            'tanggal_bayar' => 'nullable|date',
-            'catatan'       => 'nullable|string|max:500',
-        ]);
-
-        $statusLama = $tagihan->status;
-        $tagihan->update(['status' => $request->status]);
-
-        // FIX: Jika diubah ke LUNAS — create atau update record Pembayaran
-        if ($request->status === 'lunas') {
-            $pembayaranAda = Pembayaran::where('tagihan_id', $tagihan->id)->first();
-
-            if (!$pembayaranAda) {
-                // Generate nomor pembayaran
-                $seq    = Pembayaran::whereDate('created_at', today())->count() + 1;
-                $nomor  = 'PAY-' . now()->format('Ymd') . '-' . str_pad($seq, 5, '0', STR_PAD_LEFT);
-
-                Pembayaran::create([
-                    'tagihan_id'       => $tagihan->id,
-                    'pelanggan_id'     => $tagihan->pelanggan_id,
-                    'nomor_pembayaran' => $nomor,
-                    'jumlah_bayar'     => $tagihan->total_bayar ?: $tagihan->total_tagihan,
-                    'tanggal_bayar'    => $request->tanggal_bayar ?? now()->toDateString(),
-                    'metode_bayar'     => $request->metode_bayar ?? 'tunai',
-                    'status'           => 'konfirmasi',
-                    'dikonfirmasi_oleh'=> Auth::id(),
-                    'catatan'          => $request->catatan ?? 'Dikonfirmasi manual oleh admin',
-                ]);
-            } else {
-                // Update pembayaran yang sudah ada ke konfirmasi
-                $pembayaranAda->update([
-                    'status'           => 'konfirmasi',
-                    'dikonfirmasi_oleh'=> Auth::id(),
-                ]);
-            }
-
-            // Kirim notifikasi ke pelanggan
-            if ($tagihan->pelanggan?->user_id) {
-                Notifikasi::kirim(
-                    $tagihan->pelanggan->user_id,
-                    '✅ Tagihan Lunas',
-                    "Tagihan {$tagihan->nomor_tagihan} periode {$tagihan->periodeTeks()} sebesar " .
-                    TagihanService::formatRupiah($tagihan->total_bayar ?: $tagihan->total_tagihan) .
-                    " telah dikonfirmasi lunas.",
-                    'success'
-                );
-            }
-        }
-
-        // Jika diubah DARI lunas ke status lain — update pembayaran ke pending
-        if ($statusLama === 'lunas' && $request->status !== 'lunas') {
-            Pembayaran::where('tagihan_id', $tagihan->id)
-                ->where('status','konfirmasi')
-                ->update(['status' => 'pending']);
-        }
-
-        AktivitasLog::catat(
-            'update_tagihan',
-            "Update status tagihan {$tagihan->nomor_tagihan}: {$statusLama} → {$request->status}",
-            'TagihanAir',
-            $tagihan->id
-        );
-
+{
+    // Proteksi: tagihan lunas tidak bisa diedit
+    if ($tagihan->status === 'lunas') {
         return redirect()->route('admin.tagihan.show', $tagihan)
-            ->with('success', 'Status tagihan berhasil diperbarui.' .
-                ($request->status === 'lunas' ? ' Record pembayaran otomatis dibuat.' : ''));
+            ->with('error', '🔒 Tagihan ini sudah lunas dan tidak dapat diubah.');
     }
 
-    public function destroy(TagihanAir $tagihan)
-    {
-        if ($tagihan->status === 'lunas') {
-            return back()->with('error', 'Tagihan yang sudah lunas tidak dapat dihapus.');
+    $tagihan->load('pelanggan');
+    return view('admin.tagihan.edit', compact('tagihan'));
+}
+
+public function update(Request $request, TagihanAir $tagihan)
+{
+    // Proteksi: tagihan lunas tidak bisa diubah
+    if ($tagihan->status === 'lunas') {
+        return redirect()->route('admin.tagihan.show', $tagihan)
+            ->with('error', '🔒 Tagihan ini sudah lunas dan tidak dapat diubah.');
+    }
+
+    $request->validate([
+        'status'        => 'required|in:belum_bayar,lunas,terlambat',
+        'metode_bayar'  => 'nullable|in:tunai,transfer,lainnya',
+        'tanggal_bayar' => 'nullable|date',
+        'catatan'       => 'nullable|string|max:500',
+    ]);
+
+    $statusLama = $tagihan->status;
+    $tagihan->update(['status' => $request->status]);
+
+    if ($request->status === 'lunas') {
+        $pembayaranAda = Pembayaran::where('tagihan_id', $tagihan->id)->first();
+
+        if (!$pembayaranAda) {
+            $seq   = Pembayaran::whereDate('created_at', today())->count() + 1;
+            $nomor = 'PAY-' . now()->format('Ymd') . '-' . str_pad($seq, 5, '0', STR_PAD_LEFT);
+
+            Pembayaran::create([
+                'tagihan_id'        => $tagihan->id,
+                'pelanggan_id'      => $tagihan->pelanggan_id,
+                'nomor_pembayaran'  => $nomor,
+                'jumlah_bayar'      => $tagihan->total_bayar ?: $tagihan->total_tagihan,
+                'tanggal_bayar'     => $request->tanggal_bayar ?? now()->toDateString(),
+                'metode_bayar'      => $request->metode_bayar ?? 'tunai',
+                'status'            => 'konfirmasi',
+                'dikonfirmasi_oleh' => Auth::id(),
+                'catatan'           => $request->catatan ?? 'Dikonfirmasi manual oleh admin',
+            ]);
+        } else {
+            $pembayaranAda->update([
+                'status'            => 'konfirmasi',
+                'dikonfirmasi_oleh' => Auth::id(),
+            ]);
         }
 
-        AktivitasLog::catat('delete_tagihan', "Hapus tagihan {$tagihan->nomor_tagihan}", 'TagihanAir', $tagihan->id);
-        $tagihan->delete();
-
-        return redirect()->route('admin.tagihan.index')->with('success', 'Tagihan berhasil dihapus.');
-    }
-
-    public function generate(Request $request, Pelanggan $pelanggan)
-    {
-        $request->validate([
-            'bulan' => 'required|integer|between:1,12',
-            'tahun' => 'required|integer|min:2020',
-        ]);
-
-        $meteran = MeteranAir::where('pelanggan_id', $pelanggan->id)
-            ->where('bulan', $request->bulan)
-            ->where('tahun', $request->tahun)
-            ->first();
-
-        if (!$meteran) {
-            return back()->with('error', 'Data meteran belum ada. Silakan input meteran terlebih dahulu.');
+        if ($tagihan->pelanggan?->user_id) {
+            Notifikasi::kirim(
+                $tagihan->pelanggan->user_id,
+                '✅ Tagihan Lunas',
+                "Tagihan {$tagihan->nomor_tagihan} periode {$tagihan->periodeTeks()} sebesar " .
+                TagihanService::formatRupiah($tagihan->total_bayar ?: $tagihan->total_tagihan) .
+                " telah dikonfirmasi lunas.",
+                'success'
+            );
         }
-
-        $tagihan = $this->tagihanService->generateDariMeteran($meteran);
-        AktivitasLog::catat('generate_tagihan', "Generate tagihan {$tagihan->nomor_tagihan}", 'TagihanAir', $tagihan->id);
-
-        return redirect()->route('admin.tagihan.show', $tagihan)->with('success', 'Tagihan berhasil digenerate.');
     }
+
+    AktivitasLog::catat(
+        'update_tagihan',
+        "Update status tagihan {$tagihan->nomor_tagihan}: {$statusLama} → {$request->status}",
+        'TagihanAir',
+        $tagihan->id
+    );
+
+    return redirect()->route('admin.tagihan.show', $tagihan)
+        ->with('success', 'Status tagihan berhasil diperbarui.' .
+            ($request->status === 'lunas' ? ' Record pembayaran otomatis dibuat.' : ''));
+}
 }
