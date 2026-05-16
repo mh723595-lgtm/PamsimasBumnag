@@ -192,7 +192,19 @@
     <div class="mb-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl text-xs text-blue-700 dark:text-blue-300">
       💡 <strong>Cara pakai:</strong> Klik lokasi di peta, atau isi manual. Marker bisa di-drag.
     </div>
-    <div id="peta" class="mb-3 border border-gray-200 dark:border-gray-700"></div>
+   {{-- Search Alamat --}}
+<div class="relative mb-3">
+    <input type="text" id="search-alamat" placeholder="🔍 Cari alamat / nama jalan / desa..."
+        class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 pr-20">
+    <button type="button" id="btn-cari-alamat"
+        class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 text-xs font-semibold bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-all">
+        Cari
+    </button>
+</div>
+{{-- Hasil pencarian --}}
+<div id="hasil-cari" class="hidden mb-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-48 overflow-y-auto"></div>
+{{-- Peta --}}
+<div id="peta" class="mb-3 border border-gray-200 dark:border-gray-700"></div>
     <div class="flex flex-wrap gap-2 mb-4">
       <button type="button" id="btn-lokasi"
         class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all">
@@ -257,8 +269,9 @@ const defLng = {{ old('longitude', $pelanggan->longitude ?? 100.1746) }};
 const adaKoord = {{ (old('latitude', $pelanggan->latitude ?? null)) ? 'true' : 'false' }};
 
 const peta = L.map('peta').setView([defLat, defLng], adaKoord ? 16 : 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors', maxZoom: 19
+//Google Maps Hybrid (satelit + nama jalan)
+L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+    attribution: '© Google Maps', maxZoom: 21
 }).addTo(peta);
 
 let marker = null;
@@ -334,6 +347,62 @@ function resetBelow(ids) {
         el.innerHTML = '<option value="">-- Pilih --</option>';
     });
 }
+
+// ── SEARCH ALAMAT ─────────────────────────────────────────────
+document.getElementById('btn-cari-alamat').addEventListener('click', cariAlamat);
+document.getElementById('search-alamat').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); cariAlamat(); }
+});
+
+async function cariAlamat() {
+    const q = document.getElementById('search-alamat').value.trim();
+    if (!q) return;
+    const btn = document.getElementById('btn-cari-alamat');
+    btn.textContent = '⏳';
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&countrycodes=id`, {
+            headers: { 'Accept-Language': 'id' }
+        });
+        const data = await res.json();
+        tampilHasil(data);
+    } catch(e) {
+        alert('Gagal mencari alamat. Periksa koneksi internet.');
+    }
+
+    btn.textContent = 'Cari';
+    btn.disabled = false;
+}
+
+function tampilHasil(data) {
+    const box = document.getElementById('hasil-cari');
+    if (!data.length) {
+        box.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400 text-center">Alamat tidak ditemukan. Coba kata kunci lain.</div>';
+        box.classList.remove('hidden');
+        return;
+    }
+    box.innerHTML = data.map((item, i) => `
+        <div class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors"
+            onclick="pilihLokasi(${item.lat}, ${item.lon}, '${item.display_name.replace(/'/g, "\\'")}')">
+            📍 ${item.display_name}
+        </div>
+    `).join('');
+    box.classList.remove('hidden');
+}
+
+function pilihLokasi(lat, lng, nama) {
+    setMarker(lat, lng);
+    document.getElementById('search-alamat').value = nama;
+    document.getElementById('hasil-cari').classList.add('hidden');
+}
+
+// Tutup hasil kalau klik di luar
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#hasil-cari') && !e.target.closest('#search-alamat') && !e.target.closest('#btn-cari-alamat')) {
+        document.getElementById('hasil-cari').classList.add('hidden');
+    }
+});
 
 async function loadProv() {
     spin('prov', true);
