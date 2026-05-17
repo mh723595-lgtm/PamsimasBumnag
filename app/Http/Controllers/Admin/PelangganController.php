@@ -73,7 +73,7 @@ class PelangganController extends Controller
             $user = User::create([
                 'name'      => $request->nama_pelanggan,
                 'email'     => $request->email,
-                'password'  => Hash::make($request->password),
+                'password' => 'required|min:8|regex:/^(?=.*[a-zA-Z])(?=.*[0-9]).+$/',
                 'role'      => 'pelanggan',
                 'is_active' => true,
             ]);
