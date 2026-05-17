@@ -257,8 +257,8 @@ const defLng = {{ old('longitude', $pelanggan->longitude ?? 100.1746) }};
 const adaKoord = {{ (old('latitude', $pelanggan->latitude ?? null)) ? 'true' : 'false' }};
 
 const peta = L.map('peta').setView([defLat, defLng], adaKoord ? 16 : 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors', maxZoom: 19
+L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+    attribution: '© Google Maps', maxZoom: 21
 }).addTo(peta);
 
 let marker = null;
