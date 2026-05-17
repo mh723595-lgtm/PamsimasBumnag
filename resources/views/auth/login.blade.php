@@ -169,7 +169,7 @@
             </div>
 
             {{-- Register Link --}}
-            <div class="mt-5 pt-5 border-t border-white/10 text-center">
+            {{-- <div class="mt-5 pt-5 border-t border-white/10 text-center">
                 <p class="text-blue-200 text-sm mb-3">Belum punya akun?</p>
                 <div class="grid grid-cols-2 gap-2">
                     <a href="{{ route('register.form', 'pelanggan') }}"
@@ -185,7 +185,7 @@
                     ℹ️ Pendaftaran memerlukan persetujuan admin
                 </p>
             </div>
-        </div>
+        </div> --}}
 
         {{-- Back link --}}
         <p class="text-center mt-5">
