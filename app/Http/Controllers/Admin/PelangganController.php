@@ -58,8 +58,8 @@ class PelangganController extends Controller
             'kabupaten'                => 'nullable|string|max:100',
             'kecamatan'                => 'nullable|string|max:100',
             'desa'                     => 'nullable|string|max:100',
-            'no_hp'                    => 'nullable|string|max:20',
-            'no_ktp'                   => 'nullable|string|max:20',
+            'no_hp'                    => 'nullable|digits_between:10,15',
+            'no_ktp'                   => 'nullable|digits:16',
             'meteran_awal'             => 'required|integer|min:0',
             'nomor_meteran'            => 'nullable|string|max:50|unique:pelanggan,nomor_meteran',
             'nomor_pelanggan_external' => 'nullable|string|max:50',
@@ -119,58 +119,67 @@ class PelangganController extends Controller
         return view('admin.pelanggan.show', compact('pelanggan'));
     }
 
-    public function edit(Pelanggan $pelanggan)
-    {
-        return view('admin.pelanggan.edit', compact('pelanggan'));
+   public function edit(Pelanggan $pelanggan)
+{
+    // Cek apakah sudah ada pembayaran
+    $adaPembayaran = \App\Models\Pembayaran::where('pelanggan_id', $pelanggan->id)->exists();
+    return view('admin.pelanggan.edit', compact('pelanggan', 'adaPembayaran'));
+}
+
+public function update(Request $request, Pelanggan $pelanggan)
+{
+    $adaPembayaran = \App\Models\Pembayaran::where('pelanggan_id', $pelanggan->id)->exists();
+
+    $request->validate([
+        'nama_pelanggan'           => 'required|string|max:150',
+        'alamat'                   => 'required|string',
+        'rt_rw'                    => 'nullable|string|max:20',
+        'provinsi'                 => 'nullable|string|max:100',
+        'kabupaten'                => 'nullable|string|max:100',
+        'kecamatan'                => 'nullable|string|max:100',
+        'desa'                     => 'nullable|string|max:100',
+        'no_hp'                    => 'nullable|digits_between:10,15',
+        'no_ktp'                   => 'nullable|digits:16',
+        'meteran_awal'             => 'required|integer|min:0',
+        'nomor_meteran'            => 'nullable|string|max:50|unique:pelanggan,nomor_meteran,' . $pelanggan->id,
+        'nomor_pelanggan_external' => 'nullable|string|max:50',
+        'latitude'                 => 'nullable|numeric|between:-90,90',
+        'longitude'                => 'nullable|numeric|between:-180,180',
+        'tanggal_daftar'           => 'required|date',
+        'status'                   => 'required|in:aktif,nonaktif,tutup',
+    ]);
+
+    $dataUpdate = [
+        'nama_pelanggan'           => $request->nama_pelanggan,
+        'alamat'                   => $request->alamat,
+        'rt_rw'                    => $request->rt_rw,
+        'provinsi'                 => $request->provinsi,
+        'kabupaten'                => $request->kabupaten,
+        'kecamatan'                => $request->kecamatan,
+        'desa'                     => $request->desa,
+        'no_hp'                    => $request->no_hp,
+        'no_ktp'                   => $request->no_ktp,
+        'nomor_meteran'            => $request->nomor_meteran,
+        'nomor_pelanggan_external' => $request->nomor_pelanggan_external,
+        'latitude'                 => $request->latitude ?: null,
+        'longitude'                => $request->longitude ?: null,
+        'tanggal_daftar'           => $request->tanggal_daftar,
+        'status'                   => $request->status,
+    ];
+
+    // Meteran awal hanya bisa diubah jika belum ada pembayaran
+    if (!$adaPembayaran) {
+        $dataUpdate['meteran_awal'] = $request->meteran_awal;
     }
 
-    public function update(Request $request, Pelanggan $pelanggan)
-    {
-        $request->validate([
-            'nama_pelanggan'           => 'required|string|max:150',
-            'alamat'                   => 'required|string',
-            'rt_rw'                    => 'nullable|string|max:20',
-            'provinsi'                 => 'nullable|string|max:100',
-            'kabupaten'                => 'nullable|string|max:100',
-            'kecamatan'                => 'nullable|string|max:100',
-            'desa'                     => 'nullable|string|max:100',
-            'no_hp'                    => 'nullable|string|max:20',
-            'no_ktp'                   => 'nullable|string|max:20',
-            'meteran_awal'             => 'required|integer|min:0',
-            'nomor_meteran'            => 'nullable|string|max:50|unique:pelanggan,nomor_meteran,' . $pelanggan->id,
-            'nomor_pelanggan_external' => 'nullable|string|max:50',
-            'latitude'                 => 'nullable|numeric|between:-90,90',
-            'longitude'                => 'nullable|numeric|between:-180,180',
-            'tanggal_daftar'           => 'required|date',
-            'status'                   => 'required|in:aktif,nonaktif,tutup',
-        ]);
+    $pelanggan->update($dataUpdate);
+    $pelanggan->user->update(['name' => $request->nama_pelanggan]);
 
-        $pelanggan->update([
-            'nama_pelanggan'           => $request->nama_pelanggan,
-            'alamat'                   => $request->alamat,
-            'rt_rw'                    => $request->rt_rw,
-            'provinsi'                 => $request->provinsi,
-            'kabupaten'                => $request->kabupaten,
-            'kecamatan'                => $request->kecamatan,
-            'desa'                     => $request->desa,
-            'no_hp'                    => $request->no_hp,
-            'no_ktp'                   => $request->no_ktp,
-            'meteran_awal'             => $request->meteran_awal,
-            'nomor_meteran'            => $request->nomor_meteran,
-            'nomor_pelanggan_external' => $request->nomor_pelanggan_external,
-            'latitude'                 => $request->latitude ?: null,
-            'longitude'                => $request->longitude ?: null,
-            'tanggal_daftar'           => $request->tanggal_daftar,
-            'status'                   => $request->status,
-        ]);
+    AktivitasLog::catat('update_pelanggan', "Update pelanggan: {$pelanggan->nomor_pelanggan}", 'Pelanggan', $pelanggan->id);
 
-        $pelanggan->user->update(['name' => $request->nama_pelanggan]);
-
-        AktivitasLog::catat('update_pelanggan', "Update pelanggan: {$pelanggan->nomor_pelanggan}", 'Pelanggan', $pelanggan->id);
-
-        return redirect()->route('admin.pelanggan.index')
-            ->with('success', 'Data pelanggan berhasil diperbarui.');
-    }
+    return redirect()->route('admin.pelanggan.index')
+        ->with('success', 'Data pelanggan berhasil diperbarui.');
+}
 
     public function destroy(Pelanggan $pelanggan)
     {
