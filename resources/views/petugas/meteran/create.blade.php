@@ -20,27 +20,69 @@
     {{-- KIRI: FORM --}}
     <div class="lg:col-span-2 space-y-4">
 
-        {{-- STEP 1: Pilih Pelanggan --}}
-        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-5">
-            <h3 class="font-bold text-gray-700 dark:text-gray-300 text-sm mb-3 flex items-center gap-2">
-                <span class="w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
-                Pilih Pelanggan
-            </h3>
-            <form method="GET" action="{{ route('petugas.meteran.create') }}" id="formPilih">
-                <select name="pelanggan_id"
-                    onchange="document.getElementById('formPilih').submit()"
-                    class="w-full py-3 px-4 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
-                    <option value="">-- Pilih Pelanggan --</option>
-                    @foreach($pelangganList as $plg)
-                    <option value="{{ $plg->id }}" {{ request('pelanggan_id') == $plg->id ? 'selected' : '' }}>
-                        {{ $plg->nomor_pelanggan }} — {{ $plg->nama_pelanggan }}
-                    </option>
-                    @endforeach
-                </select>
-                @if(request('bulan'))<input type="hidden" name="bulan" value="{{ request('bulan') }}">@endif
-                @if(request('tahun'))<input type="hidden" name="tahun" value="{{ request('tahun') }}">@endif
-            </form>
+       {{-- STEP 1: Pilih Pelanggan --}}
+<div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-5">
+    <h3 class="font-bold text-gray-700 dark:text-gray-300 text-sm mb-3 flex items-center gap-2">
+        <span class="w-6 h-6 bg-brand-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+        Pilih Pelanggan
+    </h3>
+    <form method="GET" action="{{ route('petugas.meteran.create') }}" id="formPilih">
+        @if(request('bulan'))<input type="hidden" name="bulan" value="{{ request('bulan') }}">@endif
+        @if(request('tahun'))<input type="hidden" name="tahun" value="{{ request('tahun') }}">@endif
+        <input type="hidden" name="pelanggan_id" id="hiddenPelangganId" value="{{ request('pelanggan_id') }}">
+
+        {{-- Search Input --}}
+        <div class="relative">
+            <div class="flex items-center border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 focus-within:ring-2 focus-within:ring-brand-500 focus-within:border-brand-500 transition-all">
+                <svg class="w-4 h-4 text-gray-400 ml-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" id="searchPelanggan"
+                    placeholder="Ketik nama atau nomor pelanggan..."
+                    autocomplete="off"
+                    class="flex-1 py-3 px-3 text-sm bg-transparent text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:outline-none">
+                <button type="button" id="btnClearSearch" class="hidden mr-2 text-gray-400 hover:text-gray-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            {{-- Dropdown hasil pencarian --}}
+            <div id="dropdownPelanggan" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+                @foreach($pelangganList as $plg)
+                <div class="pelanggan-option px-4 py-3 cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 border-b border-gray-50 dark:border-gray-800 last:border-0 transition-colors"
+                    data-id="{{ $plg->id }}"
+                    data-nama="{{ $plg->nama_pelanggan }}"
+                    data-nomor="{{ $plg->nomor_pelanggan }}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center text-brand-600 font-bold text-xs flex-shrink-0">
+                            {{ strtoupper(substr($plg->nama_pelanggan, 0, 2)) }}
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-white">{{ $plg->nama_pelanggan }}</p>
+                            <p class="text-xs text-gray-400">{{ $plg->nomor_pelanggan }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                <div id="noResult" class="hidden px-4 py-6 text-center text-sm text-gray-400">
+                    Pelanggan tidak ditemukan
+                </div>
+            </div>
         </div>
+
+        {{-- Pelanggan terpilih --}}
+        <div id="selectedInfo" class="hidden mt-3 flex items-center gap-3 p-3 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-xl">
+            <div id="selectedAvatar" class="w-9 h-9 rounded-full bg-brand-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0"></div>
+            <div class="flex-1">
+                <p class="text-sm font-semibold text-brand-800 dark:text-brand-200" id="selectedNama"></p>
+                <p class="text-xs text-brand-500" id="selectedNomor"></p>
+            </div>
+            <button type="button" id="btnGantiPelanggan" class="text-xs text-brand-600 hover:text-brand-800 font-semibold">Ganti</button>
+        </div>
+    </form>
+</div>
 
         @if($selectedPelanggan)
         {{-- Info Pelanggan --}}
@@ -314,3 +356,129 @@
 </div>
 
 @endsection
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput    = document.getElementById('searchPelanggan');
+    const dropdown       = document.getElementById('dropdownPelanggan');
+    const hiddenId       = document.getElementById('hiddenPelangganId');
+    const selectedInfo   = document.getElementById('selectedInfo');
+    const selectedNama   = document.getElementById('selectedNama');
+    const selectedNomor  = document.getElementById('selectedNomor');
+    const selectedAvatar = document.getElementById('selectedAvatar');
+    const btnClear       = document.getElementById('btnClearSearch');
+    const btnGanti       = document.getElementById('btnGantiPelanggan');
+    const options        = document.querySelectorAll('.pelanggan-option');
+    const noResult       = document.getElementById('noResult');
+
+    // Jika sudah ada pelanggan terpilih dari URL
+    const currentId = hiddenId.value;
+    if (currentId) {
+        const opt = document.querySelector(`.pelanggan-option[data-id="${currentId}"]`);
+        if (opt) tampilkanTerpilih(opt.dataset.id, opt.dataset.nama, opt.dataset.nomor);
+    }
+
+    // Tampilkan dropdown saat fokus
+    searchInput.addEventListener('focus', function () {
+        filterOptions(this.value);
+        dropdown.classList.remove('hidden');
+    });
+
+    // Filter saat mengetik
+    searchInput.addEventListener('input', function () {
+        filterOptions(this.value);
+        dropdown.classList.remove('hidden');
+        btnClear.classList.toggle('hidden', !this.value);
+    });
+
+    // Klik opsi
+    options.forEach(opt => {
+        opt.addEventListener('click', function () {
+            pilihPelanggan(this.dataset.id, this.dataset.nama, this.dataset.nomor);
+        });
+    });
+
+    // Tombol clear
+    btnClear.addEventListener('click', function () {
+        searchInput.value = '';
+        filterOptions('');
+        btnClear.classList.add('hidden');
+        searchInput.focus();
+    });
+
+    // Tombol ganti pelanggan
+    btnGanti.addEventListener('click', function () {
+        selectedInfo.classList.add('hidden');
+        searchInput.value = '';
+        hiddenId.value = '';
+        filterOptions('');
+        dropdown.classList.remove('hidden');
+        searchInput.focus();
+    });
+
+    // Tutup dropdown kalau klik di luar
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('#searchPelanggan') &&
+            !e.target.closest('#dropdownPelanggan') &&
+            !e.target.closest('#btnClearSearch')) {
+            dropdown.classList.add('hidden');
+        }
+    });
+
+    function filterOptions(q) {
+        q = q.toLowerCase().trim();
+        let ada = false;
+        options.forEach(opt => {
+            const nama  = opt.dataset.nama.toLowerCase();
+            const nomor = opt.dataset.nomor.toLowerCase();
+            const cocok = !q || nama.includes(q) || nomor.includes(q);
+            opt.style.display = cocok ? '' : 'none';
+            if (cocok) ada = true;
+        });
+        noResult.classList.toggle('hidden', ada);
+    }
+
+    function tampilkanTerpilih(id, nama, nomor) {
+        hiddenId.value = id;
+        selectedNama.textContent  = nama;
+        selectedNomor.textContent = nomor;
+        selectedAvatar.textContent = nama.substring(0, 2).toUpperCase();
+        selectedInfo.classList.remove('hidden');
+        searchInput.value = '';
+        dropdown.classList.add('hidden');
+        btnClear.classList.add('hidden');
+    }
+
+    function pilihPelanggan(id, nama, nomor) {
+        tampilkanTerpilih(id, nama, nomor);
+        // Submit form untuk load data pelanggan
+        setTimeout(() => document.getElementById('formPilih').submit(), 150);
+    }
+
+    // Lock bulan masa depan
+    const bulanSel = document.querySelector('select[name="bulan"]');
+    const tahunSel = document.querySelector('select[name="tahun"]');
+    if (bulanSel && tahunSel) {
+        function lockFutureBulan() {
+            const bulanNow = new Date().getMonth() + 1;
+            const tahunNow = new Date().getFullYear();
+            const tahun    = parseInt(tahunSel.value);
+            Array.from(bulanSel.options).forEach(opt => {
+                const b = parseInt(opt.value);
+                opt.disabled = (tahun > tahunNow) || (tahun === tahunNow && b > bulanNow);
+            });
+            if (bulanSel.options[bulanSel.selectedIndex]?.disabled) {
+                bulanSel.value = tahun === tahunNow ? bulanNow : 1;
+            }
+        }
+        tahunSel.addEventListener('change', lockFutureBulan);
+        lockFutureBulan();
+    }
+});
+</script>
+@endpush
