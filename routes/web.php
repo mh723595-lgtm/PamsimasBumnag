@@ -89,6 +89,7 @@ Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])
     Route::get('/meteran/create',        [MeteranController::class, 'create'])->name('meteran.create');
     Route::post('/meteran',              [MeteranController::class, 'store'])->name('meteran.store');
     Route::get('/meteran/{meteranAir}',  [MeteranController::class, 'show'])->name('meteran.show');
+    Route::get('/peta', [\App\Http\Controllers\Petugas\PetaController::class, 'index'])->name('peta.index');
     Route::get('/riwayat',               [PetugasRiwayat::class, 'index'])->name('riwayat.index');
     Route::get('/pengaduan',             [PetugasPengaduan::class, 'index'])->name('pengaduan.index');
     Route::get('/pengaduan/{pengaduan}', [PetugasPengaduan::class, 'show'])->name('pengaduan.show');
