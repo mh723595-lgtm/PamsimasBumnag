@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\TagihanAir;
 use App\Models\Pembayaran;
 use App\Models\Pelanggan;
+use App\Models\Notifikasi;
+use App\Models\AktivitasLog;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Illuminate\Support\Facades\Auth;
 
 class PembayaranController extends Controller
 {
@@ -22,7 +25,7 @@ class PembayaranController extends Controller
 
     public function index()
     {
-        $pelanggan = Pelanggan::select('id','nama_pelanggan','nomor_pelanggan')->orderBy('nama_pelanggan')->get();
+        $pelanggan = Pelanggan::select('id', 'nama_pelanggan', 'nomor_pelanggan')->orderBy('nama_pelanggan')->get();
 
         $tagihan = TagihanAir::whereIn('status', ['belum_bayar', 'terlambat'])->with('pelanggan')->get();
 
@@ -40,7 +43,7 @@ class PembayaranController extends Controller
     {
         $tagihan = TagihanAir::where('pelanggan_id', $pelanggan->id)
             ->orderBy('tahun')->orderBy('bulan')
-            ->get(['id','bulan','tahun','total_tagihan','total_bayar','status','nomor_tagihan','denda']);
+            ->get(['id', 'bulan', 'tahun', 'total_tagihan', 'total_bayar', 'status', 'nomor_tagihan', 'denda']);
 
         return response()->json([
             'pelanggan' => $pelanggan,
@@ -56,10 +59,11 @@ class PembayaranController extends Controller
             'nomor_pembayaran' => 'PAY-' . date('Ymd') . '-' . str_pad($tagihan->id, 4, '0', STR_PAD_LEFT),
             'tagihan_id'       => $tagihan->id,
             'pelanggan_id'     => $tagihan->pelanggan_id,
-            'jumlah_bayar'     => $tagihan->total_tagihan,
-            'metode'           => 'tunai',
+            'jumlah_bayar'     => $tagihan->total_bayar ?: $tagihan->total_tagihan,
+            'metode_bayar'     => 'tunai',
             'status'           => 'konfirmasi',
             'tanggal_bayar'    => now(),
+            'dikonfirmasi_oleh' => Auth::id(),
         ]);
 
         $tagihan->update(['status' => 'lunas']);
@@ -110,13 +114,61 @@ class PembayaranController extends Controller
                 'tagihan_id'       => $tagihan->id,
                 'pelanggan_id'     => $tagihan->pelanggan_id,
                 'jumlah_bayar'     => $tagihan->total_bayar,
-                'metode'           => 'midtrans',
+                'metode_bayar'           => 'transfer',
                 'status'           => 'konfirmasi',
                 'tanggal_bayar'    => now(),
+                'dikonfirmasi_oleh' => Auth::id(),
             ]);
         }
 
         return response()->json(['success' => true]);
+    }
+
+    // Tambahkan method baru:
+    public function konfirmasi(Request $request, TagihanAir $tagihan)
+    {
+        $request->validate([
+            'catatan' => 'nullable|string|max:500',
+        ]);
+
+        // Buat atau update record pembayaran
+        $pembayaran = Pembayaran::where('tagihan_id', $tagihan->id)->first();
+
+        if ($pembayaran) {
+            $pembayaran->update([
+                'status'            => 'konfirmasi',
+                'dikonfirmasi_oleh' => Auth::id(),
+                'catatan'           => $request->catatan,
+            ]);
+        } else {
+            $seq = Pembayaran::whereDate('created_at', today())->count() + 1;
+            Pembayaran::create([
+                'tagihan_id'        => $tagihan->id,
+                'pelanggan_id'      => $tagihan->pelanggan_id,
+                'nomor_pembayaran'  => 'PAY-' . now()->format('Ymd') . '-' . str_pad($seq, 5, '0', STR_PAD_LEFT),
+                'jumlah_bayar'      => $tagihan->total_bayar ?: $tagihan->total_tagihan,
+                'tanggal_bayar'     => now()->toDateString(),
+                'metode_bayar'      => 'tunai',
+                'status'            => 'konfirmasi',
+                'dikonfirmasi_oleh' => Auth::id(),
+                'catatan'           => $request->catatan,
+            ]);
+        }
+
+        $tagihan->update(['status' => 'lunas']);
+
+        if ($tagihan->pelanggan?->user_id) {
+            Notifikasi::kirim(
+                $tagihan->pelanggan->user_id,
+                '✅ Pembayaran Dikonfirmasi',
+                "Pembayaran tagihan {$tagihan->nomor_tagihan} telah dikonfirmasi.",
+                'success'
+            );
+        }
+
+        AktivitasLog::catat('konfirmasi_pembayaran', "Konfirmasi tagihan {$tagihan->nomor_tagihan}", 'TagihanAir', $tagihan->id);
+
+        return back()->with('success', 'Pembayaran berhasil dikonfirmasi.');
     }
 
     public function show(Pembayaran $pembayaran)
