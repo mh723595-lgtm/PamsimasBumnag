@@ -9,6 +9,7 @@ use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PelangganController extends Controller
 {
@@ -73,7 +74,7 @@ class PelangganController extends Controller
             $user = User::create([
                 'name'      => $request->nama_pelanggan,
                 'email'     => $request->email,
-                'password' => 'required|min:8|regex:/^(?=.*[a-zA-Z])(?=.*[0-9]).+$/',
+                'password' =>   Hash::make($request->password),
                 'role'      => 'pelanggan',
                 'is_active' => true,
             ]);
@@ -103,7 +104,7 @@ class PelangganController extends Controller
                 'status'                   => $request->status,
                 'status_registrasi'        => 'approved',
                 'approved_at'              => now(),
-                'approved_by'              => auth()->id(),
+                'approved_by'              => Auth::id(),
             ]);
         });
 
