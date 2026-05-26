@@ -20,10 +20,10 @@ class TagihanController extends Controller
 
         $totalBelumBayar = TagihanAir::where('pelanggan_id', $pelanggan->id)
             ->whereIn('status', ['belum_bayar', 'terlambat'])
-            ->sum('total_tagihan');
+            ->sum('total_bayar');
 
         $totalLunas = TagihanAir::where('pelanggan_id', $pelanggan->id)
-            ->where('status', 'lunas')->sum('total_tagihan');
+            ->where('status', 'lunas')->sum('total_bayar');
 
         return view('pelanggan.tagihan.index', compact('tagihan', 'totalBelumBayar', 'totalLunas'));
     }
