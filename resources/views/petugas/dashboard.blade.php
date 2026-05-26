@@ -80,7 +80,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-brand-800 dark:text-brand-200">Input Meteran Baru</p>
+                    <p class="text-sm font-semibold text-brand-800 dark:text-brand-200">Input Meteran</p>
                     <p class="text-xs text-brand-600 dark:text-brand-400">Catat pemakaian air</p>
                 </div>
             </a>
