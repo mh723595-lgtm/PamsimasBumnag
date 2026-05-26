@@ -82,16 +82,20 @@ class TagihanService
      */
     public function rincianTarif(
         float $pemakaian,
-        float $tarif1,
-        float $tarif2,
-        float $tarif3,
-        float $biayaAdmin
+        ?float $tarif1 = null,
+        ?float $tarif2 = null,
+        ?float $tarif3 = null,
+        ?float $biayaAdmin = null
     ): array {
+        // Ambil dari setting jika parameter kosong
+        $tarif1 ??= (float) SettingAplikasi::get('tarif_blok1', 20000);
+        $tarif2 ??= (float) SettingAplikasi::get('tarif_blok2', 1500);
+        $tarif3 ??= (float) SettingAplikasi::get('tarif_blok3', 2000);
+        $biayaAdmin ??= (float) SettingAplikasi::get('biaya_admin', 2500);
+
         $rincian = [];
 
-        /**
-         * Blok 1
-         */
+        // Blok 1
         $blok1 = min($pemakaian, 10);
 
         $rincian[] = [
@@ -102,9 +106,7 @@ class TagihanService
             'note'   => 'Tarif tetap',
         ];
 
-        /**
-         * Blok 2
-         */
+        // Blok 2
         if ($pemakaian > 10) {
             $blok2 = min($pemakaian, 20) - 10;
 
@@ -117,9 +119,7 @@ class TagihanService
             ];
         }
 
-        /**
-         * Blok 3
-         */
+        // Blok 3
         if ($pemakaian > 20) {
             $blok3 = $pemakaian - 20;
 
@@ -132,9 +132,7 @@ class TagihanService
             ];
         }
 
-        /**
-         * Biaya admin
-         */
+        // Biaya admin
         $rincian[] = [
             'blok'   => 'Biaya Administrasi',
             'volume' => '-',
