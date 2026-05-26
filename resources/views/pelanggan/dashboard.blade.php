@@ -20,10 +20,10 @@
             Total: <strong>Rp {{ number_format($tagihanBelumBayar->sum('total_tagihan'), 0, ',', '.') }}</strong>
         </p>
     </div>
-    <a href="{{ route('pelanggan.tagihan.index') }}"
+    {{-- <a href="{{ route('pelanggan.tagihan.index') }}"
         class="flex-shrink-0 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold rounded-xl transition-all">
         Bayar Sekarang
-    </a>
+    </a> --}}
 </div>
 @endif
 
