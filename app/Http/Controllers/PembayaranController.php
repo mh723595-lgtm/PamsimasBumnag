@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Midtrans\Config;
 use Midtrans\Snap;
-use App\Models\Tagihan;
+use App\Models\TagihanAir;
 use App\Models\Pembayaran;
 
 
@@ -15,14 +15,14 @@ class PembayaranController extends Controller
     // Halaman kasir
     public function index()
     {
-        $tagihan = Tagihan::where('status', 'belum_lunas')->with('pelanggan')->get();
+        $tagihan = TagihanAir::where('status', 'belum_lunas')->with('pelanggan')->get();
         return view('pembayaran.index', compact('tagihan'));
     }
 
     // Bayar tunai (manual)
     public function bayarTunai(Request $request)
     {
-        $tagihan = Tagihan::findOrFail($request->tagihan_id);
+        $tagihan = TagihanAir::findOrFail($request->tagihan_id);
 
         Pembayaran::create([
             'tagihan_id'      => $tagihan->id,
@@ -43,7 +43,7 @@ class PembayaranController extends Controller
     // Bayar via Midtrans (QRIS, Transfer, E-Wallet)
     public function bayarMidtrans(Request $request)
     {
-        $tagihan = Tagihan::findOrFail($request->tagihan_id);
+        $tagihan = TagihanAir::findOrFail($request->tagihan_id);
 
         $params = [
             'transaction_details' => [
@@ -73,7 +73,7 @@ class PembayaranController extends Controller
         $orderId = $notif->order_id;
 
         $tagihanId = explode('-', $orderId)[1];
-        $tagihan = Tagihan::find($tagihanId);
+        $tagihan = TagihanAir::find($tagihanId);
 
         if (in_array($status, ['capture', 'settlement'])) {
             $tagihan->update(['status' => 'lunas']);
