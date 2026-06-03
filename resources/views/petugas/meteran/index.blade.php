@@ -62,6 +62,24 @@
     </div>
 </div>
 
+{{-- Info Jorong Petugas --}}
+@if($jorongList->isNotEmpty())
+<div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-4 mb-4">
+    <p class="text-xs font-semibold text-gray-500 mb-2">Jorong yang ditugaskan:</p>
+    <div class="flex flex-wrap gap-2">
+        @foreach($jorongList as $j)
+        <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 rounded-full text-xs font-semibold">
+            {{ $j->nama_jorong }}
+        </span>
+        @endforeach
+    </div>
+</div>
+@else
+<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 mb-4">
+    <p class="text-sm text-amber-700 dark:text-amber-300 font-medium">Anda belum ditugaskan ke jorong manapun. Hubungi admin.</p>
+</div>
+@endif
+
 {{-- Tabel Pelanggan --}}
 <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
     <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
@@ -74,9 +92,10 @@
             <thead>
                 <tr class="bg-gray-50 dark:bg-gray-800/60">
                     <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Pelanggan</th>
+                    <th class="text-left px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Jorong</th>
                     <th class="text-left px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Alamat</th>
-                    <th class="text-center px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Meteran Awal (Ref)</th>
-                    <th class="text-center px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status Input</th>
+                    <th class="text-center px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Meteran Ref</th>
+                    <th class="text-center px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                     <th class="text-center px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
@@ -95,6 +114,11 @@
                             </div>
                         </div>
                     </td>
+                    <td class="px-3 py-3.5">
+                        <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-medium">
+                            {{ $plg->jorong->nama_jorong ?? '-' }}
+                        </span>
+                    </td>
                     <td class="px-3 py-3.5 text-gray-600 dark:text-gray-400 text-xs">{{ $plg->alamat }}</td>
                     <td class="px-3 py-3.5 text-center">
                         @if($sudahDiinput && $plg->meteranAir->isNotEmpty())
@@ -107,16 +131,12 @@
                     <td class="px-3 py-3.5 text-center">
                         @if($sudahDiinput)
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                            </svg>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                             Sudah Input
                         </span>
                         @else
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01"/>
-                            </svg>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01"/></svg>
                             Belum Input
                         </span>
                         @endif
@@ -126,19 +146,13 @@
                             @php $m = $plg->meteranAir->first(); @endphp
                             @if($m)
                             <a href="{{ route('petugas.meteran.show', $m) }}"
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-brand-600 bg-brand-50 dark:bg-brand-900/30 hover:bg-brand-100 dark:hover:bg-brand-900/50 rounded-lg transition-all">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-brand-600 bg-brand-50 dark:bg-brand-900/30 hover:bg-brand-100 rounded-lg transition-all">
                                 Detail
                             </a>
                             @endif
                         @else
                             <a href="{{ route('petugas.meteran.create', ['pelanggan_id' => $plg->id, 'bulan' => $bulan, 'tahun' => $tahun]) }}"
                                 class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow transition-all">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                                </svg>
                                 Input
                             </a>
                         @endif
@@ -146,7 +160,13 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-5 py-12 text-center text-gray-400">Tidak ada pelanggan aktif</td>
+                    <td colspan="6" class="px-5 py-12 text-center text-gray-400">
+                        @if($jorongList->isEmpty())
+                            Belum ditugaskan ke jorong manapun
+                        @else
+                            Tidak ada pelanggan di jorong yang ditugaskan
+                        @endif
+                    </td>
                 </tr>
                 @endforelse
             </tbody>

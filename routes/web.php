@@ -46,6 +46,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::resource('tagihan',   AdminTagihan::class)->except(['create', 'store']);
     Route::post('tagihan/{pelanggan}/generate', [AdminTagihan::class, 'generate'])->name('tagihan.generate');
     Route::get('pembayaran/pelanggan/{pelanggan}/tagihan', [AdminPembayaran::class, 'tagihanPelanggan'])->name('pembayaran.pelanggan.tagihan');
+    Route::get('/log', [App\Http\Controllers\Admin\AktivitasLogController::class, 'index'])->name('log.index');
 
     // Pembayaran
     Route::resource('pembayaran', AdminPembayaran::class)->only(['index', 'show', 'update', 'destroy']);
@@ -80,10 +81,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/registrasi/{type}/{id}',          [RegistrasiController::class, 'show'])->name('registrasi.show');
     Route::post('/registrasi/{type}/{id}/approve', [RegistrasiController::class, 'approve'])->name('registrasi.approve');
     Route::post('/registrasi/{type}/{id}/reject',  [RegistrasiController::class, 'reject'])->name('registrasi.reject');
+
+    // Assign Petugas
+    Route::get('assign-petugas', [App\Http\Controllers\Admin\AssignPetugasController::class, 'index'])->name('assign-petugas.index');
+    Route::post('assign-petugas', [App\Http\Controllers\Admin\AssignPetugasController::class, 'store'])->name('assign-petugas.store');
+    Route::delete('assign-petugas/{assignPetugas}', [App\Http\Controllers\Admin\AssignPetugasController::class, 'destroy'])->name('assign-petugas.destroy');
+    Route::patch('assign-petugas/{assignPetugas}/toggle', [App\Http\Controllers\Admin\AssignPetugasController::class, 'toggleAktif'])->name('assign-petugas.toggle');
+    Route::patch('assign-petugas/{assignPetugas}', [App\Http\Controllers\Admin\AssignPetugasController::class, 'update'])->name('assign-petugas.update');
+
+    // Jorong
+    Route::get('jorong', [App\Http\Controllers\Admin\JorongController::class, 'index'])->name('jorong.index');
+    Route::post('jorong', [App\Http\Controllers\Admin\JorongController::class, 'store'])->name('jorong.store');
+    Route::put('jorong/{jorong}', [App\Http\Controllers\Admin\JorongController::class, 'update'])->name('jorong.update');
+    Route::delete('jorong/{jorong}', [App\Http\Controllers\Admin\JorongController::class, 'destroy'])->name('jorong.destroy');
+    Route::patch('jorong/{jorong}/toggle', [App\Http\Controllers\Admin\JorongController::class, 'toggleAktif'])->name('jorong.toggle');
 });
 
+
 // ── PETUGAS ────────────────────────────────────────────────
-Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])->group(function () {
+    Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])->group(function () {
     Route::get('/dashboard',             [PetugasDashboard::class, 'index'])->name('dashboard');
     Route::get('/meteran',               [MeteranController::class, 'index'])->name('meteran.index');
     Route::get('/meteran/create',        [MeteranController::class, 'create'])->name('meteran.create');
@@ -97,7 +113,7 @@ Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])
 });
 
 // ── PELANGGAN ──────────────────────────────────────────────
-Route::prefix('pelanggan')->name('pelanggan.')->middleware(['auth', 'role:pelanggan'])->group(function () {
+    Route::prefix('pelanggan')->name('pelanggan.')->middleware(['auth', 'role:pelanggan'])->group(function () {
     Route::get('/dashboard',              [PelangganDashboard::class, 'index'])->name('dashboard');
     Route::get('/tagihan',                [PelangganTagihan::class, 'index'])->name('tagihan.index');
     Route::get('/tagihan/{tagihan}',      [PelangganTagihan::class, 'show'])->name('tagihan.show');

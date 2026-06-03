@@ -39,13 +39,14 @@ class PelangganController extends Controller
     }
 
     public function create()
-    {
-        $last = Pelanggan::orderByDesc('id')->first();
-        $nextNo = $last ? (int) substr($last->nomor_pelanggan, 4) + 1 : 1;
-        $nomorPelanggan = 'PLG-' . str_pad($nextNo, 4, '0', STR_PAD_LEFT);
+        {
+            $last = Pelanggan::orderByDesc('id')->first();
+            $nextNo = $last ? (int) substr($last->nomor_pelanggan, 4) + 1 : 1;
+            $nomorPelanggan = 'PLG-' . str_pad($nextNo, 4, '0', STR_PAD_LEFT);
+            $jorongList = \App\Models\Jorong::where('aktif', true)->orderBy('nama_jorong')->get();
 
-        return view('admin.pelanggan.create', compact('nomorPelanggan'));
-    }
+            return view('admin.pelanggan.create', compact('nomorPelanggan', 'jorongList'));
+        }
 
     public function store(Request $request)
     {
@@ -120,12 +121,12 @@ class PelangganController extends Controller
         return view('admin.pelanggan.show', compact('pelanggan'));
     }
 
-   public function edit(Pelanggan $pelanggan)
-{
-    // Cek apakah sudah ada pembayaran
-    $adaPembayaran = \App\Models\Pembayaran::where('pelanggan_id', $pelanggan->id)->exists();
-    return view('admin.pelanggan.edit', compact('pelanggan', 'adaPembayaran'));
-}
+        public function edit(Pelanggan $pelanggan)
+        {
+            $adaPembayaran = \App\Models\Pembayaran::where('pelanggan_id', $pelanggan->id)->exists();
+            $jorongList = \App\Models\Jorong::where('aktif', true)->orderBy('nama_jorong')->get();
+            return view('admin.pelanggan.edit', compact('pelanggan', 'adaPembayaran', 'jorongList'));
+        }
 
 public function update(Request $request, Pelanggan $pelanggan)
 {
@@ -165,8 +166,9 @@ public function update(Request $request, Pelanggan $pelanggan)
         'latitude'                 => $request->latitude ?: null,
         'longitude'                => $request->longitude ?: null,
         'tanggal_daftar'           => $request->tanggal_daftar,
+        'jorong_id'                => $request->jorong_id,
         'status'                   => $request->status,
-    ];
+];
 
     // Meteran awal hanya bisa diubah jika belum ada pembayaran
     if (!$adaPembayaran) {

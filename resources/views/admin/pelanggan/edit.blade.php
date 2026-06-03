@@ -212,11 +212,13 @@
         @error('alamat')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
       </div>
       <div>
-        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">RT/RW</label>
-        <input type="text" name="rt_rw"
-          value="{{ old('rt_rw', $pelanggan->rt_rw ?? '') }}"
-          placeholder="001/002"
-          class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
+        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Jorong</label>
+        <select name="jorong_id" class="sel-wilayah w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
+          <option value="">-- Pilih Jorong --</option>
+          @foreach($jorongList as $j)
+          <option value="{{ $j->id }}" {{ old('jorong_id', $pelanggan->jorong_id ?? '') == $j->id ? 'selected' : '' }}>{{ $j->nama_jorong }}</option>
+          @endforeach
+        </select>
       </div>
 
       <div>

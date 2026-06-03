@@ -13,6 +13,7 @@ class Pelanggan extends Model
 
     protected $fillable = [
         'user_id',
+        'jorong_id',
         'nomor_pelanggan',
         'nama_pelanggan',
         'alamat',
@@ -46,6 +47,7 @@ class Pelanggan extends Model
 
     // ── Relations ──────────────────────────────────────────────
     public function user()        { return $this->belongsTo(User::class); }
+    public function jorong()      { return $this->belongsTo(Jorong::class); }
     public function meteranAir()  { return $this->hasMany(MeteranAir::class); }
     public function tagihanAir()  { return $this->hasMany(TagihanAir::class); }
     public function pembayaran()  { return $this->hasMany(Pembayaran::class); }

@@ -20,30 +20,52 @@ class MeteranController extends Controller
         $this->tagihanService = $tagihanService;
     }
 
-    public function index(Request $request)
-    {
-        $bulan = (int) $request->input('bulan', now()->month);
-        $tahun = (int) $request->input('tahun', now()->year);
+   public function index(Request $request)
+{
+    $bulan  = (int) $request->input('bulan', now()->month);
+    $tahun  = (int) $request->input('tahun', now()->year);
+    $petugas = Auth::user()->petugas;
 
-        $pelangganList = Pelanggan::where('status', 'aktif')
-            ->with(['meteranAir' => fn($q) => $q->where('bulan', $bulan)->where('tahun', $tahun)])
-            ->orderBy('nomor_pelanggan')
-            ->get();
+    // Ambil jorong yang ditugaskan ke petugas ini
+    $jorongIds = \App\Models\AssignPetugas::where('petugas_id', $petugas?->id)
+        ->where('aktif', true)
+        ->pluck('jorong_id');
 
-        $sudahInput = MeteranAir::where('bulan', $bulan)
-            ->where('tahun', $tahun)
-            ->pluck('pelanggan_id')
-            ->toArray();
+    $pelangganList = Pelanggan::where('status', 'aktif')
+        ->whereIn('jorong_id', $jorongIds)
+        ->with([
+            'meteranAir' => fn($q) => $q->where('bulan', $bulan)->where('tahun', $tahun),
+            'jorong',
+        ])
+        ->orderBy('nomor_pelanggan')
+        ->get();
 
-        return view('petugas.meteran.index', compact('pelangganList', 'sudahInput', 'bulan', 'tahun'));
-    }
+    $sudahInput = MeteranAir::where('bulan', $bulan)
+        ->where('tahun', $tahun)
+        ->pluck('pelanggan_id')
+        ->toArray();
+
+    $jorongList = \App\Models\Jorong::whereIn('id', $jorongIds)->get();
+
+    return view('petugas.meteran.index', compact(
+        'pelangganList', 'sudahInput', 'bulan', 'tahun', 'jorongList', 'jorongIds'
+    ));
+}
 
     public function create(Request $request)
     {
-        $pelangganList     = Pelanggan::where('status', 'aktif')->orderBy('nomor_pelanggan')->get();
-        $selectedPelanggan = null;
-        $angkaAwalRef      = 0;
+         $petugas = Auth::user()->petugas;
+                $jorongIds = \App\Models\AssignPetugas::where('petugas_id', $petugas?->id)
+                    ->where('aktif', true)
+                    ->pluck('jorong_id');
 
+         $pelangganList     = Pelanggan::where('status', 'aktif')
+                    ->whereIn('jorong_id', $jorongIds)
+                    ->orderBy('nomor_pelanggan')
+                    ->get();
+          $selectedPelanggan = null;
+          $angkaAwalRef      = 0;
+          
         if ($request->filled('pelanggan_id')) {
             $selectedPelanggan = Pelanggan::find($request->pelanggan_id);
 
