@@ -14,6 +14,10 @@ class TagihanController extends Controller
     {
         $pelanggan = Auth::user()->pelanggan;
 
+        if (!$pelanggan) {
+            abort(403, 'Data pelanggan tidak ditemukan. Hubungi administrator.');
+        }
+
         $tagihan = TagihanAir::where('pelanggan_id', $pelanggan->id)
             ->orderByDesc('tahun')->orderByDesc('bulan')
             ->paginate(12);
@@ -32,9 +36,12 @@ class TagihanController extends Controller
     {
         $pelanggan = Auth::user()->pelanggan;
 
-        // Guard: hanya bisa lihat tagihan milik sendiri
+        if (!$pelanggan) {
+            abort(403, 'Data pelanggan tidak ditemukan. Hubungi administrator.');
+        }
+
         if ($tagihan->pelanggan_id !== $pelanggan->id) {
-            abort(403);
+            abort(403, 'Anda tidak berhak mengakses tagihan ini.');
         }
 
         $tagihan->load(['meteran', 'pembayaran']);
