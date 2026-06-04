@@ -62,6 +62,74 @@ $totalTerlambat = TagihanAir::where('status', 'terlambat')
         return view('admin.tagihan.index', compact('tagihan','stats','bulanList','tahunList', 'totalTagihan', 'totalLunas', 'totalBelumBayar', 'totalTerlambat'));
     }
 
+    public function generate(Request $request, Pelanggan $pelanggan)
+    {
+        $request->validate([
+            'bulan' => 'required|integer|between:1,12',
+            'tahun' => 'required|integer|min:2020|max:' . (now()->year + 1),
+        ], [
+            'bulan.required' => 'Bulan wajib dipilih.',
+            'bulan.between'  => 'Bulan tidak valid.',
+            'tahun.required' => 'Tahun wajib diisi.',
+        ]);
+
+        $bulan = (int) $request->bulan;
+        $tahun = (int) $request->tahun;
+
+        $existing = TagihanAir::where('pelanggan_id', $pelanggan->id)
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->first();
+
+        if ($existing) {
+            return back()->with('error',
+                "Tagihan periode {$existing->periodeTeks()} untuk pelanggan {$pelanggan->nama_pelanggan} sudah ada. " .
+                "Nomor: {$existing->nomor_tagihan}."
+            );
+        }
+
+        $meteran = MeteranAir::where('pelanggan_id', $pelanggan->id)
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->first();
+
+        if (!$meteran) {
+            return back()->with('error',
+                "Data meteran untuk pelanggan {$pelanggan->nama_pelanggan} periode " .
+                TagihanService::namaBulan($bulan) . " {$tahun} belum diinput. " .
+                "Silakan input meteran terlebih dahulu."
+            );
+        }
+
+        $tagihan = $this->tagihanService->generateDariMeteran($meteran);
+
+        if ($pelanggan->user_id) {
+            Notifikasi::kirim(
+                $pelanggan->user_id,
+                '📋 Tagihan Baru Terbit',
+                "Tagihan air periode {$tagihan->periodeTeks()} sebesar " .
+                TagihanService::formatRupiah($tagihan->total_tagihan) .
+                " telah diterbitkan. Jatuh tempo: " .
+                $tagihan->tanggal_jatuh_tempo->format('d/m/Y') . ".",
+                'info',
+                route('pelanggan.tagihan.show', $tagihan)
+            );
+        }
+
+        AktivitasLog::catat(
+            'generate_tagihan',
+            "Generate tagihan manual: {$tagihan->nomor_tagihan} untuk {$pelanggan->nomor_pelanggan}",
+            'TagihanAir',
+            $tagihan->id
+        );
+
+        return redirect()->route('admin.tagihan.show', $tagihan)
+            ->with('success',
+                "✅ Tagihan {$tagihan->nomor_tagihan} berhasil digenerate untuk {$pelanggan->nama_pelanggan}. " .
+                "Total: " . TagihanService::formatRupiah($tagihan->total_tagihan) . "."
+            );
+    }
+
     public function show(TagihanAir $tagihan)
     {
         $tagihan->load(['pelanggan','meteran','pembayaran.dikonfirmasiOleh']);

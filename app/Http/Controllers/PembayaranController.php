@@ -2,90 +2,95 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Midtrans\Config;
-use Midtrans\Snap;
 use App\Models\TagihanAir;
 use App\Models\Pembayaran;
-
-
+use App\Models\Notifikasi;
+use App\Models\AktivitasLog;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PembayaranController extends Controller
 {
-    // Halaman kasir
-    public function index()
-    {
-        $tagihan = TagihanAir::where('status', 'belum_lunas')->with('pelanggan')->get();
-        return view('pembayaran.index', compact('tagihan'));
-    }
-
-    // Bayar tunai (manual)
-    public function bayarTunai(Request $request)
-    {
-        $tagihan = TagihanAir::findOrFail($request->tagihan_id);
-
-        Pembayaran::create([
-            'tagihan_id'      => $tagihan->id,
-            'jumlah_bayar'    => $tagihan->total_tagihan,
-            'metode'          => 'tunai',
-            'status'          => 'lunas',
-            'tanggal_bayar'   => now(),
-        ]);
-
-        $tagihan->update(['status' => 'lunas']);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pembayaran tunai berhasil!'
-        ]);
-    }
-
-    // Bayar via Midtrans (QRIS, Transfer, E-Wallet)
-    public function bayarMidtrans(Request $request)
-    {
-        $tagihan = TagihanAir::findOrFail($request->tagihan_id);
-
-        $params = [
-            'transaction_details' => [
-                'order_id'     => 'PAM-' . $tagihan->id . '-' . time(),
-                'gross_amount' => $tagihan->total_tagihan,
-            ],
-            'customer_details' => [
-                'first_name' => $tagihan->pelanggan->nama,
-                'phone'      => $tagihan->pelanggan->no_hp,
-            ],
-        ];
-
-        $snapToken = Snap::getSnapToken($params);
-
-        return response()->json([
-            'success'    => true,
-            'snap_token' => $snapToken,
-            'client_key' => config('services.midtrans.client_key'),
-        ]);
-    }
-
-    // Notifikasi otomatis dari Midtrans
     public function notifikasi(Request $request)
     {
-        $notif = new \Midtrans\Notification();
-        $status = $notif->transaction_status;
-        $orderId = $notif->order_id;
+        try {
+            $notif       = new \Midtrans\Notification();
+            $status      = $notif->transaction_status;
+            $orderId     = $notif->order_id;
+            $fraudStatus = $notif->fraud_status ?? null;
 
-        $tagihanId = explode('-', $orderId)[1];
-        $tagihan = TagihanAir::find($tagihanId);
-
-        if (in_array($status, ['capture', 'settlement'])) {
-            $tagihan->update(['status' => 'lunas']);
-            Pembayaran::create([
-                'tagihan_id'    => $tagihan->id,
-                'jumlah_bayar'  => $tagihan->total_tagihan,
-                'metode'        => 'midtrans',
-                'status'        => 'lunas',
-                'tanggal_bayar' => now(),
+            Log::info('[Midtrans] Notifikasi diterima', [
+                'order_id' => $orderId,
+                'status'   => $status,
             ]);
-        }
 
-        return response()->json(['success' => true]);
+            // order_id format: PAM-{tagihanId}-{timestamp}
+            $parts     = explode('-', $orderId);
+            $tagihanId = $parts[1] ?? null;
+
+            if (!$tagihanId) {
+                Log::warning("[Midtrans] Format order_id tidak dikenal: {$orderId}");
+                return response()->json(['success' => false, 'message' => 'Order ID tidak valid'], 400);
+            }
+
+            $tagihan = TagihanAir::with('pelanggan')->find($tagihanId);
+
+            if (!$tagihan) {
+                Log::warning("[Midtrans] Tagihan ID {$tagihanId} tidak ditemukan");
+                return response()->json(['success' => false, 'message' => 'Tagihan tidak ditemukan'], 404);
+            }
+
+            $berhasil = ($status === 'capture' && $fraudStatus === 'accept')
+                     || $status === 'settlement';
+
+            if ($berhasil && !$tagihan->isLunas()) {
+                $sudahAda = Pembayaran::where('tagihan_id', $tagihan->id)->exists();
+
+                if (!$sudahAda) {
+                    $seq = Pembayaran::whereDate('created_at', today())->count() + 1;
+                    Pembayaran::create([
+                        'tagihan_id'       => $tagihan->id,
+                        'pelanggan_id'     => $tagihan->pelanggan_id,
+                        'nomor_pembayaran' => 'PAY-' . now()->format('Ymd') . '-' . str_pad($seq, 5, '0', STR_PAD_LEFT),
+                        'jumlah_bayar'     => $tagihan->total_bayar ?: $tagihan->total_tagihan,
+                        'tanggal_bayar'    => now()->toDateString(),
+                        'metode_bayar'     => 'transfer',
+                        'status'           => 'konfirmasi',
+                        'catatan'          => 'Dikonfirmasi otomatis via Midtrans. Order ID: ' . $orderId,
+                    ]);
+                }
+
+                $tagihan->update(['status' => 'lunas']);
+
+                if ($tagihan->pelanggan?->user_id) {
+                    Notifikasi::kirim(
+                        $tagihan->pelanggan->user_id,
+                        '✅ Pembayaran Berhasil',
+                        "Pembayaran tagihan {$tagihan->nomor_tagihan} telah dikonfirmasi melalui Midtrans.",
+                        'success'
+                    );
+                }
+
+                AktivitasLog::catat(
+                    'midtrans_notifikasi',
+                    "Tagihan {$tagihan->nomor_tagihan} lunas via Midtrans. Order ID: {$orderId}",
+                    'TagihanAir',
+                    $tagihan->id
+                );
+
+                Log::info("[Midtrans] Tagihan {$tagihan->nomor_tagihan} berhasil dilunasi.");
+
+            } elseif (in_array($status, ['cancel', 'deny', 'expire', 'failure'])) {
+                Log::info("[Midtrans] Pembayaran {$orderId} gagal/dibatalkan. Status: {$status}");
+            }
+
+            return response()->json(['success' => true]);
+
+        } catch (\Exception $e) {
+            Log::error('[Midtrans] Error webhook: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json(['success' => false, 'message' => 'Internal error'], 500);
+        }
     }
 }
