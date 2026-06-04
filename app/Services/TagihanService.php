@@ -6,6 +6,7 @@ use App\Models\MeteranAir;
 use App\Models\SettingAplikasi;
 use App\Models\TagihanAir;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class TagihanService
 {
@@ -18,7 +19,7 @@ class TagihanService
             'tarif_blok1' => (float) SettingAplikasi::get('tarif_blok1', 20000),
             'tarif_blok2' => (float) SettingAplikasi::get('tarif_blok2', 1500),
             'tarif_blok3' => (float) SettingAplikasi::get('tarif_blok3', 2000),
-            'biaya_admin' => (float) SettingAplikasi::get('biaya_admin', 2500),
+            'biaya_admin' => (float) SettingAplikasi::get('biaya_admin', 0),
         ];
     }
 
@@ -91,7 +92,7 @@ class TagihanService
         $tarif1 ??= (float) SettingAplikasi::get('tarif_blok1', 20000);
         $tarif2 ??= (float) SettingAplikasi::get('tarif_blok2', 1500);
         $tarif3 ??= (float) SettingAplikasi::get('tarif_blok3', 2000);
-        $biayaAdmin ??= (float) SettingAplikasi::get('biaya_admin', 2500);
+        $biayaAdmin ??= (float) SettingAplikasi::get('biaya_admin', 0);
 
         $rincian = [];
 
@@ -149,54 +150,68 @@ class TagihanService
      */
     public function generateDariMeteran(MeteranAir $meteran): TagihanAir
     {
-        $existing = TagihanAir::where('pelanggan_id', $meteran->pelanggan_id)
-            ->where('bulan', $meteran->bulan)
-            ->where('tahun', $meteran->tahun)
-            ->first();
+        return DB::transaction(function () use ($meteran) {
+            // Lock baris yang relevan untuk mencegah concurrent duplicate
+            $existing = TagihanAir::where('pelanggan_id', $meteran->pelanggan_id)
+                ->where('bulan', $meteran->bulan)
+                ->where('tahun', $meteran->tahun)
+                ->lockForUpdate()
+                ->first();
 
-        if ($existing) {
-            return $existing;
-        }
+            if ($existing) {
+                return $existing;
+            }
 
-        $hasil = $this->hitungTagihan($meteran->pemakaian);
+            $hasil = $this->hitungTagihan($meteran->pemakaian);
 
-        return TagihanAir::create([
-            'pelanggan_id'        => $meteran->pelanggan_id,
-            'meteran_id'          => $meteran->id,
-            'nomor_tagihan'       => $this->generateNomorTagihan(
-                $meteran->bulan,
-                $meteran->tahun
-            ),
-            'bulan'               => $meteran->bulan,
-            'tahun'               => $meteran->tahun,
-            'pemakaian'           => $meteran->pemakaian,
-            'total_tagihan'       => $hasil['total'],
-            'tanggal_tagihan'     => now(),
-            'tanggal_jatuh_tempo' => Carbon::create(
-                $meteran->tahun,
-                $meteran->bulan,
-                1
-            )->endOfMonth(),
-            'status'              => 'belum_bayar',
-        ]);
+            return TagihanAir::create([
+                'pelanggan_id'        => $meteran->pelanggan_id,
+                'meteran_id'          => $meteran->id,
+                'nomor_tagihan'       => $this->generateNomorTagihan(
+                    $meteran->bulan,
+                    $meteran->tahun
+                ),
+                'bulan'               => $meteran->bulan,
+                'tahun'               => $meteran->tahun,
+                'pemakaian'           => $meteran->pemakaian,
+                'total_tagihan'       => $hasil['total'],
+                'tanggal_tagihan'     => now(),
+                'tanggal_jatuh_tempo' => Carbon::create(
+                    $meteran->tahun,
+                    $meteran->bulan,
+                    1
+                )->endOfMonth(),
+                'status'              => 'belum_bayar',
+            ]);
+        });
     }
 
     /**
-     * Generate nomor tagihan unik
+     * Generate nomor tagihan unik.
+     * Harus dipanggil di dalam DB::transaction dengan lockForUpdate agar aman dari race condition.
      */
     public function generateNomorTagihan(int $bulan, int $tahun): string
     {
         $prefix = 'TGH';
-
         $period = str_pad($bulan, 2, '0', STR_PAD_LEFT) . $tahun;
 
-        $seq = TagihanAir::whereMonth('created_at', $bulan)
+        // Gunakan MAX(nomor_tagihan) untuk mendapatkan seq terakhir yang sudah tersimpan,
+        // bukan count() yang bisa keliru saat ada gap atau concurrent insert.
+        $last = TagihanAir::whereMonth('created_at', $bulan)
             ->whereYear('created_at', $tahun)
-            ->count() + 1;
+            ->where('nomor_tagihan', 'like', "{$prefix}-{$period}-%")
+            ->lockForUpdate()
+            ->max('nomor_tagihan');
 
-        $seq = str_pad($seq, 4, '0', STR_PAD_LEFT);
+        if ($last) {
+            // Ambil bagian sequence dari akhir string, misal "TGH-062026-0005" → 5
+            $lastSeq = (int) substr($last, strrpos($last, '-') + 1);
+            $seq = $lastSeq + 1;
+        } else {
+            $seq = 1;
+        }
 
-        return "{$prefix}-{$period}-{$seq}";
+        return "{$prefix}-{$period}-" . str_pad($seq, 4, '0', STR_PAD_LEFT);
     }
 
     /**
