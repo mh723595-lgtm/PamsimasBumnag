@@ -13,6 +13,10 @@ class RiwayatController extends Controller
     {
         $pelanggan = Auth::user()->pelanggan;
 
+        if (!$pelanggan) {
+            abort(403, 'Data pelanggan tidak ditemukan. Hubungi administrator.');
+        }
+
         $riwayatMeteran = MeteranAir::where('pelanggan_id', $pelanggan->id)
             ->with('tagihan')
             ->orderByDesc('tahun')->orderByDesc('bulan')
