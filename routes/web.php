@@ -85,6 +85,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // Assign Petugas
     Route::get('assign-petugas', [App\Http\Controllers\Admin\AssignPetugasController::class, 'index'])->name('assign-petugas.index');
     Route::post('assign-petugas', [App\Http\Controllers\Admin\AssignPetugasController::class, 'store'])->name('assign-petugas.store');
+    Route::get('assign-petugas/petugas/{petugas}', [App\Http\Controllers\Admin\AssignPetugasController::class, 'detailPetugas'])->name('assign-petugas.detail-petugas');
     Route::delete('assign-petugas/{assignPetugas}', [App\Http\Controllers\Admin\AssignPetugasController::class, 'destroy'])->name('assign-petugas.destroy');
     Route::patch('assign-petugas/{assignPetugas}/toggle', [App\Http\Controllers\Admin\AssignPetugasController::class, 'toggleAktif'])->name('assign-petugas.toggle');
     Route::patch('assign-petugas/{assignPetugas}', [App\Http\Controllers\Admin\AssignPetugasController::class, 'update'])->name('assign-petugas.update');

@@ -112,4 +112,38 @@ class AssignPetugasController extends Controller
 
     return response()->json(['success' => true, 'message' => 'Assign berhasil diperbarui ke ' . $jorong->nama_jorong . '!']);
 }
+public function detailPetugas(Petugas $petugas)
+{
+    $assigns = AssignPetugas::with('jorong')
+        ->where('petugas_id', $petugas->id)
+        ->where('aktif', true)
+        ->get();
+
+    $jorongIds = $assigns->pluck('jorong_id');
+
+    $pelanggan = \App\Models\Pelanggan::with('jorong')
+        ->whereIn('jorong_id', $jorongIds)
+        ->where('status', 'aktif')
+        ->orderBy('jorong_id')
+        ->orderBy('nomor_pelanggan')
+        ->get();
+
+    return response()->json([
+        'petugas'     => [
+            'nama'    => $petugas->nama_petugas,
+            'jabatan' => $petugas->jabatan ?? '-',
+        ],
+        'jorong_list' => $assigns->map(fn($a) => $a->jorong->nama_jorong ?? '-'),
+        'pelanggan'   => $pelanggan->map(fn($p) => [
+            'nomor'  => $p->nomor_pelanggan,
+            'nama'   => $p->nama_pelanggan,
+            'alamat' => $p->alamat ?? '-',
+            'jorong' => $p->jorong->nama_jorong ?? '-',
+            'no_hp'  => $p->no_hp ?? '-',
+        ]),
+        'total' => $pelanggan->count(),
+    ]);
+}
+
+
 }

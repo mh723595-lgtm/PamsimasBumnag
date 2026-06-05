@@ -322,7 +322,16 @@ const defLng   = {{ old('longitude', isset($pelanggan) ? ($pelanggan->longitude 
 const adaKoord = {{ (old('latitude', isset($pelanggan) ? ($pelanggan->latitude ?? null) : null)) ? 'true' : 'false' }};
 
 const peta = L.map('peta').setView([defLat, defLng], adaKoord ? 16 : 13);
-L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { attribution: '© Google Maps', maxZoom: 21 }).addTo(peta);
+{{-- SESUDAH --}}
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '© Esri World Imagery',
+    maxZoom: 19
+}).addTo(peta);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '',
+    maxZoom: 19,
+    opacity: 0.8
+}).addTo(peta);
 
 let marker = null;
 function setMarker(lat, lng) {

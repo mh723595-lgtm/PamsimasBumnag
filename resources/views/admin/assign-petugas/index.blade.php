@@ -83,7 +83,7 @@
                                 {{ strtoupper(substr($a->petugas->nama_petugas, 0, 2)) }}
                             </div>
                             <div>
-                                <p class="font-medium text-gray-800 dark:text-white">{{ $a->petugas->nama_petugas }}</p>
+                                <p class="font-medium text-gray-800 dark:text-white cursor-pointer hover:text-emerald-500 transition-colors" onclick="lihatDetailPetugas({{ $a->petugas->id }})">  {{ $a->petugas->nama_petugas }}</p>
                                 <p class="text-xs text-gray-400">{{ $a->petugas->jabatan ?? '-' }}</p>
                             </div>
                         </div>
@@ -239,6 +239,33 @@
     </div>
 </div>
 
+{{-- Modal Detail Pelanggan per Petugas --}}
+<div id="modal-detail-petugas" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-4 bg-emerald-500">
+            <div>
+                <h3 class="font-semibold text-white" id="detail-nama-petugas">-</h3>
+                <p class="text-emerald-100 text-xs mt-0.5" id="detail-jabatan-petugas">-</p>
+            </div>
+            <button onclick="document.getElementById('modal-detail-petugas').classList.add('hidden')"
+                class="text-white/80 hover:text-white text-lg leading-none">✕</button>
+        </div>
+        <div class="px-6 py-3 bg-emerald-50 dark:bg-emerald-900/20 border-b border-emerald-100 dark:border-emerald-800">
+            <p class="text-xs text-emerald-700 dark:text-emerald-300" id="detail-telepon-petugas">-</p>
+        </div>
+        <div class="px-6 py-4">
+            <p class="text-xs font-semibold text-gray-500 uppercase mb-3">Daftar Pelanggan yang Ditangani</p>
+            <div id="detail-assigns-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-800 text-right">
+            <button onclick="document.getElementById('modal-detail-petugas').classList.add('hidden')"
+                class="px-4 py-2 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -334,9 +361,9 @@ function toggleAktif(id, btn) {
         }
     })
     .catch(() => showAlert('danger', 'Terjadi kesalahan.'));
-
 }
-    function editAssign(id, nama, jorongId, periode, catatan) {
+
+function editAssign(id, nama, jorongId, periode, catatan) {
     document.getElementById('edit-id').value = id;
     document.getElementById('edit-nama').value = nama;
     document.getElementById('edit-jorong-id').value = jorongId;
@@ -378,5 +405,44 @@ function simpanEdit() {
     .catch(() => showAlert('danger', 'Terjadi kesalahan. Coba lagi.'));
 }
 
+function lihatDetailPetugas(petugasId) {
+    document.getElementById('detail-nama-petugas').textContent    = '...';
+    document.getElementById('detail-jabatan-petugas').textContent = '...';
+    document.getElementById('detail-telepon-petugas').textContent = '...';
+    document.getElementById('detail-assigns-list').innerHTML = '<p class="text-center text-gray-400 text-sm py-8">Memuat data...</p>';
+    document.getElementById('modal-detail-petugas').classList.remove('hidden');
+
+    fetch('/admin/assign-petugas/petugas/' + petugasId, {
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('detail-nama-petugas').textContent    = data.petugas.nama;
+        document.getElementById('detail-jabatan-petugas').textContent = data.petugas.jabatan;
+        document.getElementById('detail-telepon-petugas').textContent = 'Jorong: ' + data.jorong_list.join(', ') + ' | Total: ' + data.total + ' pelanggan';
+
+        const list = document.getElementById('detail-assigns-list');
+
+        if (data.pelanggan.length === 0) {
+            list.innerHTML = '<div class="text-center py-8 text-gray-400"><p class="text-3xl mb-2">👤</p><p class="text-sm">Belum ada pelanggan di jorong ini</p></div>';
+            return;
+        }
+
+        list.innerHTML = data.pelanggan.map(function(p, i) {
+            return '<div class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">'
+                + '<div class="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-xs font-bold text-emerald-700 flex-shrink-0">' + (i + 1) + '</div>'
+                + '<div class="flex-1 min-w-0">'
+                + '<p class="text-sm font-semibold text-gray-800 dark:text-white truncate">' + p.nama + '</p>'
+                + '<p class="text-xs text-gray-400">' + p.nomor + ' &middot; ' + p.jorong + '</p>'
+                + '<p class="text-xs text-gray-400 truncate">' + p.alamat + '</p>'
+                + '</div>'
+                + '<p class="text-xs text-gray-400 flex-shrink-0">' + p.no_hp + '</p>'
+                + '</div>';
+        }).join('');
+    })
+    .catch(function() {
+        document.getElementById('detail-assigns-list').innerHTML = '<p class="text-center text-red-400 text-sm py-4">Gagal memuat data.</p>';
+    });
+}
 </script>
-@endpush 
+@endpush

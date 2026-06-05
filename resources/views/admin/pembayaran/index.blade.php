@@ -427,5 +427,36 @@ function prosesMidtrans() {
     })
     .catch(() => showAlert('danger', '❌ Terjadi kesalahan.'));
 }
+
+// Auto-select pelanggan & buka tagihan jika dari redirect tagihan
+(function() {
+    const params     = new URLSearchParams(window.location.search);
+    const pelId      = params.get('pelanggan_id');
+    const tagihanId  = params.get('tagihan_id');
+
+    if (!pelId) return;
+
+    const select = document.getElementById('select-pelanggan');
+    select.value = pelId;
+
+    pilihPelanggan(pelId);
+
+    // Tunggu data tagihan selesai di-fetch, lalu buka panel bayar
+    const interval = setInterval(() => {
+        if (allTagihan.length === 0) return;
+        clearInterval(interval);
+
+        if (!tagihanId) return;
+
+        const t = allTagihan.find(t => t.id == tagihanId);
+        if (!t) return;
+
+        if (t.status === 'lunas') {
+            lihatLunas(t);
+        } else {
+            bukaPembayaran(t);
+        }
+    }, 200);
+})();
 </script>
 @endpush

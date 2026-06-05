@@ -69,10 +69,34 @@
 
         /* Mobile overlay */
         #sidebar-overlay{transition:opacity 0.3s ease;}
+
+        /* Sidebar scroll fix */
+        #sidebar {
+            height: 100vh;
+            height: 100dvh; /* dynamic viewport height untuk mobile */
+        }
+       #sidebar nav {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+        }
+
+        /* Fix sidebar tidak ikut scroll */
+        html {
+            overflow: hidden;
+            height: 100%;
+        }
+        body {
+            overflow-y: auto;
+            height: 100%;
+        }
+        /* Pertahankan posisi scroll sidebar */
+        #sidebar nav {
+            scroll-behavior: auto;
+        }   
     </style>
     @stack('styles')
 </head>
-<body class="bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200 min-h-screen overflow-x-hidden">
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200 min-h-screen">
 
 {{-- ==================== MOBILE OVERLAY ==================== --}}
 {{-- FIX: overlay yang benar-benar menutup dan hanya tampil di mobile --}}
@@ -98,7 +122,7 @@
         'w-16': sidebarCollapsed,
         'w-72': !sidebarCollapsed
     }"
-    class="fixed top-0 left-0 h-full bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 z-40 flex flex-col shadow-2xl lg:shadow-none"
+   class="fixed top-0 left-0 h-screen bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 z-40 flex flex-col shadow-2xl lg:shadow-none overflow-hidden" style="position:fixed;top:0;left:0;height:100vh;"
     @click.stop>
 
     {{-- Logo --}}
@@ -136,7 +160,7 @@
     </div>
 
     {{-- Nav Links --}}
-    <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
+    <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-0.5 scroll-smooth">
 
         @if(auth()->user()->role === 'admin')
         {{-- ===== ADMIN MENU ===== --}}
@@ -481,5 +505,23 @@
 </div>
 
 @stack('scripts')
+<script>
+// Simpan & restore posisi scroll sidebar
+const sidebarNav = document.querySelector('#sidebar nav');
+if (sidebarNav) {
+    // Restore posisi scroll
+    const savedScroll = sessionStorage.getItem('sidebarScroll');
+    if (savedScroll) {
+        sidebarNav.scrollTop = parseInt(savedScroll);
+    }
+
+    // Simpan posisi scroll saat klik link
+    sidebarNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+            sessionStorage.setItem('sidebarScroll', sidebarNav.scrollTop);
+        });
+    });
+}
+</script>
 </body>
 </html>
