@@ -9,7 +9,7 @@
     <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex flex-wrap gap-3 items-end justify-between">
         <form method="GET" class="flex gap-3 items-end">
             <div class="relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / NIP..."
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / NIK..."
                     class="pl-9 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all w-52">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
@@ -25,7 +25,7 @@
         <table class="w-full text-sm">
             <thead><tr class="bg-gray-50 dark:bg-gray-800/60">
                 <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Petugas</th>
-                <th class="text-left px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">NIP / Jabatan</th>
+                <th class="text-left px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">NIK / Jabatan</th>
                 <th class="text-center px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">No. HP</th>
                 <th class="text-center px-3 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                 <th class="text-center px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -45,7 +45,7 @@
                         </div>
                     </td>
                     <td class="px-3 py-3.5">
-                        <p class="text-xs font-mono text-gray-600 dark:text-gray-400">{{ $p->nip ?? '-' }}</p>
+                        <p class="text-xs font-mono text-gray-600 dark:text-gray-400">{{ $p->nik ?? '-' }}</p>
                         <p class="text-xs text-gray-400">{{ $p->jabatan ?? '-' }}</p>
                     </td>
                     <td class="px-3 py-3.5 text-center text-xs text-gray-500">{{ $p->no_hp ?? '-' }}</td>
