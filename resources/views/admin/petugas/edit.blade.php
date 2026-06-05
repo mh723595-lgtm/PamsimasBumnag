@@ -56,8 +56,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">NIP</label>
-                    <input type="text" name="nip" value="{{ old('nip', $petugas->nip) }}"
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">No. HP</label>
+                    <input type="text" name="no_hp" value="{{ old('no_hp', $petugas->no_hp) }}"
                         class="w-full py-2.5 px-4 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
                 </div>
 
@@ -70,12 +70,6 @@
                         <option value="{{ $j }}" {{ old('jabatan', $petugas->jabatan) == $j ? 'selected' : '' }}>{{ $j }}</option>
                         @endforeach
                     </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">No. HP</label>
-                    <input type="text" name="no_hp" value="{{ old('no_hp', $petugas->no_hp) }}"
-                        class="w-full py-2.5 px-4 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
                 </div>
 
                 <div>
