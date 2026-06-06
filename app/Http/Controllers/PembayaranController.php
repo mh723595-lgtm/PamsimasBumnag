@@ -9,17 +9,50 @@ use App\Models\AktivitasLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Handler webhook Midtrans (dipanggil dari routes/api.php).
+ * Semua logic pembayaran manual ada di Admin\PembayaranController.
+ */
 class PembayaranController extends Controller
 {
+    /**
+     * Notifikasi otomatis dari server Midtrans.
+     * Route: POST /api/midtrans/notifikasi
+     */
     public function notifikasi(Request $request)
     {
         try {
+            // ── Verifikasi signature Midtrans ────────────────────────────────
+            // Signature = SHA512(order_id + status_code + gross_amount + server_key)
+            $payload     = $request->all();
+            $serverKey   = config('services.midtrans.server_key', '');
+            $orderId     = $payload['order_id'] ?? '';
+            $statusCode  = $payload['status_code'] ?? '';
+            $grossAmount = $payload['gross_amount'] ?? '';
+            $signatureKey = $payload['signature_key'] ?? '';
+
+            if (empty($serverKey)) {
+                Log::error('[Midtrans] MIDTRANS_SERVER_KEY tidak dikonfigurasi. Webhook ditolak.');
+                return response()->json(['success' => false, 'message' => 'Server misconfiguration'], 500);
+            }
+
+            $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+
+            if (!hash_equals($expectedSignature, $signatureKey)) {
+                Log::warning('[Midtrans] Signature tidak valid. Kemungkinan request palsu.', [
+                    'order_id'   => $orderId,
+                    'ip'         => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
+                return response()->json(['success' => false, 'message' => 'Invalid signature'], 403);
+            }
+            // ── Akhir verifikasi signature ───────────────────────────────────
+
             $notif       = new \Midtrans\Notification();
             $status      = $notif->transaction_status;
-            $orderId     = $notif->order_id;
             $fraudStatus = $notif->fraud_status ?? null;
 
-            Log::info('[Midtrans] Notifikasi diterima', [
+            Log::info("[Midtrans] Notifikasi diterima", [
                 'order_id' => $orderId,
                 'status'   => $status,
             ]);
@@ -44,6 +77,7 @@ class PembayaranController extends Controller
                      || $status === 'settlement';
 
             if ($berhasil && !$tagihan->isLunas()) {
+                // Cek sudah ada record pembayaran atau belum
                 $sudahAda = Pembayaran::where('tagihan_id', $tagihan->id)->exists();
 
                 if (!$sudahAda) {
@@ -79,15 +113,15 @@ class PembayaranController extends Controller
                 );
 
                 Log::info("[Midtrans] Tagihan {$tagihan->nomor_tagihan} berhasil dilunasi.");
-
             } elseif (in_array($status, ['cancel', 'deny', 'expire', 'failure'])) {
                 Log::info("[Midtrans] Pembayaran {$orderId} gagal/dibatalkan. Status: {$status}");
+                // Tidak ubah status tagihan — biarkan tetap belum_bayar / terlambat
             }
 
             return response()->json(['success' => true]);
 
         } catch (\Exception $e) {
-            Log::error('[Midtrans] Error webhook: ' . $e->getMessage(), [
+            Log::error("[Midtrans] Error webhook: " . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
             return response()->json(['success' => false, 'message' => 'Internal error'], 500);

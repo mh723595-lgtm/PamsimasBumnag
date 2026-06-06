@@ -26,5 +26,12 @@ class AppServiceProvider extends ServiceProvider
         Paginator::defaultView('pagination::tailwind');
         Paginator::defaultSimpleView('pagination::simple-tailwind');
         Carbon::setLocale('id');
+
+        // Inisialisasi Midtrans global config
+        \Midtrans\Config::$serverKey    = config('services.midtrans.server_key', '');
+        \Midtrans\Config::$clientKey    = config('services.midtrans.client_key', '');
+        \Midtrans\Config::$isProduction = config('services.midtrans.is_production', false);
+        \Midtrans\Config::$isSanitized  = true;
+        \Midtrans\Config::$is3ds        = true;
     }
 }
