@@ -10,6 +10,7 @@ use App\Services\TagihanService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SettingAplikasi;
 
 class MeteranController extends Controller
 {
@@ -20,52 +21,57 @@ class MeteranController extends Controller
         $this->tagihanService = $tagihanService;
     }
 
-   public function index(Request $request)
-{
-    $bulan  = (int) $request->input('bulan', now()->month);
-    $tahun  = (int) $request->input('tahun', now()->year);
-    $petugas = Auth::user()->petugas;
+    public function index(Request $request)
+    {
+        $bulan  = (int) $request->input('bulan', now()->month);
+        $tahun  = (int) $request->input('tahun', now()->year);
+        $petugas = Auth::user()->petugas;
 
-    // Ambil jorong yang ditugaskan ke petugas ini
-    $jorongIds = \App\Models\AssignPetugas::where('petugas_id', $petugas?->id)
-        ->where('aktif', true)
-        ->pluck('jorong_id');
+        // Ambil jorong yang ditugaskan ke petugas ini
+        $jorongIds = \App\Models\AssignPetugas::where('petugas_id', $petugas?->id)
+            ->where('aktif', true)
+            ->pluck('jorong_id');
 
-    $pelangganList = Pelanggan::where('status', 'aktif')
-        ->whereIn('jorong_id', $jorongIds)
-        ->with([
-            'meteranAir' => fn($q) => $q->where('bulan', $bulan)->where('tahun', $tahun),
-            'jorong',
-        ])
-        ->orderBy('nomor_pelanggan')
-        ->get();
+        $pelangganList = Pelanggan::where('status', 'aktif')
+            ->whereIn('jorong_id', $jorongIds)
+            ->with([
+                'meteranAir' => fn($q) => $q->where('bulan', $bulan)->where('tahun', $tahun),
+                'jorong',
+            ])
+            ->orderBy('nomor_pelanggan')
+            ->get();
 
-    $sudahInput = MeteranAir::where('bulan', $bulan)
-        ->where('tahun', $tahun)
-        ->pluck('pelanggan_id')
-        ->toArray();
+        $sudahInput = MeteranAir::where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->pluck('pelanggan_id')
+            ->toArray();
 
-    $jorongList = \App\Models\Jorong::whereIn('id', $jorongIds)->get();
+        $jorongList = \App\Models\Jorong::whereIn('id', $jorongIds)->get();
 
-    return view('petugas.meteran.index', compact(
-        'pelangganList', 'sudahInput', 'bulan', 'tahun', 'jorongList', 'jorongIds'
-    ));
-}
+        return view('petugas.meteran.index', compact(
+            'pelangganList',
+            'sudahInput',
+            'bulan',
+            'tahun',
+            'jorongList',
+            'jorongIds'
+        ));
+    }
 
     public function create(Request $request)
     {
-         $petugas = Auth::user()->petugas;
-                $jorongIds = \App\Models\AssignPetugas::where('petugas_id', $petugas?->id)
-                    ->where('aktif', true)
-                    ->pluck('jorong_id');
+        $petugas = Auth::user()->petugas;
+        $jorongIds = \App\Models\AssignPetugas::where('petugas_id', $petugas?->id)
+            ->where('aktif', true)
+            ->pluck('jorong_id');
 
-         $pelangganList     = Pelanggan::where('status', 'aktif')
-                    ->whereIn('jorong_id', $jorongIds)
-                    ->orderBy('nomor_pelanggan')
-                    ->get();
-          $selectedPelanggan = null;
-          $angkaAwalRef      = 0;
-          
+        $pelangganList     = Pelanggan::where('status', 'aktif')
+            ->whereIn('jorong_id', $jorongIds)
+            ->orderBy('nomor_pelanggan')
+            ->get();
+        $selectedPelanggan = null;
+        $angkaAwalRef      = 0;
+
         if ($request->filled('pelanggan_id')) {
             $selectedPelanggan = Pelanggan::find($request->pelanggan_id);
 
@@ -76,9 +82,10 @@ class MeteranController extends Controller
                 $meteranSebelumnya = MeteranAir::where('pelanggan_id', $selectedPelanggan->id)
                     ->where(function ($q) use ($bulan, $tahun) {
                         $q->where('tahun', '<', $tahun)
-                          ->orWhere(fn($q2) =>
-                              $q2->where('tahun', $tahun)->where('bulan', '<', $bulan)
-                          );
+                            ->orWhere(
+                                fn($q2) =>
+                                $q2->where('tahun', $tahun)->where('bulan', '<', $bulan)
+                            );
                     })
                     ->orderByDesc('tahun')
                     ->orderByDesc('bulan')
@@ -90,8 +97,18 @@ class MeteranController extends Controller
             }
         }
 
+        $tarifConfig = [
+            'tarif_blok1' => (float) SettingAplikasi::get('tarif_blok1', 20000),
+            'tarif_blok2' => (float) SettingAplikasi::get('tarif_blok2', 1500),
+            'tarif_blok3' => (float) SettingAplikasi::get('tarif_blok3', 2000),
+            'biaya_admin' => (float) SettingAplikasi::get('biaya_admin', 0),
+        ];
+
         return view('petugas.meteran.create', compact(
-            'pelangganList', 'selectedPelanggan', 'angkaAwalRef'
+            'pelangganList',
+            'selectedPelanggan',
+            'angkaAwalRef',
+            'tarifConfig'
         ));
     }
 
@@ -133,9 +150,10 @@ class MeteranController extends Controller
         $meteranSebelumnya = MeteranAir::where('pelanggan_id', $request->pelanggan_id)
             ->where(function ($q) use ($request) {
                 $q->where('tahun', '<', $request->tahun)
-                  ->orWhere(fn($q2) =>
-                      $q2->where('tahun', $request->tahun)->where('bulan', '<', $request->bulan)
-                  );
+                    ->orWhere(
+                        fn($q2) =>
+                        $q2->where('tahun', $request->tahun)->where('bulan', '<', $request->bulan)
+                    );
             })
             ->orderByDesc('tahun')
             ->orderByDesc('bulan')
