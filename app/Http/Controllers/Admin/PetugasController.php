@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class PetugasController extends Controller
 {
@@ -19,10 +20,11 @@ class PetugasController extends Controller
         $query = Petugas::with('user')->orderByDesc('created_at');
         if ($request->filled('search')) {
             $s = $request->search;
-            $query->where(fn($q) =>
+            $query->where(
+                fn($q) =>
                 $q->where('nama_petugas', 'like', "%$s%")
-                  ->orWhere('nip', 'like', "%$s%")
-                  ->orWhere('nik', 'like', "%$s%")
+                    ->orWhere('nip', 'like', "%$s%")
+                    ->orWhere('nik', 'like', "%$s%")
             );
         }
         $petugas = $query->paginate(15)->withQueryString();
@@ -40,7 +42,14 @@ class PetugasController extends Controller
         $request->validate([
             'nama_petugas'  => 'required|string|max:100',
             'email'         => 'required|email|unique:users,email',
-            'password'      => 'required|min:8|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]).+$/',
+            'password' => [
+                'required',
+                'min:8',
+                Password::min(8)
+                    ->letters()
+                    ->numbers()
+                    ->symbols(),
+            ],
             'nip'           => 'nullable|string|unique:petugas,nip',
             'nik'           => 'nullable|digits:16|unique:petugas,nik',
             'jabatan'       => 'nullable|string|max:100',
@@ -94,8 +103,8 @@ class PetugasController extends Controller
     {
         $request->validate([
             'nama_petugas'  => 'required|string|max:100',
-            'nip'           => ['nullable','string', Rule::unique('petugas','nip')->ignore($petugas->id)],
-            'nik'           => ['nullable','digits:16', Rule::unique('petugas','nik')->ignore($petugas->id)],
+            'nip'           => ['nullable', 'string', Rule::unique('petugas', 'nip')->ignore($petugas->id)],
+            'nik'           => ['nullable', 'digits:16', Rule::unique('petugas', 'nik')->ignore($petugas->id)],
             'password.regex' => 'Password harus mengandung huruf, angka, dan karakter spesial.',
             'jabatan'       => 'nullable|string|max:100',
             'no_hp'         => 'nullable|string|max:20',
@@ -106,7 +115,7 @@ class PetugasController extends Controller
             'foto'          => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->only(['nama_petugas','nip','nik','jabatan','no_hp','alamat','status','tanggal_lahir','tmt']);
+        $data = $request->only(['nama_petugas', 'nip', 'nik', 'jabatan', 'no_hp', 'alamat', 'status', 'tanggal_lahir', 'tmt']);
 
         if ($request->hasFile('foto')) {
             if ($petugas->foto) Storage::disk('public')->delete($petugas->foto);

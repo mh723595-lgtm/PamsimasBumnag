@@ -129,7 +129,7 @@
     <nav class="fixed top-0 w-full z-50 transition-all duration-300" 
          x-data="{ scrolled: false }"
          @scroll.window="scrolled = window.pageYOffset > 50"
-         :class="scrolled ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur shadow-lg' : 'bg-transparent'">
+         :class="scrolled ? 'bg-black/95 dark:bg-gray-900/95 backdrop-blur shadow-lg' : 'bg-transparent'">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
@@ -140,23 +140,23 @@
                         </svg>
                     </div>
                     <div>
-                        <span class="font-display font-800 text-brand-800 dark:text-white text-sm font-bold tracking-tight">PAMSIMAS</span>
-                        <p class="text-xs text-gray-800 dark:text-gray-400 -mt-0.5 hidden sm:block">Sistem Air Minum Masyarakat</p>
+                        <span class="font-display font-800 text-white dark:text-white text-sm font-bold tracking-tight">PAMSIMAS</span>
+                        <p class="text-xs text-gray-100 dark:text-gray-100 -mt-0.5 hidden sm:block">Sistem Air Minum Masyarakat</p>
                     </div>
                 </div>
 
                 <!-- Nav Links Desktop -->
                 <div class="hidden md:flex items-center gap-1">
-                    <a href="#fitur" class="px-4 py-2 text-sm font-semibold text-gray-800 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all">Fitur</a>
-                    <a href="#statistik" class="px-4 py-2 text-sm font-semibold text-gray-800 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all">Statistik</a>
-                    <a href="#cara-kerja" class="px-4 py-2 text-sm font-semibold text-gray-800 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all">Cara Kerja</a>
-                    <a href="#testimoni" class="px-4 py-2 text-sm font-semibold text-gray-800 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all">Testimoni</a>
+                    <a href="#fitur" class="px-4 py-2 text-sm font-semibold text-gray-100 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all">Fitur</a>
+                    <a href="#statistik" class="px-4 py-2 text-sm font-semibold text-gray-100 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all">Statistik</a>
+                    <a href="#cara-kerja" class="px-4 py-2 text-sm font-semibold text-gray-100 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all">Cara Kerja</a>
+                    <a href="#testimoni" class="px-4 py-2 text-sm font-semibold text-gray-100 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all">Testimoni</a>
                 </div>
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-2">
                     <!-- Dark Mode Toggle -->
-                    <button @click="darkMode = !darkMode" class="p-2 rounded-lg text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                    <button @click="darkMode = !darkMode" class="p-2 rounded-lg text-gray-100 dark:text-gray-100 hover:bg-gray-800 dark:hover:bg-gray-800 transition-all">
                         <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                         </svg>
