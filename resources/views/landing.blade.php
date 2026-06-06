@@ -156,7 +156,7 @@
                 <!-- Right Actions -->
                 <div class="flex items-center gap-2">
                     <!-- Dark Mode Toggle -->
-                    <button @click="darkMode = !darkMode" class="p-2 rounded-lg text-gray-100 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                    <button @click="darkMode = !darkMode" class="p-2 rounded-lg text-gray-100 dark:text-gray-100 hover:bg-gray-800 dark:hover:bg-gray-800 transition-all">
                         <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                         </svg>
