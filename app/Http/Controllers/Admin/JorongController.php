@@ -11,7 +11,7 @@ class JorongController extends Controller
 {
     public function index()
     {
-        $jorong = Jorong::orderBy('provinsi')->orderBy('kabupaten')->orderBy('nama_jorong')->get();
+        $jorong = Jorong::orderBy('nama_jorong')->get();
         return view('admin.jorong.index', compact('jorong'));
     }
 
