@@ -11,6 +11,11 @@ class Jorong extends Model
     protected $fillable = [
         'nama_jorong',
         'kode_jorong',
+        'provinsi',
+        'kabupaten',
+        'kecamatan',
+        'desa',
+        'nagari',
         'keterangan',
         'aktif',
         'dibuat_oleh',
