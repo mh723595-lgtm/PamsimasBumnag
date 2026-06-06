@@ -44,7 +44,7 @@ class Petugas extends Model
     public function lamaBergabung(): string
     {
         if (!$this->tmt) return '-';
-        $diff = $this->tmt->diff(now());
+        $diff = Carbon::parse($this->tmt)->diff(Carbon::now());
         $parts = [];
         if ($diff->y > 0) $parts[] = $diff->y . ' tahun';
         if ($diff->m > 0) $parts[] = $diff->m . ' bulan';
@@ -56,7 +56,8 @@ class Petugas extends Model
     public function isUlangTahunHariIni(): bool
     {
         if (!$this->tanggal_lahir) return false;
-        return $this->tanggal_lahir->format('m-d') === now()->format('m-d');
+        return Carbon::parse($this->tanggal_lahir)->format('m-d')
+    === now()->format('m-d');
     }
 
     // URL foto profil
