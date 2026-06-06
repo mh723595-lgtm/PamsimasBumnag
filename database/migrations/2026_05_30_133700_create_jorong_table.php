@@ -12,8 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('nama_jorong');
             $table->string('kode_jorong')->unique()->nullable();
-            $table->text('keterangan')->nullable();
-            $table->enum('jenis_wilayah', ['desa', 'kelurahan'])->default('desa');
+            // $table->text('keterangan')->nullable();
+            // $table->enum('jenis_wilayah', ['desa', 'kelurahan'])->default('desa');
             $table->boolean('aktif')->default(true);
             $table->foreignId('dibuat_oleh')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
