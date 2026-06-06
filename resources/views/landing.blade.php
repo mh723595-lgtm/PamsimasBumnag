@@ -334,14 +334,14 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @php
                 $features = [
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>', 'title' => 'Manajemen Tagihan', 'desc' => 'Hitung dan kelola tagihan air secara otomatis berdasarkan pemakaian meter, dengan sistem tarif bertingkat yang fleksibel dan akurat.', 'color' => 'from-blue-500 to-brand-600', 'bg' => 'bg-blue-50 dark:bg-blue-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>', 'title' => 'Monitoring Pemakaian', 'desc' => 'Pantau penggunaan air secara real-time melalui grafik interaktif dan analisis data yang mudah dipahami.', 'color' => 'from-teal-500 to-emerald-600', 'bg' => 'bg-teal-50 dark:bg-teal-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>', 'title' => 'Pengaduan Online', 'desc' => 'Laporkan gangguan layanan kapan saja dengan mudah, dilengkapi fitur unggah foto sebagai bukti pendukung.', 'color' => 'from-orange-500 to-red-500', 'bg' => 'bg-orange-50 dark:bg-orange-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>', 'title' => 'Dashboard Real-time', 'desc' => 'Akses visualisasi data lengkap melalui dashboard interaktif yang informatif untuk admin, petugas, dan pelanggan.', 'color' => 'from-purple-500 to-indigo-600', 'bg' => 'bg-purple-50 dark:bg-purple-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>', 'title' => 'Pembayaran Digital', 'desc' => 'Kelola dan konfirmasi pembayaran tagihan dengan cepat, dilengkapi riwayat transaksi yang transparan dan terorganisir.', 'color' => 'from-green-500 to-teal-600', 'bg' => 'bg-green-50 dark:bg-green-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>', 'title' => 'Laporan PDF', 'desc' => 'Generate dan unduh laporan keuangan, tagihan, serta data pemakaian dalam format PDF yang siap cetak.', 'color' => 'from-pink-500 to-rose-600', 'bg' => 'bg-pink-50 dark:bg-pink-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>', 'title' => 'Notifikasi Otomatis', 'desc' => 'Dapatkan pemberitahuan otomatis untuk tagihan jatuh tempo, status pengaduan, dan informasi penting lainnya.', 'color' => 'from-yellow-500 to-amber-600', 'bg' => 'bg-yellow-50 dark:bg-yellow-900/20'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>', 'title' => 'Multi Role', 'desc' => 'Sistem manajemen akses berbasis peran untuk Admin, Petugas, dan Pelanggan, dengan kontrol hak akses yang aman dan terstruktur.', 'color' => 'from-brand-500 to-cyan-600', 'bg' => 'bg-brand-50 dark:bg-brand-900/20'],
+                    ['icon' => 'tagihan',    'title' => 'Manajemen Tagihan',     'desc' => 'Hitung dan kelola tagihan air secara otomatis berdasarkan pemakaian meter, dengan sistem tarif bertingkat yang fleksibel dan akurat.', 'color' => 'from-blue-500 to-brand-600',    'bg' => 'bg-blue-50 dark:bg-blue-900/20'],
+                    ['icon' => 'monitoring', 'title' => 'Monitoring Pemakaian',   'desc' => 'Pantau penggunaan air secara real-time melalui grafik interaktif dan analisis data yang mudah dipahami.', 'color' => 'from-teal-500 to-emerald-600',  'bg' => 'bg-teal-50 dark:bg-teal-900/20'],
+                    ['icon' => 'pengaduan',  'title' => 'Pengaduan Online',       'desc' => 'Laporkan gangguan layanan kapan saja dengan mudah, dilengkapi fitur unggah foto sebagai bukti pendukung.', 'color' => 'from-orange-500 to-red-500',    'bg' => 'bg-orange-50 dark:bg-orange-900/20'],
+                    ['icon' => 'dashboard',  'title' => 'Dashboard Real-time',    'desc' => 'Akses visualisasi data lengkap melalui dashboard interaktif yang informatif untuk admin, petugas, dan pelanggan.', 'color' => 'from-purple-500 to-indigo-600', 'bg' => 'bg-purple-50 dark:bg-purple-900/20'],
+                    ['icon' => 'pembayaran', 'title' => 'Pembayaran Digital',     'desc' => 'Kelola dan konfirmasi pembayaran tagihan dengan cepat, dilengkapi riwayat transaksi yang transparan dan terorganisir.', 'color' => 'from-green-500 to-teal-600',   'bg' => 'bg-green-50 dark:bg-green-900/20'],
+                    ['icon' => 'laporan',    'title' => 'Laporan PDF',            'desc' => 'Generate dan unduh laporan keuangan, tagihan, serta data pemakaian dalam format PDF yang siap cetak.', 'color' => 'from-pink-500 to-rose-600',    'bg' => 'bg-pink-50 dark:bg-pink-900/20'],
+                    ['icon' => 'notifikasi', 'title' => 'Notifikasi Otomatis',    'desc' => 'Dapatkan pemberitahuan otomatis untuk tagihan jatuh tempo, status pengaduan, dan informasi penting lainnya.', 'color' => 'from-yellow-500 to-amber-600', 'bg' => 'bg-yellow-50 dark:bg-yellow-900/20'],
+                    ['icon' => 'multirole',  'title' => 'Multi Role',             'desc' => 'Sistem manajemen akses berbasis peran untuk Admin, Petugas, dan Pelanggan, dengan kontrol hak akses yang aman dan terstruktur.', 'color' => 'from-brand-500 to-cyan-600',  'bg' => 'bg-brand-50 dark:bg-brand-900/20'],
                 ];
                 @endphp
 
@@ -349,7 +349,16 @@
                 <div class="feature-card {{ $f['bg'] }} rounded-2xl p-6 border border-transparent hover:border-brand-200 dark:hover:border-brand-700 transition-all duration-300 cursor-default group">
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br {{ $f['color'] }} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-200">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            {!! $f['icon'] !!}
+                            @switch($f['icon'])
+                                @case('tagihan')    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/> @break
+                                @case('monitoring') <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/> @break
+                                @case('pengaduan')  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/> @break
+                                @case('dashboard')  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/> @break
+                                @case('pembayaran') <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/> @break
+                                @case('laporan')    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/> @break
+                                @case('notifikasi') <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/> @break
+                                @case('multirole')  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/> @break
+                            @endswitch
                         </svg>
                     </div>
                     <h3 class="font-bold text-gray-900 dark:text-white mb-2 text-base">{{ $f['title'] }}</h3>
@@ -374,10 +383,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 @php
                 $stats = [
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>', 'label' => 'Total Pelanggan', 'value' => '1.247', 'unit' => 'KK', 'change' => 'Pertumbuhan +124 pelanggan baru tahun ini.', 'color' => 'from-blue-400 to-brand-500'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>', 'label' => 'Volume Air (m³)', 'value' => '58.430', 'unit' => 'm³', 'change' => 'Total pemakaian air pada bulan berjalan.', 'color' => 'from-teal-400 to-emerald-500'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>', 'label' => 'Total Pendapatan', 'value' => 'Rp 87,6Jt', 'unit' => '', 'change' => 'Meningkat +8% dibandingkan bulan sebelumnya.', 'color' => 'from-green-400 to-teal-500'],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>', 'label' => 'Tagihan Lunas', 'value' => '87,3%', 'unit' => '', 'change' => 'Sebanyak 1.089 dari 1.247 pelanggan telah menyelesaikan pembayaran.', 'color' => 'from-purple-400 to-pink-500'],
+                    ['icon' => 'pelanggan',  'label' => 'Total Pelanggan',   'value' => '1.247',     'unit' => 'KK', 'change' => 'Pertumbuhan +124 pelanggan baru tahun ini.', 'color' => 'from-blue-400 to-brand-500'],
+                    ['icon' => 'volume',     'label' => 'Volume Air (m³)',    'value' => '58.430',    'unit' => 'm³', 'change' => 'Total pemakaian air pada bulan berjalan.', 'color' => 'from-teal-400 to-emerald-500'],
+                    ['icon' => 'pendapatan', 'label' => 'Total Pendapatan',   'value' => 'Rp 87,6Jt', 'unit' => '',   'change' => 'Meningkat +8% dibandingkan bulan sebelumnya.', 'color' => 'from-green-400 to-teal-500'],
+                    ['icon' => 'lunas',      'label' => 'Tagihan Lunas',      'value' => '87,3%',     'unit' => '',   'change' => 'Sebanyak 1.089 dari 1.247 pelanggan telah menyelesaikan pembayaran.', 'color' => 'from-purple-400 to-pink-500'],
                 ];
                 @endphp
 
@@ -386,7 +395,12 @@
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br {{ $s['color'] }} flex items-center justify-center shadow-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                {!! $s['icon'] !!}
+                                @switch($s['icon'])
+                                    @case('pelanggan')  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/> @break
+                                    @case('volume')     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/> @break
+                                    @case('pendapatan') <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/> @break
+                                    @case('lunas')      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/> @break
+                                @endswitch
                             </svg>
                         </div>
                     </div>
@@ -426,10 +440,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
                 @php
                 $steps = [
-                    ['no' => '01', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>', 'title' => 'Input Meteran', 'desc' => 'Petugas lapangan mencatat angka meter air pelanggan setiap bulan secara akurat.', 'color' => 'bg-brand-600'],
-                    ['no' => '02', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/>', 'title' => 'Hitung Tagihan', 'desc' => 'Sistem secara otomatis menghitung besaran tagihan berdasarkan volume pemakaian air dengan skema tarif bertingkat yang telah ditetapkan.', 'color' => 'bg-teal-600'],
-                    ['no' => '03', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>', 'title' => 'Bayar Tagihan', 'desc' => 'Pelanggan melakukan pembayaran tagihan, kemudian petugas mencatat dan memverifikasi transaksi pembayaran langsung di dalam sistem.', 'color' => 'bg-green-600'],
-                    ['no' => '04', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>', 'title' => 'Monitoring Admin', 'desc' => 'Admin memantau seluruh aktivitas sistem, mulai dari data pemakaian, status pembayaran, laporan keuangan, hingga performa layanan secara real-time.', 'color' => 'bg-purple-600'],
+                    ['no' => '01', 'icon' => 'input-meteran', 'title' => 'Input Meteran',    'desc' => 'Petugas lapangan mencatat angka meter air pelanggan setiap bulan secara akurat.', 'color' => 'bg-brand-600'],
+                    ['no' => '02', 'icon' => 'hitung-tagihan','title' => 'Hitung Tagihan',   'desc' => 'Sistem secara otomatis menghitung besaran tagihan berdasarkan volume pemakaian air dengan skema tarif bertingkat yang telah ditetapkan.', 'color' => 'bg-teal-600'],
+                    ['no' => '03', 'icon' => 'bayar-tagihan', 'title' => 'Bayar Tagihan',    'desc' => 'Pelanggan melakukan pembayaran tagihan, kemudian petugas mencatat dan memverifikasi transaksi pembayaran langsung di dalam sistem.', 'color' => 'bg-green-600'],
+                    ['no' => '04', 'icon' => 'monitoring-admin','title' => 'Monitoring Admin','desc' => 'Admin memantau seluruh aktivitas sistem, mulai dari data pemakaian, status pembayaran, laporan keuangan, hingga performa layanan secara real-time.', 'color' => 'bg-purple-600'],
                 ];
                 @endphp
 
@@ -441,7 +455,12 @@
                     <div class="relative z-10 inline-flex flex-col items-center">
                         <div class="w-16 h-16 rounded-2xl {{ $step['color'] }} flex items-center justify-center shadow-xl mb-4 relative">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                {!! $step['icon'] !!}
+                                @switch($step['icon'])
+                                    @case('input-meteran')    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/> @break
+                                    @case('hitung-tagihan')   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/> @break
+                                    @case('bayar-tagihan')    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/> @break
+                                    @case('monitoring-admin') <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/> @break
+                                @endswitch
                             </svg>
                             <span class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white dark:bg-gray-900 border-2 border-current text-xs font-bold text-gray-800 dark:text-white flex items-center justify-center shadow">{{ $loop->iteration }}</span>
                         </div>
