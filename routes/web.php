@@ -22,9 +22,10 @@ use App\Http\Controllers\Pelanggan\DashboardController as PelangganDashboard;
 use App\Http\Controllers\Pelanggan\TagihanController as PelangganTagihan;
 use App\Http\Controllers\Pelanggan\RiwayatController as PelangganRiwayat;
 use App\Http\Controllers\Pelanggan\PengaduanController as PelangganPengaduan;
+use App\Http\Controllers\LandingController;
 
 // ── LANDING ────────────────────────────────────────────────
-Route::get('/', fn() => view('landing'))->name('landing');
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 // ── AUTH ───────────────────────────────────────────────────
 Route::get('/login',  [LoginController::class, 'showLoginForm'])->name('login');

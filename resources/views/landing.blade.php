@@ -107,12 +107,12 @@
     statsVisible: false,
     pelanggan: 0,
     volume: 0,
-    pendapatan: 0,
+    pemakaianKumulatif: 0,
     animateStats() {
         this.statsVisible = true;
-        this.animateNumber('pelanggan', 1247, 2000);
-        this.animateNumber('volume', 58430, 2000);
-        this.animateNumber('pendapatan', 87650000, 2000);
+        this.animateNumber('pelanggan', {{ $totalPelanggan }}, 2000);
+        this.animateNumber('volume', {{ $pemakaianBulanIni }}, 2000);
+        this.animateNumber('pemakaianKumulatif', {{ $pemakaianKumulatif }}, 2000);
     },
     animateNumber(prop, target, duration) {
         let start = 0;
@@ -140,7 +140,7 @@
                         </svg>
                     </div>
                     <div>
-                        <span class="font-display font-800 text-white dark:text-white text-sm font-bold tracking-tight">PAMSIMAS</span>
+                        <span class="font-display font-800 text-blue-300 dark:text-white text-sm font-bold tracking-tight">PAMSIMAS</span>
                         <p class="text-xs text-gray-100 dark:text-gray-100 -mt-0.5 hidden sm:block">Sistem Air Minum Masyarakat</p>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                 <!-- Right Actions -->
                 <div class="flex items-center gap-2">
                     <!-- Dark Mode Toggle -->
-                    <button @click="darkMode = !darkMode" class="p-2 rounded-lg text-gray-100 dark:text-gray-100 hover:bg-gray-800 dark:hover:bg-gray-800 transition-all">
+                    <button @click="darkMode = !darkMode" class="p-2 rounded-lg text-gray-100 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
                         <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                         </svg>
@@ -196,11 +196,9 @@
     <section class="relative hero-gradient min-h-screen flex items-center overflow-hidden pt-16">
         <!-- Background Decorations -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <!-- Circles -->
             <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-brand-400/20 animate-float-slow"></div>
             <div class="absolute top-1/4 -left-20 w-64 h-64 rounded-full bg-brand-300/15 animate-float"></div>
             <div class="absolute bottom-20 right-1/4 w-48 h-48 rounded-full bg-white/5 animate-pulse-slow"></div>
-            <!-- Grid pattern -->
             <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
         </div>
 
@@ -237,7 +235,7 @@
                     <!-- Quick stats -->
                     <div class="flex flex-wrap gap-6 mt-10 pt-8 border-t border-white/20">
                         <div>
-                            <p class="text-2xl font-bold text-white">1.247+</p>
+                            <p class="text-2xl font-bold text-white">{{ number_format($totalPelanggan) }}+</p>
                             <p class="text-brand-300 text-xs">Pelanggan Aktif</p>
                         </div>
                         <div>
@@ -276,13 +274,13 @@
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="bg-white/10 rounded-xl p-3">
                                     <p class="text-white/60 text-xs">Tagihan Lunas</p>
-                                    <p class="text-white font-bold text-lg">1.089</p>
-                                    <span class="text-green-400 text-xs">▲ 12%</span>
+                                    <p class="text-white font-bold text-lg">{{ number_format($heroTagihanLunas) }}</p>
+                                    <span class="text-green-400 text-xs">▲ Bulan ini</span>
                                 </div>
                                 <div class="bg-white/10 rounded-xl p-3">
-                                    <p class="text-white/60 text-xs">Pendapatan</p>
-                                    <p class="text-white font-bold text-lg">87.6Jt</p>
-                                    <span class="text-green-400 text-xs">▲ 8%</span>
+                                    <p class="text-white/60 text-xs">Pemakaian</p>
+                                    <p class="text-white font-bold text-lg">{{ number_format($heroPemakaian) }} m³</p>
+                                    <span class="text-blue-300 text-xs">▲ Bulan ini</span>
                                 </div>
                             </div>
                         </div>
@@ -383,10 +381,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 @php
                 $stats = [
-                    ['icon' => 'pelanggan',  'label' => 'Total Pelanggan',   'value' => '1.247',     'unit' => 'KK', 'change' => 'Pertumbuhan +124 pelanggan baru tahun ini.', 'color' => 'from-blue-400 to-brand-500'],
-                    ['icon' => 'volume',     'label' => 'Volume Air (m³)',    'value' => '58.430',    'unit' => 'm³', 'change' => 'Total pemakaian air pada bulan berjalan.', 'color' => 'from-teal-400 to-emerald-500'],
-                    ['icon' => 'pendapatan', 'label' => 'Total Pendapatan',   'value' => 'Rp 87,6Jt', 'unit' => '',   'change' => 'Meningkat +8% dibandingkan bulan sebelumnya.', 'color' => 'from-green-400 to-teal-500'],
-                    ['icon' => 'lunas',      'label' => 'Tagihan Lunas',      'value' => '87,3%',     'unit' => '',   'change' => 'Sebanyak 1.089 dari 1.247 pelanggan telah menyelesaikan pembayaran.', 'color' => 'from-purple-400 to-pink-500'],
+                    ['icon' => 'pelanggan',     'label' => 'Total Pelanggan',    'value' => number_format($totalPelanggan),         'unit' => 'KK', 'change' => 'Pelanggan aktif terdaftar saat ini.',                                           'color' => 'from-blue-400 to-brand-500'],
+                    ['icon' => 'volume',        'label' => 'Volume Air (m³)',    'value' => number_format($pemakaianBulanIni),      'unit' => 'm³', 'change' => 'Total pemakaian air bulan ' . now()->translatedFormat('F Y') . '.',             'color' => 'from-teal-400 to-emerald-500'],
+                    ['icon' => 'tagihan-count', 'label' => 'Total Tagihan',      'value' => number_format($totalTagihanBulanIni),   'unit' => '',   'change' => 'Tagihan dibuat bulan ' . now()->translatedFormat('F Y') . '.',                  'color' => 'from-green-400 to-teal-500'],
+                    ['icon' => 'lunas',         'label' => 'Tagihan Lunas',      'value' => $persenLunas . '%',                    'unit' => '',   'change' => 'Persentase tagihan lunas bulan ' . now()->translatedFormat('F Y') . '.',        'color' => 'from-purple-400 to-pink-500'],
                 ];
                 @endphp
 
@@ -396,10 +394,18 @@
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br {{ $s['color'] }} flex items-center justify-center shadow-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 @switch($s['icon'])
-                                    @case('pelanggan')  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/> @break
-                                    @case('volume')     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/> @break
-                                    @case('pendapatan') <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/> @break
-                                    @case('lunas')      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/> @break
+                                    @case('pelanggan')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    @break
+                                    @case('volume')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                                    @break
+                                    @case('tagihan-count')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                    @break
+                                    @case('lunas')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    @break
                                 @endswitch
                             </svg>
                         </div>
@@ -420,7 +426,7 @@
                     </div>
                     <div class="flex gap-4 text-xs text-brand-300">
                         <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-brand-400 inline-block"></span>Pemakaian (m³)</span>
-                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>Pendapatan (Jt)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>Tagihan (total)</span>
                     </div>
                 </div>
                 <canvas id="statsChart" height="80"></canvas>
@@ -440,14 +446,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
                 @php
                 $steps = [
-                    ['no' => '01', 'icon' => 'input-meteran', 'title' => 'Input Meteran',    'desc' => 'Petugas lapangan mencatat angka meter air pelanggan setiap bulan secara akurat.', 'color' => 'bg-brand-600'],
-                    ['no' => '02', 'icon' => 'hitung-tagihan','title' => 'Hitung Tagihan',   'desc' => 'Sistem secara otomatis menghitung besaran tagihan berdasarkan volume pemakaian air dengan skema tarif bertingkat yang telah ditetapkan.', 'color' => 'bg-teal-600'],
-                    ['no' => '03', 'icon' => 'bayar-tagihan', 'title' => 'Bayar Tagihan',    'desc' => 'Pelanggan melakukan pembayaran tagihan, kemudian petugas mencatat dan memverifikasi transaksi pembayaran langsung di dalam sistem.', 'color' => 'bg-green-600'],
-                    ['no' => '04', 'icon' => 'monitoring-admin','title' => 'Monitoring Admin','desc' => 'Admin memantau seluruh aktivitas sistem, mulai dari data pemakaian, status pembayaran, laporan keuangan, hingga performa layanan secara real-time.', 'color' => 'bg-purple-600'],
+                    ['no' => '01', 'icon' => 'input-meteran',    'title' => 'Input Meteran',     'desc' => 'Petugas lapangan mencatat angka meter air pelanggan setiap bulan secara akurat.', 'color' => 'bg-brand-600'],
+                    ['no' => '02', 'icon' => 'hitung-tagihan',   'title' => 'Hitung Tagihan',    'desc' => 'Sistem secara otomatis menghitung besaran tagihan berdasarkan volume pemakaian air dengan skema tarif bertingkat yang telah ditetapkan.', 'color' => 'bg-teal-600'],
+                    ['no' => '03', 'icon' => 'bayar-tagihan',    'title' => 'Bayar Tagihan',     'desc' => 'Pelanggan melakukan pembayaran tagihan, kemudian petugas mencatat dan memverifikasi transaksi pembayaran langsung di dalam sistem.', 'color' => 'bg-green-600'],
+                    ['no' => '04', 'icon' => 'monitoring-admin', 'title' => 'Monitoring Admin',  'desc' => 'Admin memantau seluruh aktivitas sistem, mulai dari data pemakaian, status pembayaran, laporan keuangan, hingga performa layanan secara real-time.', 'color' => 'bg-purple-600'],
                 ];
                 @endphp
 
-                @foreach($steps as $i => $step)
+                @foreach($steps as $step)
                 <div class="relative text-center">
                     @if(!$loop->last)
                     <div class="hidden lg:block absolute top-8 left-3/4 w-1/2 h-0.5 bg-gradient-to-r from-brand-300 to-brand-100 dark:from-brand-700 dark:to-brand-900 z-0"></div>
@@ -485,9 +491,9 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @php
                 $testimonials = [
-                    ['name' => 'Budi Santoso', 'role' => 'Pelanggan — RT 03', 'avatar' => 'BS', 'color' => 'from-blue-500 to-brand-600', 'text' => 'Sejak menggunakan sistem ini, saya tidak perlu lagi repot datang ke kantor hanya untuk mengecek tagihan air. Sekarang semuanya bisa diakses langsung dari HP kapan saja dan di mana saja. Informasi tagihan juga lebih jelas, dan proses pembayaran jadi jauh lebih praktis. Setelah bayar, konfirmasi langsung masuk, jadi saya tidak perlu khawatir lagi soal keterlambatan atau kesalahan pencatatan.', 'rating' => 5],
-                    ['name' => 'Siti Rahayu', 'role' => 'Ketua RT 07', 'avatar' => 'SR', 'color' => 'from-pink-500 to-rose-600', 'text' => 'Sebagai ketua RT, sistem ini sangat membantu dalam memantau kondisi pelayanan air di lingkungan saya. Saya bisa melihat laporan dengan lebih transparan dan cepat tanpa harus menunggu lama. Selain itu, pengaduan dari warga juga bisa langsung masuk ke sistem dan diproses lebih cepat. Adanya notifikasi membuat koordinasi menjadi lebih efektif dan pelayanan ke warga jadi lebih optimal.', 'rating' => 5],
-                    ['name' => 'Ahmad Fauzi', 'role' => 'Petugas Lapangan', 'avatar' => 'AF', 'color' => 'from-green-500 to-teal-600', 'text' => 'Dari sisi petugas lapangan, sistem ini sangat mempermudah pekerjaan kami dalam mencatat angka meter air pelanggan. Proses pencatatan menjadi lebih cepat, akurat, dan tidak lagi bergantung pada pencatatan manual yang rawan kesalahan. Data yang masuk juga langsung tersimpan di sistem, sehingga lebih aman dan mudah diakses kembali saat dibutuhkan untuk pelaporan maupun pengecekan.', 'rating' => 5],
+                    ['name' => 'Budi Santoso', 'role' => 'Pelanggan — RT 03', 'avatar' => 'BS', 'color' => 'from-blue-500 to-brand-600',  'text' => 'Sejak menggunakan sistem ini, saya tidak perlu lagi repot datang ke kantor hanya untuk mengecek tagihan air. Sekarang semuanya bisa diakses langsung dari HP kapan saja dan di mana saja. Informasi tagihan juga lebih jelas, dan proses pembayaran jadi jauh lebih praktis. Setelah bayar, konfirmasi langsung masuk, jadi saya tidak perlu khawatir lagi soal keterlambatan atau kesalahan pencatatan.', 'rating' => 5],
+                    ['name' => 'Siti Rahayu',  'role' => 'Ketua RT 07',       'avatar' => 'SR', 'color' => 'from-pink-500 to-rose-600',    'text' => 'Sebagai ketua RT, sistem ini sangat membantu dalam memantau kondisi pelayanan air di lingkungan saya. Saya bisa melihat laporan dengan lebih transparan dan cepat tanpa harus menunggu lama. Selain itu, pengaduan dari warga juga bisa langsung masuk ke sistem dan diproses lebih cepat. Adanya notifikasi membuat koordinasi menjadi lebih efektif dan pelayanan ke warga jadi lebih optimal.', 'rating' => 5],
+                    ['name' => 'Ahmad Fauzi',  'role' => 'Petugas Lapangan',  'avatar' => 'AF', 'color' => 'from-green-500 to-teal-600',  'text' => 'Dari sisi petugas lapangan, sistem ini sangat mempermudah pekerjaan kami dalam mencatat angka meter air pelanggan. Proses pencatatan menjadi lebih cepat, akurat, dan tidak lagi bergantung pada pencatatan manual yang rawan kesalahan. Data yang masuk juga langsung tersimpan di sistem, sehingga lebih aman dan mudah diakses kembali saat dibutuhkan untuk pelaporan maupun pengecekan.', 'rating' => 5],
                 ];
                 @endphp
 
@@ -531,8 +537,7 @@
                     </svg>
                 </div>
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Siap Memulai?</h2>
-                <p class="text-brand-200 text-lg mb-8 max-w-xl mx-auto">Kelola layanan air bersih Anda dengan lebih mudah, cepat, dan transparan melalui sistem PAMSIMAS yang terintegrasi.
-Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — semuanya dapat diakses dalam satu platform yang modern dan efisien.</p>
+                <p class="text-brand-200 text-lg mb-8 max-w-xl mx-auto">Kelola layanan air bersih Anda dengan lebih mudah, cepat, dan transparan melalui sistem PAMSIMAS yang terintegrasi. Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — semuanya dapat diakses dalam satu platform yang modern dan efisien.</p>
                 <div class="flex flex-wrap justify-center gap-4">
                     <a href="/login" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-700 font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:bg-brand-50 transition-all duration-200">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -602,17 +607,16 @@ Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — se
     </footer>
 
     <script>
-        // Chart.js - Stats Chart
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('statsChart').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr'],
+                    labels: @json($chartLabels),
                     datasets: [
                         {
                             label: 'Pemakaian Air (m³)',
-                            data: [48200, 51300, 54100, 56800, 55900, 58430],
+                            data: @json($chartPemakaian),
                             backgroundColor: 'rgba(96,180,247,0.7)',
                             borderColor: '#60b4f7',
                             borderWidth: 2,
@@ -620,8 +624,8 @@ Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — se
                             yAxisID: 'y',
                         },
                         {
-                            label: 'Pendapatan (Juta)',
-                            data: [72, 78, 81, 83, 82, 87.6],
+                            label: 'Total Tagihan',
+                            data: @json($chartTagihan),
                             backgroundColor: 'rgba(52,211,153,0.7)',
                             borderColor: '#34d399',
                             borderWidth: 2,
@@ -644,8 +648,8 @@ Mulai dari pencatatan meter, perhitungan tagihan, hingga laporan keuangan — se
                     },
                     scales: {
                         x: { ticks: { color: 'rgba(255,255,255,0.5)' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        y: { type: 'linear', display: true, position: 'left', ticks: { color: 'rgba(255,255,255,0.5)' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        y1: { type: 'linear', display: true, position: 'right', ticks: { color: 'rgba(52,211,153,0.7)' }, grid: { drawOnChartArea: false } }
+                        y:  { type: 'linear', display: true, position: 'left',  ticks: { color: 'rgba(255,255,255,0.5)' },       grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y1: { type: 'linear', display: true, position: 'right', ticks: { color: 'rgba(52,211,153,0.7)' },         grid: { drawOnChartArea: false } }
                     }
                 }
             });
