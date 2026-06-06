@@ -15,56 +15,75 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $bulanIni  = now()->month;
-        $tahunIni  = now()->year;
+        $bulanIni = now()->month;
+        $tahunIni = now()->year;
 
-        // Stat cards
-        $totalPelanggan   = Pelanggan::where('status', 'aktif')->count();
-        $tagihanBulanIni  = TagihanAir::where('bulan', $bulanIni)->where('tahun', $tahunIni)->count();
-        $tagihanLunas     = TagihanAir::where('bulan', $bulanIni)->where('tahun', $tahunIni)->where('status', 'lunas')->count();
-        $tagihanBelumBayar= TagihanAir::where('bulan', $bulanIni)->where('tahun', $tahunIni)->whereIn('status', ['belum_bayar','terlambat'])->count();
-        $pendapatanBulanIni = Pembayaran::where('status', 'konfirmasi')
+        // ── Stat cards: satu query per model, bukan banyak ──────────────────
+        $tagihanBulanIniStats = TagihanAir::where('bulan', $bulanIni)
+            ->where('tahun', $tahunIni)
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'lunas' THEN 1 ELSE 0 END) as lunas,
+                SUM(CASE WHEN status IN ('belum_bayar','terlambat') THEN 1 ELSE 0 END) as belum_bayar
+            ")
+            ->first();
+
+        $totalPelanggan      = Pelanggan::where('status', 'aktif')->count();
+        $tagihanBulanIni     = (int) ($tagihanBulanIniStats->total ?? 0);
+        $tagihanLunas        = (int) ($tagihanBulanIniStats->lunas ?? 0);
+        $tagihanBelumBayar   = (int) ($tagihanBulanIniStats->belum_bayar ?? 0);
+
+        $pendapatanBulanIni  = Pembayaran::where('status', 'konfirmasi')
             ->whereMonth('tanggal_bayar', $bulanIni)
             ->whereYear('tanggal_bayar', $tahunIni)
             ->sum('jumlah_bayar');
-        $pengaduanBaru = Pengaduan::where('status', 'baru')->count();
+
+        $pengaduanBaru  = Pengaduan::where('status', 'baru')->count();
         $totalPemakaian = MeteranAir::where('bulan', $bulanIni)->where('tahun', $tahunIni)->sum('pemakaian');
 
-        // Chart data: 6 bulan terakhir pendapatan
+        // ── Chart pendapatan 6 bulan: SATU query, group by bulan+tahun ───────
+        $start = Carbon::now()->subMonths(5)->startOfMonth();
+
+        $pendapatanRaw = Pembayaran::where('status', 'konfirmasi')
+            ->where('tanggal_bayar', '>=', $start->toDateString())
+            ->selectRaw('MONTH(tanggal_bayar) as bln, YEAR(tanggal_bayar) as thn, SUM(jumlah_bayar) as total')
+            ->groupByRaw('YEAR(tanggal_bayar), MONTH(tanggal_bayar)')
+            ->get()
+            ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
+
+        $pemakaianRaw = MeteranAir::where('tanggal_baca', '>=', $start->toDateString())
+            ->selectRaw('bulan as bln, tahun as thn, SUM(pemakaian) as total')
+            ->groupBy('tahun', 'bulan')
+            ->get()
+            ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
+
+        $chartLabel      = [];
         $chartPendapatan = [];
-        $chartLabel = [];
+        $chartPemakaian  = [];
+
         for ($i = 5; $i >= 0; $i--) {
-            $dt = Carbon::now()->subMonths($i);
-            $chartLabel[] = $dt->translatedFormat('M Y');
-            $chartPendapatan[] = Pembayaran::where('status', 'konfirmasi')
-                ->whereMonth('tanggal_bayar', $dt->month)
-                ->whereYear('tanggal_bayar', $dt->year)
-                ->sum('jumlah_bayar');
+            $dt  = Carbon::now()->subMonths($i);
+            $key = "{$dt->year}-{$dt->month}";
+            $chartLabel[]      = $dt->translatedFormat('M Y');
+            $chartPendapatan[] = (float) ($pendapatanRaw[$key]->total ?? 0);
+            $chartPemakaian[]  = (float) ($pemakaianRaw[$key]->total ?? 0);
         }
 
-        // Chart pemakaian 6 bulan
-        $chartPemakaian = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $dt = Carbon::now()->subMonths($i);
-            $chartPemakaian[] = MeteranAir::where('bulan', $dt->month)->where('tahun', $dt->year)->sum('pemakaian');
-        }
+        // ── Donut chart status tagihan: satu query ───────────────────────────
+        $statusCounts = TagihanAir::selectRaw("
+                SUM(CASE WHEN status = 'lunas' THEN 1 ELSE 0 END) as lunas,
+                SUM(CASE WHEN status = 'belum_bayar' THEN 1 ELSE 0 END) as belum_bayar,
+                SUM(CASE WHEN status = 'terlambat' THEN 1 ELSE 0 END) as terlambat
+            ")
+            ->first();
 
-        // Tagihan terbaru
-        $tagihanTerbaru = TagihanAir::with('pelanggan')
-            ->latest()
-            ->take(6)
-            ->get();
+        $tagihanLunasTotal      = (int) ($statusCounts->lunas ?? 0);
+        $tagihanBelumBayarTotal = (int) ($statusCounts->belum_bayar ?? 0);
+        $tagihanTerlambatTotal  = (int) ($statusCounts->terlambat ?? 0);
 
-        // Pengaduan terbaru
-        $pengaduanTerbaru = Pengaduan::with('pelanggan')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        // Status tagihan donut
-        $tagihanLunasTotal     = TagihanAir::where('status', 'lunas')->count();
-        $tagihanBelumBayarTotal = TagihanAir::where('status', 'belum_bayar')->count();
-        $tagihanTerlambatTotal  = TagihanAir::where('status', 'terlambat')->count();
+        // ── Recent records ───────────────────────────────────────────────────
+        $tagihanTerbaru   = TagihanAir::with('pelanggan')->latest()->take(6)->get();
+        $pengaduanTerbaru = Pengaduan::with('pelanggan')->latest()->take(5)->get();
 
         return view('admin.dashboard', compact(
             'totalPelanggan', 'tagihanBulanIni', 'tagihanLunas',
