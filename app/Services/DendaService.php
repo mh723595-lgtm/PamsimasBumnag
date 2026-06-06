@@ -44,13 +44,12 @@ class DendaService
 
         $jatuhTempo = Carbon::parse($tagihan->tanggal_jatuh_tempo);
 
-        // Belum jatuh tempo
-        if ($tanggalHitung->lte($jatuhTempo->addDays($config['grace_period_hari']))) {
+        // Belum jatuh tempo (gunakan copy() agar $jatuhTempo tidak termutasi)
+        if ($tanggalHitung->lte($jatuhTempo->copy()->addDays($config['grace_period_hari']))) {
             return ['denda' => 0, 'hari_terlambat' => 0, 'bulan_terlambat' => 0, 'detail' => 'Belum jatuh tempo'];
         }
 
-        // Hitung keterlambatan
-        $jatuhTempo = Carbon::parse($tagihan->tanggal_jatuh_tempo);
+        // Hitung keterlambatan dari tanggal jatuh tempo asli (bukan yang sudah di-addDays)
         $hariTerlambat   = $jatuhTempo->diffInDays($tanggalHitung);
         $bulanTerlambat  = max(1, (int) ceil($hariTerlambat / 30)); // minimal 1 bulan jika sudah lewat
 

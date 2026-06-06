@@ -61,7 +61,7 @@
                     <input type="text" name="nip" value="{{ old('nip') }}"
                         class="w-full py-2.5 px-4 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
                     @error('nip')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
-                </div>
+                </div> --}}
 
                 {{-- Jabatan --}}
                 <div>

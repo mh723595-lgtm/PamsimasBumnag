@@ -1,145 +1,465 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Laporan Pembayaran {{ $namaBulan }} {{ $tahun }}</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:'DejaVu Sans',Arial,sans-serif;font-size:10px;color:#1f2937;background:#fff;}
-        .header{background:linear-gradient(135deg,#065f46 0%,#059669 60%,#34d399 100%);color:white;padding:18px 22px 14px;}
-        .header h1{font-size:17px;font-weight:bold;margin-bottom:3px;}
-        .header .sub{font-size:9.5px;opacity:.85;}
-        .header .meta{display:flex;gap:10px;margin-top:10px;}
-        .header .meta span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);padding:3px 10px;border-radius:20px;font-size:8.5px;}
-        .summary{display:flex;background:#f0fdf4;border-bottom:2px solid #bbf7d0;}
-        .si{flex:1;padding:9px 12px;border-right:1px solid #bbf7d0;text-align:center;}
-        .si:last-child{border-right:none;}
-        .si .l{display:block;font-size:7.5px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;}
-        .si .v{font-size:12px;font-weight:bold;color:#065f46;}
-        table{width:100%;border-collapse:collapse;margin-top:0;}
-        thead tr{background:#065f46;color:#fff;}
-        thead th{padding:8px 9px;text-align:left;font-size:8px;font-weight:bold;text-transform:uppercase;letter-spacing:.04em;}
-        thead th.c{text-align:center;}
-        thead th.r{text-align:right;}
-        tbody tr{border-bottom:1px solid #f1f5f9;}
-        tbody tr:nth-child(even){background:#f0fdf4;}
-        tbody td{padding:6.5px 9px;font-size:9.5px;vertical-align:middle;}
-        tbody td.c{text-align:center;}
-        tbody td.r{text-align:right;font-weight:bold;}
-        tbody td.mono{font-family:'DejaVu Sans Mono',monospace;font-size:8px;}
-        .badge-konfirmasi{background:#d1fae5;color:#065f46;padding:2px 7px;border-radius:10px;font-size:7.5px;font-weight:bold;}
-        .badge-pending{background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:10px;font-size:7.5px;font-weight:bold;}
-        .badge-tunai{background:#dbeafe;color:#1e40af;padding:1px 6px;border-radius:8px;font-size:7.5px;}
-        .badge-transfer{background:#ede9fe;color:#5b21b6;padding:1px 6px;border-radius:8px;font-size:7.5px;}
-        .badge-lainnya{background:#f3f4f6;color:#374151;padding:1px 6px;border-radius:8px;font-size:7.5px;}
-        .total-row{background:#065f46!important;}
-        .total-row td{color:#fff;padding:8px 9px;font-size:10px;font-weight:bold;}
-        .recap{display:flex;gap:10px;padding:10px 0 0;}
-        .ri{flex:1;border:1px solid #bbf7d0;border-radius:7px;padding:9px;background:#f0fdf4;}
-        .ri .rl{font-size:7.5px;color:#6b7280;text-transform:uppercase;margin-bottom:3px;}
-        .ri .rv{font-size:11px;font-weight:bold;color:#065f46;}
-        .footer{margin-top:14px;border-top:1px solid #e5e7eb;padding-top:10px;display:flex;justify-content:space-between;align-items:flex-end;}
-        .ttd{text-align:center;}
-        .ttd .tl{font-size:8.5px;color:#6b7280;margin-bottom:44px;}
-        .ttd .tn{font-weight:bold;font-size:9.5px;border-top:1px solid #374151;padding-top:3px;}
-        .ttd .tj{font-size:8px;color:#6b7280;}
-        .di{font-size:8px;color:#9ca3af;text-align:right;line-height:1.7;}
-        .no-data{text-align:center;color:#9ca3af;padding:35px;font-style:italic;}
-    </style>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Laporan Pembayaran {{ $namaBulan }} {{ $tahun }}</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'DejaVu Sans',Arial,sans-serif;
+    font-size:10px;
+    color:#333;
+}
+
+.report-container{
+    border:2px solid #2449c6;
+}
+
+/* HEADER */
+.header{
+    background:#18398d;
+    color:#fff;
+    padding:18px;
+}
+
+.header h1{
+    font-size:18px;
+    margin-bottom:5px;
+}
+
+.header .sub{
+    font-size:9px;
+    margin-bottom:10px;
+}
+
+.meta span{
+    display:inline-block;
+    background:#2956d8;
+    padding:4px 8px;
+    font-size:8px;
+    margin-right:5px;
+}
+
+/* SUMMARY */
+.summary{
+    padding:10px;
+    border-top:2px solid #2449c6;
+    border-bottom:2px solid #2449c6;
+}
+
+.summary-table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:8px 0;
+}
+
+.summary-box{
+    background:#f3f4f6;
+    border:1px solid #d1d5db;
+    text-align:center;
+    padding:12px;
+}
+
+.summary-label{
+    display:block;
+    font-size:8px;
+    color:#6b7280;
+    margin-bottom:4px;
+}
+
+.summary-value{
+    font-size:12px;
+    font-weight:bold;
+    color:#18398d;
+}
+
+/* SECTION TITLE */
+.section-title{
+    background:#2449c6;
+    color:#fff;
+    padding:8px 12px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+/* TABLE */
+.data-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.data-table thead tr{
+    background:#2956d8;
+}
+
+.data-table thead th{
+    color:#fff;
+    border:1px solid #4c6fe3;
+    padding:8px;
+    font-size:8px;
+    text-transform:uppercase;
+}
+
+.data-table tbody td{
+    border:1px solid #dbe4ff;
+    padding:7px;
+    font-size:9px;
+}
+
+.data-table tbody tr:nth-child(even){
+    background:#f8faff;
+}
+
+.c{
+    text-align:center;
+}
+
+.r{
+    text-align:right;
+}
+
+.mono{
+    font-family:monospace;
+}
+
+/* BADGE */
+.badge-konfirmasi{
+    color:#16a34a;
+    font-weight:bold;
+}
+
+.badge-pending{
+    color:#ea580c;
+    font-weight:bold;
+}
+
+.badge-tunai{
+    color:#2563eb;
+    font-weight:bold;
+}
+
+.badge-transfer{
+    color:#7c3aed;
+    font-weight:bold;
+}
+
+.badge-lainnya{
+    color:#374151;
+    font-weight:bold;
+}
+
+/* TOTAL */
+.total-row{
+    background:#2449c6 !important;
+}
+
+.total-row td{
+    color:white;
+    font-weight:bold;
+}
+
+/* RECAP */
+.recap{
+    padding:10px;
+}
+
+.recap-table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:8px 0;
+}
+
+.recap-box{
+    background:#f3f4f6;
+    border:1px solid #d1d5db;
+    padding:10px;
+    text-align:center;
+}
+
+.recap-label{
+    font-size:8px;
+    color:#6b7280;
+}
+
+.recap-value{
+    margin-top:5px;
+    font-size:11px;
+    font-weight:bold;
+    color:#18398d;
+}
+
+/* FOOTER */
+.footer{
+    margin-top:15px;
+    padding:18px;
+    border-top:2px solid #2449c6;
+    min-height:120px;
+}
+
+.footer-left{
+    width:50%;
+    float:left;
+    font-size:8px;
+    color:#6b7280;
+    line-height:1.8;
+}
+
+.footer-right{
+    width:35%;
+    float:right;
+    text-align:center;
+    font-size:9px;
+}
+
+.signature-line{
+    margin-top:40px;
+    margin-bottom:8px;
+    border-top:1px solid #333;
+}
+
+.clearfix{
+    clear:both;
+}
+
+.no-data{
+    text-align:center;
+    padding:30px;
+    color:#9ca3af;
+}
+</style>
 </head>
+
 <body>
 
-<div class="header">
-    <h1>LAPORAN PEMBAYARAN AIR — PAMSIMAS</h1>
-    <p class="sub">{{ \App\Models\SettingAplikasi::get('nama_sistem','PAMSIMAS') }} | {{ \App\Models\SettingAplikasi::get('nama_desa','Desa') }}, {{ \App\Models\SettingAplikasi::get('kecamatan','') }}</p>
-    <div class="meta">
-        <span>📅 Periode: {{ $namaBulan }} {{ $tahun }}</span>
-        <span>🖨️ Dicetak: {{ now()->format('d/m/Y H:i') }}</span>
-        <span>📊 {{ $pembayaran->count() }} Transaksi</span>
+<div class="report-container">
+
+    <div class="header">
+        <h1>LAPORAN PEMBAYARAN AIR — PAMSIMAS</h1>
+
+        <p class="sub">
+            {{ \App\Models\SettingAplikasi::get('nama_sistem','PAMSIMAS') }}
+            |
+            {{ \App\Models\SettingAplikasi::get('nama_desa','Desa') }}
+        </p>
+
+        <div class="meta">
+            <span>Periode: {{ $namaBulan }} {{ $tahun }}</span>
+            <span>Dicetak: {{ now()->format('d/m/Y H:i') }}</span>
+            <span>{{ $pembayaran->count() }} Transaksi</span>
+        </div>
     </div>
-</div>
 
-<div class="summary">
-    <div class="si"><span class="l">Total Transaksi</span><span class="v">{{ $summary['total'] }}</span></div>
-    <div class="si"><span class="l">Total Pendapatan</span><span class="v">Rp {{ number_format($summary['nominal'],0,',','.') }}</span></div>
-    <div class="si"><span class="l">Tunai</span><span class="v">Rp {{ number_format($summary['tunai'],0,',','.') }}</span></div>
-    <div class="si"><span class="l">Transfer</span><span class="v">Rp {{ number_format($summary['transfer'],0,',','.') }}</span></div>
-    <div class="si"><span class="l">Rata-rata / Trx</span><span class="v">{{ $summary['total']>0 ? 'Rp '.number_format($summary['nominal']/$summary['total'],0,',','.') : '-' }}</span></div>
-</div>
+    <div class="summary">
 
-<table>
-    <thead>
-        <tr>
-            <th style="width:20px">No</th>
-            <th>No. Pembayaran</th>
-            <th>Nama Pelanggan</th>
-            <th class="c">No. Pelanggan</th>
-            <th class="c">No. Tagihan</th>
-            <th class="c">Tgl Bayar</th>
-            <th class="c">Metode</th>
-            <th class="r">Jumlah</th>
-            <th class="c">Status</th>
-        </tr>
-    </thead>
-    <tbody>
+        <table class="summary-table">
+            <tr>
+
+                <td>
+                    <div class="summary-box">
+                        <span class="summary-label">Total Transaksi</span>
+                        <span class="summary-value">{{ $summary['total'] }}</span>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="summary-box">
+                        <span class="summary-label">Total Pendapatan</span>
+                        <span class="summary-value">
+                            Rp {{ number_format($summary['nominal'],0,',','.') }}
+                        </span>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="summary-box">
+                        <span class="summary-label">Tunai</span>
+                        <span class="summary-value">
+                            Rp {{ number_format($summary['tunai'],0,',','.') }}
+                        </span>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="summary-box">
+                        <span class="summary-label">Transfer</span>
+                        <span class="summary-value">
+                            Rp {{ number_format($summary['transfer'],0,',','.') }}
+                        </span>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="summary-box">
+                        <span class="summary-label">Rata-rata</span>
+                        <span class="summary-value">
+                            {{ $summary['total'] > 0 ? 'Rp '.number_format($summary['nominal']/$summary['total'],0,',','.') : '-' }}
+                        </span>
+                    </div>
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+
+    <div class="section-title">
+        DATA PEMBAYARAN
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+            <tr>
+                <th width="25">No</th>
+                <th>No. Pembayaran</th>
+                <th>Nama Pelanggan</th>
+                <th>No. Pelanggan</th>
+                <th>No. Tagihan</th>
+                <th>Tgl Bayar</th>
+                <th>Metode</th>
+                <th>Jumlah</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
         @forelse($pembayaran as $i => $b)
-        <tr>
-            <td class="c">{{ $i+1 }}</td>
-            <td class="mono">{{ $b->nomor_pembayaran }}</td>
-            <td>{{ $b->pelanggan->nama_pelanggan }}</td>
-            <td class="c mono">{{ $b->pelanggan->nomor_pelanggan }}</td>
-            <td class="c mono">{{ $b->tagihan->nomor_tagihan }}</td>
-            <td class="c">{{ $b->tanggal_bayar->format('d/m/Y') }}</td>
-            <td class="c"><span class="badge-{{ $b->metode_bayar }}">{{ ucfirst($b->metode_bayar) }}</span></td>
-            <td class="r">Rp {{ number_format($b->jumlah_bayar,0,',','.') }}</td>
-            <td class="c"><span class="badge-{{ $b->status }}">{{ ucfirst($b->status) }}</span></td>
-        </tr>
+
+            <tr>
+                <td class="c">{{ $i+1 }}</td>
+                <td class="mono">{{ $b->nomor_pembayaran }}</td>
+                <td>{{ $b->pelanggan->nama_pelanggan }}</td>
+                <td class="c">{{ $b->pelanggan->nomor_pelanggan }}</td>
+                <td class="c">{{ $b->tagihan->nomor_tagihan }}</td>
+                <td class="c">{{ $b->tanggal_bayar->format('d/m/Y') }}</td>
+
+                <td class="c">
+                    <span class="badge-{{ $b->metode_bayar }}">
+                        {{ ucfirst($b->metode_bayar) }}
+                    </span>
+                </td>
+
+                <td class="r">
+                    Rp {{ number_format($b->jumlah_bayar,0,',','.') }}
+                </td>
+
+                <td class="c">
+                    <span class="badge-{{ $b->status }}">
+                        {{ strtoupper($b->status) }}
+                    </span>
+                </td>
+            </tr>
+
         @empty
-        <tr><td colspan="9" class="no-data">Tidak ada data pembayaran untuk periode ini</td></tr>
+
+            <tr>
+                <td colspan="9" class="no-data">
+                    Tidak ada data pembayaran
+                </td>
+            </tr>
+
         @endforelse
-        @if($pembayaran->count()>0)
+
+        @if($pembayaran->count() > 0)
+
         <tr class="total-row">
-            <td colspan="7" style="text-align:right;padding-right:12px;">TOTAL PENDAPATAN {{ strtoupper($namaBulan) }} {{ $tahun }}</td>
-            <td class="r">Rp {{ number_format($summary['nominal'],0,',','.') }}</td>
+            <td colspan="7" class="r">
+                TOTAL PEMBAYARAN
+            </td>
+            <td class="r">
+                Rp {{ number_format($summary['nominal'],0,',','.') }}
+            </td>
             <td></td>
         </tr>
+
         @endif
-    </tbody>
-</table>
 
-@if($pembayaran->count()>0)
-@php $byMetode = $pembayaran->groupBy('metode_bayar'); @endphp
-<div class="recap">
-    @foreach(['tunai'=>'Pembayaran Tunai','transfer'=>'Pembayaran Transfer','lainnya'=>'Metode Lainnya'] as $k=>$l)
-    @php $items=$byMetode->get($k,collect()); @endphp
-    @if($items->count()>0)
-    <div class="ri">
-        <p class="rl">{{ $l }} ({{ $items->count() }} transaksi)</p>
-        <p class="rv">Rp {{ number_format($items->sum('jumlah_bayar'),0,',','.') }}</p>
+        </tbody>
+
+    </table>
+
+    @if($pembayaran->count()>0)
+
+    @php
+        $byMetode = $pembayaran->groupBy('metode_bayar');
+    @endphp
+
+    <div class="recap">
+
+        <table class="recap-table">
+            <tr>
+
+                @foreach(['tunai'=>'Tunai','transfer'=>'Transfer','lainnya'=>'Lainnya'] as $k=>$label)
+
+                    @php
+                        $items = $byMetode->get($k, collect());
+                    @endphp
+
+                    @if($items->count())
+
+                    <td>
+                        <div class="recap-box">
+                            <div class="recap-label">
+                                {{ $label }}
+                                ({{ $items->count() }} trx)
+                            </div>
+
+                            <div class="recap-value">
+                                Rp {{ number_format($items->sum('jumlah_bayar'),0,',','.') }}
+                            </div>
+                        </div>
+                    </td>
+
+                    @endif
+
+                @endforeach
+
+            </tr>
+        </table>
+
     </div>
+
     @endif
-    @endforeach
-</div>
-@endif
 
-<div class="footer">
-    <div style="font-size:8px;color:#9ca3af;max-width:45%;line-height:1.6;">
-        <p>Laporan ini dibuat secara otomatis oleh Sistem Informasi PAMSIMAS.</p>
-        <p>Keabsahan dapat diverifikasi dengan cap dan tanda tangan pengelola.</p>
-        <p>Hanya data dengan status "konfirmasi" yang ditampilkan.</p>
+    <div class="footer">
+
+        <div class="footer-left">
+            <p>Laporan ini dibuat otomatis oleh Sistem Informasi PAMSIMAS.</p>
+            <p>Keabsahan data diverifikasi oleh pengelola.</p>
+            <p>Hanya data pembayaran valid yang ditampilkan.</p>
+        </div>
+
+        <div class="footer-right">
+
+            <p>
+                {{ \App\Models\SettingAplikasi::get('nama_desa','Desa') }},
+                {{ now()->format('d F Y') }}
+            </p>
+
+            <div class="signature-line"></div>
+
+            <strong>
+                {{ \App\Models\SettingAplikasi::get('nama_sistem','PAMSIMAS') }}
+            </strong>
+
+            <br>
+
+            Bendahara / Pengelola Keuangan
+
+        </div>
+
+        <div class="clearfix"></div>
+
     </div>
-    <div class="ttd">
-        <p class="tl">{{ \App\Models\SettingAplikasi::get('nama_desa','Desa') }}, {{ now()->format('d F Y') }}</p>
-        <p class="tn">{{ \App\Models\SettingAplikasi::get('nama_sistem','PAMSIMAS') }}</p>
-        <p class="tj">Bendahara / Pengelola Keuangan</p>
-    </div>
-    <div class="di">
-        <p>Dicetak: {{ now()->format('d/m/Y H:i:s') }}</p>
-        <p>Periode: {{ $namaBulan }} {{ $tahun }}</p>
-        <p>Total: Rp {{ number_format($summary['nominal'],0,',','.') }}</p>
-        <p>Dokumen ini dihasilkan sistem</p>
-    </div>
+
 </div>
 
 </body>
