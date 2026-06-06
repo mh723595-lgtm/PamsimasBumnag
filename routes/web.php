@@ -41,6 +41,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
     Route::resource('users',     UserController::class);
+    Route::post('pelanggan/bulk-assign-petugas', [AdminPelanggan::class, 'bulkAssignPetugas'])->name('pelanggan.bulk-assign-petugas');
+    Route::post('pelanggan/{pelanggan}/assign-petugas', [AdminPelanggan::class, 'assignPetugas'])->name('pelanggan.assign-petugas');
+    Route::delete('pelanggan/{pelanggan}/hapus-petugas', [AdminPelanggan::class, 'hapusPetugas'])->name('pelanggan.hapus-petugas');
     Route::resource('pelanggan', AdminPelanggan::class);
     Route::resource('petugas',   AdminPetugas::class)->parameters(['petugas' => 'petugas']);
     Route::resource('tagihan',   AdminTagihan::class)->except(['create', 'store']);
