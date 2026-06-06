@@ -81,6 +81,9 @@ class PengaturanController extends Controller
             }
         }
 
+        // Invalidasi cache setting agar kalkulasi tagihan & denda langsung pakai nilai baru
+        SettingAplikasi::flushCache();
+
         AktivitasLog::catat('update_pengaturan', 'Update pengaturan sistem PAMSIMAS');
 
         return back()->with('success', '✅ Pengaturan berhasil disimpan.');
