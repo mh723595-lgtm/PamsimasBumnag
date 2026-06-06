@@ -55,7 +55,7 @@
                     @error('nik')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                 </div>
 
-                {{-- NIP --}}
+                {{-- NIP
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">NIP</label>
                     <input type="text" name="nip" value="{{ old('nip') }}"
