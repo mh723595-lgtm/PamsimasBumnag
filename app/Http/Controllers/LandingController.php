@@ -60,15 +60,15 @@ class LandingController extends Controller
         $year  = $driver === 'sqlite' ? "strftime('%Y', created_at)" : "YEAR(created_at)";
 
         $tagihanRaw = TagihanAir::where('created_at', '>=', $start->toDateString())
-            ->selectRaw("$month as bln, $year as thn, COUNT(*) as total")
-            ->groupByRaw("$year, $month")
+           ->selectRaw('MONTH(created_at) as bln, YEAR(created_at) as thn, COUNT(*) as total')
+            ->groupByRaw('YEAR(created_at), MONTH(created_at)')
             ->get()
             ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
 
         $pendapatanRaw = TagihanAir::where('created_at', '>=', $start->toDateString())
             ->where('status', 'lunas')
-            ->selectRaw("$month as bln, $year as thn, SUM(total_bayar) as total")
-            ->groupByRaw("$year, $month")
+            ->selectRaw('MONTH(created_at) as bln, YEAR(created_at) as thn, SUM(total_bayar) as total')
+            ->groupByRaw('YEAR(created_at), MONTH(created_at)')
             ->get()
             ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
 
