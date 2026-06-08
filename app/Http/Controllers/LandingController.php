@@ -55,15 +55,15 @@ class LandingController extends Controller
             ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
 
         $tagihanRaw = TagihanAir::where('created_at', '>=', $start->toDateString())
-           ->selectRaw("strftime('%m', created_at) as bln, strftime('%Y', created_at) as thn, COUNT(*) as total")
-            ->groupByRaw("strftime('%Y', created_at), strftime('%m', created_at)")
+           ->selectRaw('MONTH(created_at) as bln, YEAR(created_at) as thn, COUNT(*) as total')
+            ->groupByRaw('YEAR(created_at), MONTH(created_at)')
             ->get()
             ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
 
         $pendapatanRaw = TagihanAir::where('created_at', '>=', $start->toDateString())
             ->where('status', 'lunas')
-            ->selectRaw("strftime('%m', created_at) as bln, strftime('%Y', created_at) as thn, SUM(total_bayar) as total")
-            ->groupByRaw("strftime('%Y', created_at), strftime('%m', created_at)")
+            ->selectRaw('MONTH(created_at) as bln, YEAR(created_at) as thn, SUM(total_bayar) as total')
+            ->groupByRaw('YEAR(created_at), MONTH(created_at)')
             ->get()
             ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
 
