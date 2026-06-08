@@ -7,6 +7,7 @@ use App\Models\TagihanAir;
 use App\Models\MeteranAir;
 use App\Models\SettingAplikasi;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LandingController extends Controller
 {
@@ -54,16 +55,20 @@ class LandingController extends Controller
             ->get()
             ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
 
+       $driver = DB::getDriverName();
+        $month = $driver === 'sqlite' ? "strftime('%m', created_at)" : "MONTH(created_at)";
+        $year  = $driver === 'sqlite' ? "strftime('%Y', created_at)" : "YEAR(created_at)";
+
         $tagihanRaw = TagihanAir::where('created_at', '>=', $start->toDateString())
-           ->selectRaw("strftime('%m', created_at) as bln, strftime('%Y', created_at) as thn, COUNT(*) as total")
-            ->groupByRaw("strftime('%Y', created_at), strftime('%m', created_at)")
+            ->selectRaw("$month as bln, $year as thn, COUNT(*) as total")
+            ->groupByRaw("$year, $month")
             ->get()
             ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
 
         $pendapatanRaw = TagihanAir::where('created_at', '>=', $start->toDateString())
             ->where('status', 'lunas')
-            ->selectRaw("strftime('%m', created_at) as bln, strftime('%Y', created_at) as thn, SUM(total_bayar) as total")
-            ->groupByRaw("strftime('%Y', created_at), strftime('%m', created_at)")
+            ->selectRaw("$month as bln, $year as thn, SUM(total_bayar) as total")
+            ->groupByRaw("$year, $month")
             ->get()
             ->keyBy(fn($r) => "{$r->thn}-{$r->bln}");
 
