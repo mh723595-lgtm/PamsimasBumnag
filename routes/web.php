@@ -18,6 +18,7 @@ use App\Http\Controllers\Petugas\DashboardController as PetugasDashboard;
 use App\Http\Controllers\Petugas\MeteranController;
 use App\Http\Controllers\Petugas\RiwayatController as PetugasRiwayat;
 use App\Http\Controllers\Petugas\PengaduanController as PetugasPengaduan;
+use App\Http\Controllers\Petugas\PelangganController as PetugasPelanggan;
 use App\Http\Controllers\Pelanggan\DashboardController as PelangganDashboard;
 use App\Http\Controllers\Pelanggan\TagihanController as PelangganTagihan;
 use App\Http\Controllers\Pelanggan\RiwayatController as PelangganRiwayat;
@@ -106,6 +107,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 // ── PETUGAS ────────────────────────────────────────────────
     Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])->group(function () {
     Route::get('/dashboard',             [PetugasDashboard::class, 'index'])->name('dashboard');
+    Route::get('/pelanggan',             [PetugasPelanggan::class, 'index'])->name('pelanggan.index');
     Route::get('/meteran',               [MeteranController::class, 'index'])->name('meteran.index');
     Route::get('/meteran/create',        [MeteranController::class, 'create'])->name('meteran.create');
     Route::post('/meteran',              [MeteranController::class, 'store'])->name('meteran.store');

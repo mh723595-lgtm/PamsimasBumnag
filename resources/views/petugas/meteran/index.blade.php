@@ -62,21 +62,15 @@
     </div>
 </div>
 
-{{-- Info Jorong Petugas --}}
-@if($jorongList->isNotEmpty())
+{{-- Info Pelanggan Petugas --}}
+@if($pelangganList->isNotEmpty())
 <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-4 mb-4">
-    <p class="text-xs font-semibold text-gray-500 mb-2">Jorong yang ditugaskan:</p>
-    <div class="flex flex-wrap gap-2">
-        @foreach($jorongList as $j)
-        <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 rounded-full text-xs font-semibold">
-            {{ $j->nama_jorong }}
-        </span>
-        @endforeach
-    </div>
+    <p class="text-xs font-semibold text-gray-500 mb-1">Pelanggan yang ditugaskan ke Anda:</p>
+    <p class="text-sm font-bold text-brand-600 dark:text-brand-400">{{ $pelangganList->count() }} pelanggan</p>
 </div>
 @else
 <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 mb-4">
-    <p class="text-sm text-amber-700 dark:text-amber-300 font-medium">Anda belum ditugaskan ke jorong manapun. Hubungi admin.</p>
+    <p class="text-sm text-amber-700 dark:text-amber-300 font-medium">Anda belum ditugaskan ke pelanggan manapun. Hubungi admin.</p>
 </div>
 @endif
 
@@ -161,11 +155,7 @@
                 @empty
                 <tr>
                     <td colspan="6" class="px-5 py-12 text-center text-gray-400">
-                        @if($jorongList->isEmpty())
-                            Belum ditugaskan ke jorong manapun
-                        @else
-                            Tidak ada pelanggan di jorong yang ditugaskan
-                        @endif
+                        Tidak ada pelanggan yang diassign ke Anda
                     </td>
                 </tr>
                 @endforelse

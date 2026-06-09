@@ -23,17 +23,13 @@ class MeteranController extends Controller
 
     public function index(Request $request)
     {
-        $bulan  = (int) $request->input('bulan', now()->month);
-        $tahun  = (int) $request->input('tahun', now()->year);
+        $bulan   = (int) $request->input('bulan', now()->month);
+        $tahun   = (int) $request->input('tahun', now()->year);
         $petugas = Auth::user()->petugas;
 
-        // Ambil jorong yang ditugaskan ke petugas ini
-        $jorongIds = \App\Models\AssignPetugas::where('petugas_id', $petugas?->id)
-            ->where('aktif', true)
-            ->pluck('jorong_id');
-
+        // Pelanggan yang diassign langsung ke petugas ini
         $pelangganList = Pelanggan::where('status', 'aktif')
-            ->whereIn('jorong_id', $jorongIds)
+            ->where('petugas_id', $petugas?->id)
             ->with([
                 'meteranAir' => fn($q) => $q->where('bulan', $bulan)->where('tahun', $tahun),
                 'jorong',
@@ -43,30 +39,24 @@ class MeteranController extends Controller
 
         $sudahInput = MeteranAir::where('bulan', $bulan)
             ->where('tahun', $tahun)
+            ->whereIn('pelanggan_id', $pelangganList->pluck('id'))
             ->pluck('pelanggan_id')
             ->toArray();
-
-        $jorongList = \App\Models\Jorong::whereIn('id', $jorongIds)->get();
 
         return view('petugas.meteran.index', compact(
             'pelangganList',
             'sudahInput',
             'bulan',
             'tahun',
-            'jorongList',
-            'jorongIds'
         ));
     }
 
     public function create(Request $request)
     {
         $petugas = Auth::user()->petugas;
-        $jorongIds = \App\Models\AssignPetugas::where('petugas_id', $petugas?->id)
-            ->where('aktif', true)
-            ->pluck('jorong_id');
 
-        $pelangganList     = Pelanggan::where('status', 'aktif')
-            ->whereIn('jorong_id', $jorongIds)
+        $pelangganList = Pelanggan::where('status', 'aktif')
+            ->where('petugas_id', $petugas?->id)
             ->orderBy('nomor_pelanggan')
             ->get();
         $selectedPelanggan = null;
@@ -144,7 +134,13 @@ class MeteranController extends Controller
                 ->withInput();
         }
 
+        $petugas = Auth::user()->petugas;
         $pelanggan = Pelanggan::findOrFail($request->pelanggan_id);
+
+        // Pastikan pelanggan memang diassign ke petugas yang login
+        if ($pelanggan->petugas_id !== $petugas?->id) {
+            abort(403, 'Anda tidak berhak menginput meteran untuk pelanggan ini.');
+        }
 
         // Hitung angka awal dari bulan sebelumnya
         $meteranSebelumnya = MeteranAir::where('pelanggan_id', $request->pelanggan_id)
@@ -173,8 +169,6 @@ class MeteranController extends Controller
         if ($request->hasFile('foto_meter') && $request->file('foto_meter')->isValid()) {
             $fotoPath = $request->file('foto_meter')->store('meteran', 'public');
         }
-
-        $petugas = Auth::user()->petugas;
 
         $meteran = MeteranAir::create([
             'pelanggan_id' => $request->pelanggan_id,

@@ -27,6 +27,8 @@ class Petugas extends Model
 
     public function user() { return $this->belongsTo(User::class); }
     public function meteranAir() { return $this->hasMany(MeteranAir::class); }
+    public function pelanggan() { return $this->hasMany(Pelanggan::class); }
+    public function assignPetugas() { return $this->hasMany(AssignPetugas::class); }
     public function approvedBy() { return $this->belongsTo(User::class, 'approved_by'); }
 
     public function totalInputBulanIni(): int
