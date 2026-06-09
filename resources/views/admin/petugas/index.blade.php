@@ -143,8 +143,6 @@
 {{-- ═══ MODAL ASSIGN JORONG ═══ --}}
 <div id="modal-assign-jorong" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
     <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
-
-        {{-- Header --}}
         <div class="flex items-center justify-between px-6 py-4 bg-emerald-500">
             <div>
                 <h3 class="font-semibold text-white text-sm">Assign Jorong</h3>
@@ -154,8 +152,6 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-
-        {{-- Form tambah assign --}}
         <div class="px-6 pt-5 pb-3 border-b border-gray-100 dark:border-gray-800">
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Tambah Jorong Baru</p>
             <div class="flex gap-2">
@@ -181,15 +177,12 @@
                 </button>
             </div>
         </div>
-
-        {{-- Daftar jorong yang sudah diassign --}}
         <div class="px-6 py-4">
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Jorong Saat Ini</p>
             <div id="modal-jorong-list" class="space-y-2 max-h-56 overflow-y-auto">
                 <p class="text-center text-gray-400 text-sm py-4">Memuat...</p>
             </div>
         </div>
-
         <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-800 flex justify-end">
             <button onclick="closeAssignModal()"
                 class="px-4 py-2 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -258,11 +251,114 @@
             </div>
         </div>
 
+        {{-- Pagination --}}
+        <div id="mp-pagination" class="px-6 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between flex-shrink-0 hidden">
+            <p class="text-xs text-gray-400" id="mp-pagination-info"></p>
+            <div class="flex items-center gap-1" id="mp-pagination-buttons"></div>
+        </div>
+
         {{-- Footer --}}
         <div class="px-6 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between flex-shrink-0">
             <p class="text-xs text-gray-400" id="mp-footer-info">—</p>
             <button onclick="closePelangganModal()"
                 class="px-4 py-2 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- ═══ MODAL DETAIL SATU PELANGGAN ═══ --}}
+<div id="modal-detail-pelanggan-petugas" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+
+        {{-- Header --}}
+        <div class="flex items-center justify-between px-6 py-4 bg-blue-600">
+            <div>
+                <h3 class="font-semibold text-white" id="pdp-nama">-</h3>
+                <p class="text-blue-200 text-xs mt-0.5" id="pdp-nomor">-</p>
+            </div>
+            <button onclick="tutupDetailPelangganPetugas()" class="text-white/80 hover:text-white text-lg leading-none">✕</button>
+        </div>
+
+        {{-- Status Badge --}}
+        <div class="px-6 pt-4 pb-2">
+            <span id="pdp-status-badge" class="px-2.5 py-1 rounded-full text-xs font-semibold"></span>
+        </div>
+
+        {{-- Detail Grid --}}
+        <div class="px-6 pb-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">No. KTP</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-ktp">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">No. HP</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-hp">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Jorong</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-jorong">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">RT/RW</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-rtrw">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Desa / Kelurahan</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-desa">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Kecamatan</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-kecamatan">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Kabupaten</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-kabupaten">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Provinsi</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-provinsi">-</p>
+            </div>
+            <div class="col-span-2">
+                <p class="text-xs text-gray-400 mb-0.5">Alamat Lengkap</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-alamat">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">No. Meteran</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-meteran">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Meteran Awal (m³)</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-meteran-awal">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Tanggal Daftar</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-tgl-daftar">-</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-0.5">Petugas</p>
+                <p class="font-medium text-gray-800 dark:text-white" id="pdp-petugas">-</p>
+            </div>
+        </div>
+
+        {{-- Maps Link --}}
+        <div id="pdp-maps-wrapper" class="px-6 pb-4 hidden">
+            <a id="pdp-maps-link" href="#" target="_blank"
+                class="inline-flex items-center gap-2 text-xs text-blue-600 hover:text-blue-700 font-medium">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Lihat di Google Maps
+            </a>
+        </div>
+
+        {{-- Footer --}}
+        <div class="px-6 py-3 border-t border-gray-100 dark:border-gray-800 flex justify-end">
+            <button onclick="tutupDetailPelangganPetugas()"
+                class="px-4 py-2 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 Tutup
             </button>
         </div>
@@ -275,16 +371,16 @@
 <script>
 let currentPetugasId = null;
 
-const CSRF = '{{ csrf_token() }}';
+const CSRF          = '{{ csrf_token() }}';
 const ROUTE_STORE   = '{{ route("admin.assign-petugas.store") }}';
 const ROUTE_TOGGLE  = '/admin/assign-petugas/:id/toggle';
 const ROUTE_DESTROY = '/admin/assign-petugas/:id';
 const ROUTE_DETAIL  = '/admin/assign-petugas/petugas/:id';
 
 function showAlert(type, msg) {
-    const box = document.getElementById('alert-box');
+    const box     = document.getElementById('alert-box');
     const content = document.getElementById('alert-content');
-    const styles = {
+    const styles  = {
         success: 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-300',
         danger:  'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
     };
@@ -294,41 +390,21 @@ function showAlert(type, msg) {
     setTimeout(() => box.classList.add('hidden'), 4000);
 }
 
+// ══════════════════════════════════════════════
+// MODAL ASSIGN JORONG
+// ══════════════════════════════════════════════
 function openAssignJorong(petugasId, namaPetugas) {
     currentPetugasId = petugasId;
     document.getElementById('modal-assign-subtitle').textContent = namaPetugas;
-    document.getElementById('modal-jorong-id').value = '';
-    document.getElementById('modal-periode').value = 'permanen';
+    document.getElementById('modal-jorong-id').value  = '';
+    document.getElementById('modal-periode').value    = 'permanen';
     document.getElementById('modal-assign-jorong').classList.remove('hidden');
-    muatDaftarJorong();
+    fetchAssigns();
 }
 
 function closeAssignModal() {
     document.getElementById('modal-assign-jorong').classList.add('hidden');
     currentPetugasId = null;
-}
-
-function muatDaftarJorong() {
-    const list = document.getElementById('modal-jorong-list');
-    list.innerHTML = '<p class="text-center text-gray-400 text-sm py-4">Memuat...</p>';
-
-    fetch(ROUTE_DETAIL.replace(':id', currentPetugasId), {
-        headers: { 'Accept': 'application/json' }
-    })
-    .then(r => r.json())
-    .then(data => {
-        // data.jorong_list = array nama jorong (dari AssignPetugasController@detailPetugas)
-        // Kita butuh assign IDs — pakai endpoint yang ada tapi kita buat versi baru
-        // Sementara fetch assigns langsung
-        return fetch(`/admin/assign-petugas?_format=json&petugas_id=${currentPetugasId}`, {
-            headers: { 'Accept': 'application/json' }
-        });
-    })
-    .catch(() => null)
-    .then(() => {
-        // Gunakan route assigns filtered — kita fetch ulang via detail endpoint yg sudah ada
-        fetchAssigns();
-    });
 }
 
 function fetchAssigns() {
@@ -384,11 +460,7 @@ function simpanAssignJorong() {
 
     fetch(ROUTE_STORE, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': CSRF
-        },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF },
         body: JSON.stringify({ petugas_id: currentPetugasId, jorong_id: jorongId, periode: periode })
     })
     .then(r => r.json())
@@ -397,7 +469,6 @@ function simpanAssignJorong() {
             showAlert('success', data.message);
             document.getElementById('modal-jorong-id').value = '';
             fetchAssigns();
-            // Refresh badge jorong di baris tabel
             setTimeout(() => location.reload(), 1500);
         } else {
             showAlert('danger', data.message ?? 'Gagal menyimpan.');
@@ -414,7 +485,7 @@ function toggleAssign(id, btn) {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            const aktif = data.aktif;
+            const aktif    = data.aktif;
             btn.dataset.aktif = aktif ? '1' : '0';
             btn.textContent   = aktif ? 'Aktif' : 'Nonaktif';
             btn.className     = `px-2 py-1 rounded-full text-xs font-semibold transition-colors ${aktif ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-gray-100 text-gray-500 dark:bg-gray-800'}`;
@@ -438,26 +509,31 @@ function hapusAssign(id) {
     });
 }
 
-// Tutup modal klik backdrop
 document.getElementById('modal-assign-jorong').addEventListener('click', function(e) {
     if (e.target === this) closeAssignModal();
 });
 
-/* ══════════════════════════════════════════════
-   MODAL DAFTAR PELANGGAN
-══════════════════════════════════════════════ */
+// ══════════════════════════════════════════════
+// MODAL DAFTAR PELANGGAN (dengan Pagination)
+// ══════════════════════════════════════════════
+let _mpPetugasId  = null;
+let _mpPage       = 1;
+let _mpLastPage   = 1;
+let _mpSearchMode = false;
 let allPelangganData = [];
 
-const ROUTE_DETAIL_PETUGAS = '/admin/assign-petugas/petugas/:id';
-
 function openModalPelanggan(petugasId, nama, jabatan) {
-    // Reset
+    _mpPetugasId  = petugasId;
+    _mpPage       = 1;
+    _mpSearchMode = false;
     allPelangganData = [];
+
     document.getElementById('mp-nama').textContent    = nama;
     document.getElementById('mp-jabatan').textContent = jabatan || '—';
     document.getElementById('mp-search').value        = '';
     document.getElementById('mp-badge-total').classList.add('hidden');
     document.getElementById('mp-footer-info').textContent = '—';
+    document.getElementById('mp-pagination').classList.add('hidden');
     document.getElementById('mp-list').innerHTML = `
         <div class="flex flex-col items-center justify-center py-16 text-gray-400">
             <svg class="w-8 h-8 mb-3 animate-spin text-blue-400" fill="none" viewBox="0 0 24 24">
@@ -468,14 +544,45 @@ function openModalPelanggan(petugasId, nama, jabatan) {
         </div>`;
 
     document.getElementById('modal-pelanggan').classList.remove('hidden');
+    muatPelangganModal(petugasId, 1);
+}
 
-    fetch(ROUTE_DETAIL_PETUGAS.replace(':id', petugasId), {
+function muatPelangganModal(petugasId, page) {
+    document.getElementById('mp-list').innerHTML = `
+        <div class="flex flex-col items-center justify-center py-16 text-gray-400">
+            <svg class="w-8 h-8 mb-3 animate-spin text-blue-400" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+            <p class="text-sm">Memuat data...</p>
+        </div>`;
+
+    fetch(ROUTE_DETAIL.replace(':id', petugasId) + '?page=' + page, {
         headers: { 'Accept': 'application/json' }
     })
     .then(r => r.json())
     .then(data => {
         allPelangganData = data.pelanggan ?? [];
-        renderPelangganModal(allPelangganData, data.total ?? 0);
+        const pg = data.pagination;
+        _mpPage     = pg.current_page;
+        _mpLastPage = pg.last_page;
+
+        // Badge total
+        const badge = document.getElementById('mp-badge-total');
+        document.getElementById('mp-total-text').textContent = pg.total;
+        badge.classList.remove('hidden');
+        badge.classList.add('flex');
+
+        // Counter footer
+        const start = (pg.current_page - 1) * pg.per_page + 1;
+        const end   = Math.min(pg.current_page * pg.per_page, pg.total);
+        document.getElementById('mp-footer-info').textContent =
+            pg.total > 0
+                ? `Menampilkan ${start}–${end} dari ${pg.total} pelanggan aktif`
+                : 'Total: 0 pelanggan aktif';
+
+        renderPelangganModal(allPelangganData, pg.total);
+        renderPaginationModal(pg);
     })
     .catch(() => {
         document.getElementById('mp-list').innerHTML = `
@@ -486,13 +593,6 @@ function openModalPelanggan(petugasId, nama, jabatan) {
 }
 
 function renderPelangganModal(list, total) {
-    const badge = document.getElementById('mp-badge-total');
-    document.getElementById('mp-total-text').textContent = total;
-    badge.classList.remove('hidden');
-    badge.classList.add('flex');
-
-    const footer = document.getElementById('mp-footer-info');
-
     if (list.length === 0) {
         document.getElementById('mp-list').innerHTML = `
             <div class="flex flex-col items-center py-16 text-gray-400">
@@ -505,7 +605,6 @@ function renderPelangganModal(list, total) {
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Belum ada pelanggan</p>
                 <p class="text-xs text-gray-400 mt-1">Assign pelanggan ke petugas ini terlebih dahulu</p>
             </div>`;
-        footer.textContent = 'Total: 0 pelanggan';
         return;
     }
 
@@ -530,18 +629,26 @@ function renderPelangganModal(list, total) {
 
         pelangganList.forEach(p => {
             html += `
-                <div class="mp-item flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
-                     data-search="${(p.nama + ' ' + p.nomor).toLowerCase()}">
+                <div class="mp-item flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-800
+                            hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors cursor-pointer group"
+                     data-search="${(p.nama + ' ' + p.nomor).toLowerCase()}"
+                     onclick="lihatDetailPelangganPetugas(${p.id})"
+                     title="Klik untuk lihat detail pelanggan">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                         ${p.nama.substring(0, 2).toUpperCase()}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">${p.nama}</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate group-hover:text-blue-600 transition-colors">${p.nama}</p>
                         <p class="text-xs text-gray-400 truncate">${p.alamat}</p>
                     </div>
-                    <div class="text-right flex-shrink-0">
-                        <p class="text-xs font-mono font-semibold text-brand-600 dark:text-brand-400">${p.nomor}</p>
-                        <p class="text-xs text-gray-400">${p.no_hp !== '-' ? p.no_hp : ''}</p>
+                    <div class="text-right flex-shrink-0 flex items-center gap-2">
+                        <div>
+                            <p class="text-xs font-mono font-semibold text-brand-600 dark:text-brand-400">${p.nomor}</p>
+                            <p class="text-xs text-gray-400">${p.no_hp !== '-' ? p.no_hp : ''}</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
                     </div>
                 </div>`;
         });
@@ -550,11 +657,77 @@ function renderPelangganModal(list, total) {
     });
 
     document.getElementById('mp-list').innerHTML = html;
-    footer.textContent = `Menampilkan ${list.length} dari ${total} pelanggan aktif`;
+}
+
+function renderPaginationModal(pg) {
+    const wrapper = document.getElementById('mp-pagination');
+    const info    = document.getElementById('mp-pagination-info');
+    const buttons = document.getElementById('mp-pagination-buttons');
+
+    if (pg.last_page <= 1) {
+        wrapper.classList.add('hidden');
+        return;
+    }
+
+    wrapper.classList.remove('hidden');
+    info.textContent = `Halaman ${pg.current_page} dari ${pg.last_page}`;
+
+    let html = '';
+
+    // Prev
+    html += `<button onclick="gantiHalamanModal(${pg.current_page - 1})"
+        ${pg.current_page <= 1 ? 'disabled' : ''}
+        class="w-8 h-8 rounded-lg text-xs font-medium border transition-colors
+               ${pg.current_page <= 1
+                   ? 'border-gray-100 text-gray-300 cursor-not-allowed'
+                   : 'border-gray-200 dark:border-gray-700 text-gray-500 hover:border-blue-400 hover:text-blue-600'}">‹</button>`;
+
+    // Nomor halaman
+    mpPaginationRange(pg.current_page, pg.last_page, 5).forEach(n => {
+        if (n === '...') {
+            html += `<span class="w-8 h-8 flex items-center justify-center text-xs text-gray-400">…</span>`;
+        } else {
+            const active = n === pg.current_page;
+            html += `<button onclick="gantiHalamanModal(${n})"
+                class="w-8 h-8 rounded-lg text-xs font-medium border transition-colors
+                       ${active ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-200 dark:border-gray-700 text-gray-500 hover:border-blue-400 hover:text-blue-600'}">
+                ${n}
+            </button>`;
+        }
+    });
+
+    // Next
+    html += `<button onclick="gantiHalamanModal(${pg.current_page + 1})"
+        ${pg.current_page >= pg.last_page ? 'disabled' : ''}
+        class="w-8 h-8 rounded-lg text-xs font-medium border transition-colors
+               ${pg.current_page >= pg.last_page
+                   ? 'border-gray-100 text-gray-300 cursor-not-allowed'
+                   : 'border-gray-200 dark:border-gray-700 text-gray-500 hover:border-blue-400 hover:text-blue-600'}">›</button>`;
+
+    buttons.innerHTML = html;
+}
+
+function mpPaginationRange(current, last, maxButtons) {
+    if (last <= maxButtons) return Array.from({ length: last }, (_, i) => i + 1);
+    const half  = Math.floor(maxButtons / 2);
+    let start   = Math.max(1, current - half);
+    let end     = Math.min(last, start + maxButtons - 1);
+    if (end - start + 1 < maxButtons) start = Math.max(1, end - maxButtons + 1);
+    const pages = [];
+    if (start > 1) { pages.push(1); if (start > 2) pages.push('...'); }
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (end < last) { if (end < last - 1) pages.push('...'); pages.push(last); }
+    return pages;
+}
+
+function gantiHalamanModal(page) {
+    if (page < 1 || page > _mpLastPage || !_mpPetugasId) return;
+    _mpPage = page;
+    muatPelangganModal(_mpPetugasId, page);
 }
 
 function filterPelangganModal(keyword) {
-    const q = keyword.toLowerCase().trim();
+    const q     = keyword.toLowerCase().trim();
     const items = document.querySelectorAll('#mp-list .mp-item');
     let visible = 0;
 
@@ -564,18 +737,78 @@ function filterPelangganModal(keyword) {
         if (match) visible++;
     });
 
-    document.getElementById('mp-footer-info').textContent =
-        q ? `${visible} hasil dari ${allPelangganData.length} pelanggan` :
-            `Menampilkan ${allPelangganData.length} pelanggan aktif`;
+    document.getElementById('mp-footer-info').textContent = q
+        ? `${visible} hasil pencarian`
+        : `Menampilkan ${allPelangganData.length} pelanggan aktif`;
 }
 
 function closePelangganModal() {
     document.getElementById('modal-pelanggan').classList.add('hidden');
+    _mpPetugasId = null;
     allPelangganData = [];
 }
 
 document.getElementById('modal-pelanggan').addEventListener('click', function(e) {
     if (e.target === this) closePelangganModal();
+});
+
+// ══════════════════════════════════════════════
+// MODAL DETAIL SATU PELANGGAN
+// ══════════════════════════════════════════════
+function tutupDetailPelangganPetugas() {
+    document.getElementById('modal-detail-pelanggan-petugas').classList.add('hidden');
+}
+
+function lihatDetailPelangganPetugas(pelangganId) {
+    const fields = ['nama','nomor','ktp','hp','jorong','rtrw','desa','kecamatan',
+                    'kabupaten','provinsi','alamat','meteran','meteran-awal','tgl-daftar','petugas'];
+    fields.forEach(f => {
+        const el = document.getElementById('pdp-' + f);
+        if (el) el.textContent = '...';
+    });
+    document.getElementById('pdp-maps-wrapper').classList.add('hidden');
+    document.getElementById('pdp-status-badge').textContent = '';
+    document.getElementById('modal-detail-pelanggan-petugas').classList.remove('hidden');
+
+    fetch(`/admin/assign-petugas/pelanggan/${pelangganId}`, {
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(p => {
+        document.getElementById('pdp-nama').textContent         = p.nama;
+        document.getElementById('pdp-nomor').textContent        = 'No. ' + p.nomor;
+        document.getElementById('pdp-ktp').textContent          = p.no_ktp;
+        document.getElementById('pdp-hp').textContent           = p.no_hp;
+        document.getElementById('pdp-jorong').textContent       = p.jorong;
+        document.getElementById('pdp-rtrw').textContent         = p.rt_rw;
+        document.getElementById('pdp-desa').textContent         = p.desa;
+        document.getElementById('pdp-kecamatan').textContent    = p.kecamatan;
+        document.getElementById('pdp-kabupaten').textContent    = p.kabupaten;
+        document.getElementById('pdp-provinsi').textContent     = p.provinsi;
+        document.getElementById('pdp-alamat').textContent       = p.alamat;
+        document.getElementById('pdp-meteran').textContent      = p.nomor_meteran;
+        document.getElementById('pdp-meteran-awal').textContent = p.meteran_awal + ' m³';
+        document.getElementById('pdp-tgl-daftar').textContent   = p.tanggal_daftar;
+        document.getElementById('pdp-petugas').textContent      = p.petugas;
+
+        const badge = document.getElementById('pdp-status-badge');
+        badge.textContent = '● ' + (p.status === 'aktif' ? 'Aktif' : p.status);
+        badge.className   = `px-2.5 py-1 rounded-full text-xs font-semibold ${
+            p.status === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'
+        }`;
+
+        if (p.maps_url) {
+            document.getElementById('pdp-maps-link').href = p.maps_url;
+            document.getElementById('pdp-maps-wrapper').classList.remove('hidden');
+        }
+    })
+    .catch(() => {
+        document.getElementById('pdp-nama').textContent = 'Gagal memuat data';
+    });
+}
+
+document.getElementById('modal-detail-pelanggan-petugas').addEventListener('click', function(e) {
+    if (e.target === this) tutupDetailPelangganPetugas();
 });
 </script>
 @endpush
