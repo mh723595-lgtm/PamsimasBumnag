@@ -1,6 +1,17 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\PakasirController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/midtrans/notifikasi', [App\Http\Controllers\PembayaranController::class, 'notifikasi']);
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Webhook Pakasir dikecualikan dari CSRF secara otomatis karena berada
+| di grup 'api' (tidak ada VerifyCsrfToken middleware di api).
+|
+*/
+
+Route::post('/pakasir/callback', [PakasirController::class, 'webhook'])
+    ->middleware('verify.pakasir.webhook');

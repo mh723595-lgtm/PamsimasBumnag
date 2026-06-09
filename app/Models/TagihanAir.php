@@ -42,6 +42,8 @@ class TagihanAir extends Model
     public function meteran()   { return $this->belongsTo(MeteranAir::class, 'meteran_id'); }
     public function pembayaran(){ return $this->hasOne(Pembayaran::class, 'tagihan_id'); }
 
+    public function pakasirTransactions() { return $this->hasMany(PakasirTransaction::class, 'tagihan_id'); }
+
     // ── Auto-set total_bayar sebelum simpan ───────────────────
     protected static function booted(): void
     {

@@ -1,33 +1,108 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struk Pembayaran {{ $pembayaran->nomor_pembayaran }}</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Courier New', monospace; font-size: 12px; color: #000; background: #fff; }
-        .struk { width: 300px; margin: 0 auto; padding: 16px; }
-        .center { text-align: center; }
-        .bold { font-weight: bold; }
-        .divider { border-top: 1px dashed #000; margin: 8px 0; }
-        .divider-solid { border-top: 2px solid #000; margin: 8px 0; }
-        .row { display: flex; justify-content: space-between; margin: 3px 0; }
-        .row span:last-child { text-align: right; max-width: 55%; }
-        .total { font-size: 14px; font-weight: bold; }
-        .logo { font-size: 16px; font-weight: bold; letter-spacing: 2px; }
-        .badge { display: inline-block; border: 1px solid #000; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
-        .no-print { text-align: center; margin-top: 20px; }
-        .btn-print { padding: 10px 30px; background: #059669; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; }
-        .btn-close { padding: 10px 30px; background: #6B7280; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; margin-left: 8px; }
-        @media print {
-            .no-print { display: none; }
-            body { width: 300px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Struk Pembayaran {{ $pembayaran->nomor_pembayaran }}</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    color: #000;
+    background: #fff;
+}
+.struk {
+    width: 300px;
+    margin: 0 auto;
+    padding: 16px;
+}
+.center {
+    text-align: center;
+}
+.bold {
+    font-weight: bold;
+}
+.divider {
+    border-top: 1px dashed #000;
+    margin: 8px 0;
+}
+.divider-solid {
+    border-top: 2px solid #000;
+    margin: 8px 0;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+}
+.row span:last-child {
+    text-align: right;
+    max-width: 55%;
+    word-break: break-all;
+}
+.total {
+    font-size: 14px;
+    font-weight: bold;
+}
+.logo {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+.pakasir-ref {
+    font-size: 10px;
+    word-break: break-all;
+}
+.no-print {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+}
+.btn-print {
+    padding: 10px 30px;
+    background: #059669;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: sans-serif;
+}
+.btn-print:hover {
+    background: #047857;
+}
+.btn-close {
+    padding: 10px 30px;
+    background: #6B7280;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 8px;
+    font-family: sans-serif;
+}
+.btn-close:hover {
+    background: #4B5563;
+}
+@media print {
+    .no-print {
+        display: none;
+    }
+    body {
+        width: 300px;
+    }
+}
+</style>
 </head>
 <body>
 <div class="struk">
+
     {{-- Header --}}
     <div class="center">
         <div class="logo">PAMSIMAS</div>
@@ -43,27 +118,91 @@
     <div class="divider"></div>
 
     {{-- Info Pembayaran --}}
-    <div class="row"><span>Tanggal</span><span>{{ $pembayaran->tanggal_bayar->format('d/m/Y H:i') }}</span></div>
-    <div class="row"><span>Metode</span><span class="bold">{{ ucfirst($pembayaran->metode ?? $pembayaran->metode_bayar) }}</span></div>
-    <div class="row"><span>Status</span><span class="bold">{{ ucfirst($pembayaran->status) }}</span></div>
+    <div class="row">
+        <span>Tanggal</span>
+        <span>{{ $pembayaran->tanggal_bayar ? $pembayaran->tanggal_bayar->format('d/m/Y') : now()->format('d/m/Y') }}</span>
+    </div>
+    <div class="row">
+        <span>Metode</span>
+        <span class="bold">
+            @if($pembayaran->metode_bayar === 'pakasir')
+                Pakasir
+            @else
+                {{ ucfirst($pembayaran->metode_bayar) }}
+            @endif
+        </span>
+    </div>
+    <div class="row">
+        <span>Status</span>
+        <span class="bold">
+            @if($pembayaran->status === 'konfirmasi')
+                Lunas
+            @else
+                {{ ucfirst($pembayaran->status) }}
+            @endif
+        </span>
+    </div>
+
+    {{-- ID Transaksi Pakasir (jika metode pakasir) --}}
+    @if($pembayaran->metode_bayar === 'pakasir' && $pembayaran->pakasirTransaction)
+    <div class="divider"></div>
+    <div class="bold" style="margin-bottom:4px;">INFO PAKASIR</div>
+    @if($pembayaran->pakasirTransaction->pakasir_transaction_id)
+    <div class="row">
+        <span>ID Transaksi</span>
+        <span class="pakasir-ref">{{ $pembayaran->pakasirTransaction->pakasir_transaction_id }}</span>
+    </div>
+    @endif
+    <div class="row">
+        <span>Ref</span>
+        <span class="pakasir-ref">{{ $pembayaran->pakasirTransaction->merchant_ref }}</span>
+    </div>
+    @if($pembayaran->pakasirTransaction->paid_at)
+    <div class="row">
+        <span>Waktu Bayar</span>
+        <span>{{ $pembayaran->pakasirTransaction->paid_at->format('d/m/Y H:i') }}</span>
+    </div>
+    @endif
+    @endif
 
     <div class="divider"></div>
 
-    {{-- Info Pelanggan --}}
+    {{-- Data Pelanggan --}}
     <div class="bold" style="margin-bottom:4px;">DATA PELANGGAN</div>
-    <div class="row"><span>Nama</span><span>{{ $pembayaran->pelanggan->nama_pelanggan ?? $pembayaran->pelanggan->nama }}</span></div>
-    <div class="row"><span>No. Pelanggan</span><span>{{ $pembayaran->pelanggan->nomor_pelanggan ?? '-' }}</span></div>
+    <div class="row">
+        <span>Nama</span>
+        <span>{{ $pembayaran->pelanggan->nama_pelanggan }}</span>
+    </div>
+    <div class="row">
+        <span>No. Pelanggan</span>
+        <span>{{ $pembayaran->pelanggan->nomor_pelanggan }}</span>
+    </div>
 
     <div class="divider"></div>
 
-    {{-- Info Tagihan --}}
+    {{-- Rincian Tagihan --}}
     <div class="bold" style="margin-bottom:4px;">RINCIAN TAGIHAN</div>
-    <div class="row"><span>No. Tagihan</span><span>{{ $pembayaran->tagihan->nomor_tagihan }}</span></div>
-    <div class="row"><span>Periode</span><span>{{ $pembayaran->tagihan->periodeTeks() }}</span></div>
-    <div class="row"><span>Pemakaian</span><span>{{ $pembayaran->tagihan->pemakaian }} m³</span></div>
-    <div class="row"><span>Tagihan Air</span><span>Rp {{ number_format($pembayaran->tagihan->total_tagihan, 0, ',', '.') }}</span></div>
+    <div class="row">
+        <span>No. Tagihan</span>
+        <span>{{ $pembayaran->tagihan->nomor_tagihan }}</span>
+    </div>
+    <div class="row">
+        <span>Periode</span>
+        <span>{{ $pembayaran->tagihan->periodeTeks() }}</span>
+    </div>
+    <div class="row">
+        <span>Pemakaian</span>
+        <span>{{ number_format($pembayaran->tagihan->pemakaian, 2) }} m³</span>
+    </div>
+    <div class="row">
+        <span>Tagihan Air</span>
+        <span>Rp {{ number_format($pembayaran->tagihan->total_tagihan, 0, ',', '.') }}</span>
+    </div>
     @if($pembayaran->tagihan->denda > 0)
-    <div class="row"><span>Denda</span><span>Rp {{ number_format($pembayaran->tagihan->denda, 0, ',', '.') }}</span></div>
+    <div class="row">
+        <span>Denda</span>
+        <span>Rp {{ number_format($pembayaran->tagihan->denda, 0, ',', '.') }}</span>
+    </div>
     @endif
 
     <div class="divider-solid"></div>
@@ -82,11 +221,15 @@
         <div style="margin-top:4px;">Dicetak: {{ now()->format('d/m/Y H:i') }}</div>
         @if($pembayaran->dikonfirmasiOleh)
         <div style="margin-top:4px;">Petugas: {{ $pembayaran->dikonfirmasiOleh->name }}</div>
+        @elseif($pembayaran->metode_bayar === 'pakasir')
+        <div style="margin-top:4px;">Dikonfirmasi: Otomatis via Pakasir</div>
         @endif
     </div>
 
     <div class="divider"></div>
+
     <div class="center" style="font-size:10px;">*** SIMPAN STRUK INI ***</div>
+
 </div>
 
 {{-- Tombol cetak --}}
@@ -96,10 +239,9 @@
 </div>
 
 <script>
-    // Auto buka dialog cetak saat halaman terbuka
-    window.onload = function() {
-        setTimeout(() => window.print(), 500);
-    }
+window.onload = function () {
+    setTimeout(() => window.print(), 500);
+};
 </script>
 </body>
-</html>
+</html> 
