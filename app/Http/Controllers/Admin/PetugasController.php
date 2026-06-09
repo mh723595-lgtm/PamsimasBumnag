@@ -141,14 +141,13 @@ class PetugasController extends Controller
     private function jabatanList(): array
     {
         return [
-            'Koordinator Lapangan',
-            'Teknisi Lapangan',
-            'Petugas Meteran',
-            'Petugas Administrasi',
-            'Petugas Keuangan',
-            'Operator Pompa',
-            'Petugas Kebersihan Jaringan',
-            'Supervisor',
+            'Kepala Unit',
+            'Staf Administrasi',
+            'Staf Keuangan',
+            'Staf Teknis',
+            'Staf Perencanaan',
+            'Staf Pelaksanaan',
+            'Staf Pengawasan'
         ];
     }
 }
