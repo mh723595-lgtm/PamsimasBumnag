@@ -116,10 +116,10 @@ public function detailPetugas(Petugas $petugas)
 {
     $assigns = AssignPetugas::with('jorong')
         ->where('petugas_id', $petugas->id)
-        ->where('aktif', true)
+        ->orderBy('created_at', 'desc')
         ->get();
 
-    $jorongIds = $assigns->pluck('jorong_id');
+    $jorongIds = $assigns->where('aktif', true)->pluck('jorong_id');
 
     $pelanggan = \App\Models\Pelanggan::with('jorong')
         ->whereIn('jorong_id', $jorongIds)
@@ -129,11 +129,17 @@ public function detailPetugas(Petugas $petugas)
         ->get();
 
     return response()->json([
-        'petugas'     => [
+        'petugas' => [
             'nama'    => $petugas->nama_petugas,
             'jabatan' => $petugas->jabatan ?? '-',
         ],
-        'jorong_list' => $assigns->map(fn($a) => $a->jorong->nama_jorong ?? '-'),
+        'assigns' => $assigns->map(fn($a) => [
+            'id'     => $a->id,
+            'jorong' => $a->jorong->nama_jorong ?? '-',
+            'periode'=> $a->periode,
+            'aktif'  => (bool) $a->aktif,
+        ]),
+        'jorong_list' => $assigns->where('aktif', true)->map(fn($a) => $a->jorong->nama_jorong ?? '-'),
         'pelanggan'   => $pelanggan->map(fn($p) => [
             'nomor'  => $p->nomor_pelanggan,
             'nama'   => $p->nama_pelanggan,
@@ -146,4 +152,4 @@ public function detailPetugas(Petugas $petugas)
 }
 
 
-}
+}   

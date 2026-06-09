@@ -17,7 +17,7 @@ class PetugasController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Petugas::with('user')->orderByDesc('created_at');
+        $query = Petugas::with(['user', 'assignPetugas.jorong'])->orderByDesc('created_at');
         if ($request->filled('search')) {
             $s = $request->search;
             $query->where(
@@ -27,8 +27,9 @@ class PetugasController extends Controller
                     ->orWhere('nik', 'like', "%$s%")
             );
         }
-        $petugas = $query->paginate(15)->withQueryString();
-        return view('admin.petugas.index', compact('petugas'));
+        $petugas    = $query->paginate(15)->withQueryString();
+        $jorongList = \App\Models\Jorong::where('aktif', true)->orderBy('nama_jorong')->get();
+        return view('admin.petugas.index', compact('petugas', 'jorongList'));
     }
 
     public function create()

@@ -19,17 +19,29 @@ class DashboardController extends Controller
         $tahunIni = now()->year;
         $hariIni  = now()->day;
 
-        // Stat cards
+        // Semua pelanggan yang diassign ke petugas ini
+        $pelangganIds = Pelanggan::where('petugas_id', $petugas?->id)
+            ->where('status', 'aktif')
+            ->pluck('id');
+
+        $totalPelanggan = $pelangganIds->count();
+
+        // Stat cards — hanya pelanggan milik petugas ini
         $meteranBulanIni = MeteranAir::where('petugas_id', $petugas?->id)
             ->where('bulan', $bulanIni)
             ->where('tahun', $tahunIni)
             ->count();
 
-        $totalPelanggan    = Pelanggan::where('status', 'aktif')->count();
-        $sudahInputMeteran = MeteranAir::where('bulan', $bulanIni)->where('tahun', $tahunIni)->count();
+        $sudahInputMeteran = MeteranAir::whereIn('pelanggan_id', $pelangganIds)
+            ->where('bulan', $bulanIni)
+            ->where('tahun', $tahunIni)
+            ->count();
+
         $belumInputMeteran = max(0, $totalPelanggan - $sudahInputMeteran);
 
-        $pengaduanBaru = Pengaduan::where('status', 'baru')->count();
+        $pengaduanBaru = Pengaduan::whereIn('pelanggan_id', $pelangganIds)
+            ->where('status', 'baru')
+            ->count();
 
         // 6 meteran terbaru oleh petugas ini
         $meteranTerbaru = MeteranAir::with('pelanggan')
@@ -38,8 +50,9 @@ class DashboardController extends Controller
             ->take(6)
             ->get();
 
-        // ── Chart pemakaian harian bulan ini: SATU query, group by hari ──────
-        $pemakaianHarianRaw = MeteranAir::whereMonth('tanggal_baca', $bulanIni)
+        // Chart pemakaian harian bulan ini: satu query, group by hari
+        $pemakaianHarianRaw = MeteranAir::where('petugas_id', $petugas?->id)
+            ->whereMonth('tanggal_baca', $bulanIni)
             ->whereYear('tanggal_baca', $tahunIni)
             ->selectRaw('DAY(tanggal_baca) as hari, SUM(pemakaian) as total')
             ->groupByRaw('DAY(tanggal_baca)')
