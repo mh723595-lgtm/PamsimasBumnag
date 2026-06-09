@@ -121,12 +121,17 @@ public function detailPetugas(Petugas $petugas)
 
     $jorongIds = $assigns->where('aktif', true)->pluck('jorong_id');
 
+    // Gabungkan: pelanggan via jorong + pelanggan di-assign langsung ke petugas ini
     $pelanggan = \App\Models\Pelanggan::with('jorong')
-        ->whereIn('jorong_id', $jorongIds)
+        ->where(function ($q) use ($jorongIds, $petugas) {
+            $q->whereIn('jorong_id', $jorongIds)
+              ->orWhere('petugas_id', $petugas->id);
+        })
         ->where('status', 'aktif')
         ->orderBy('jorong_id')
         ->orderBy('nomor_pelanggan')
-        ->get();
+        ->get()
+        ->unique('id'); // hindari duplikat jika keduanya terpenuhi
 
     return response()->json([
         'petugas' => [
@@ -146,10 +151,10 @@ public function detailPetugas(Petugas $petugas)
             'alamat' => $p->alamat ?? '-',
             'jorong' => $p->jorong->nama_jorong ?? '-',
             'no_hp'  => $p->no_hp ?? '-',
-        ]),
+        ])->values(),
         'total' => $pelanggan->count(),
     ]);
 }
 
 
-}   
+}
