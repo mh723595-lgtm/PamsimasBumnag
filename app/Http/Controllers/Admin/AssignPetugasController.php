@@ -22,7 +22,9 @@ class AssignPetugasController extends Controller
 
         if ($request->filled('search')) {
             $s = $request->search;
-            $query->whereHas('petugas', fn($q) =>
+            $query->whereHas(
+                'petugas',
+                fn($q) =>
                 $q->where('nama_petugas', 'like', "%$s%")
             );
         }
@@ -132,7 +134,7 @@ class AssignPetugasController extends Controller
         $pelangganQuery = Pelanggan::with('jorong')
             ->where(function ($q) use ($jorongIds, $petugas) {
                 $q->whereIn('jorong_id', $jorongIds)
-                  ->orWhere('petugas_id', $petugas->id);
+                    ->orWhere('petugas_id', $petugas->id);
             })
             ->where('status', 'aktif')
             ->orderBy('jorong_id')
@@ -140,9 +142,9 @@ class AssignPetugasController extends Controller
 
         $total      = $pelangganQuery->distinct()->count('pelanggan.id');
         $pelanggan  = $pelangganQuery->distinct()
-                        ->skip(($page - 1) * $perPage)
-                        ->take($perPage)
-                        ->get();
+            ->skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get();
 
         $lastPage = (int) ceil($total / $perPage);
 
@@ -155,7 +157,7 @@ class AssignPetugasController extends Controller
             'assigns' => $assigns->map(fn($a) => [
                 'id'     => $a->id,
                 'jorong' => $a->jorong->nama_jorong ?? '-',
-                'periode'=> $a->periode,
+                'periode' => $a->periode,
                 'aktif'  => (bool) $a->aktif,
             ]),
             'jorong_list' => $assigns->where('aktif', true)->map(fn($a) => $a->jorong->nama_jorong ?? '-')->values(),
@@ -175,8 +177,8 @@ class AssignPetugasController extends Controller
                 'nomor_meteran'       => $p->nomor_meteran       ?? '-',
                 'meteran_awal'        => $p->meteran_awal        ?? 0,
                 'tanggal_daftar'      => $p->tanggal_daftar
-                                          ? $p->tanggal_daftar->format('d M Y')
-                                          : '-',
+                    ? $p->tanggal_daftar->format('d M Y')
+                    : '-',
                 'status'     => $p->status,
             ])->values(),
             'pagination' => [
@@ -210,9 +212,9 @@ class AssignPetugasController extends Controller
             'no_ktp'         => $pelanggan->no_ktp  ?? '-',
             'nomor_meteran'        => $pelanggan->nomor_meteran        ?? '-',
             'meteran_awal'         => $pelanggan->meteran_awal         ?? 0,
-            'tanggal_daftar'       => $pelanggan->tanggal_daftar
-                                       ? $pelanggan->tanggal_daftar->format('d M Y')
-                                       : '-',
+            'tanggal_daftar' => $pelanggan->tanggal_daftar
+                ? \Carbon\Carbon::parse($pelanggan->tanggal_daftar)->format('d M Y')
+                : '-',
             'status'               => $pelanggan->status,
             'status_registrasi'    => $pelanggan->status_registrasi ?? '-',
             'petugas'              => $pelanggan->petugas->nama_petugas ?? '-',
