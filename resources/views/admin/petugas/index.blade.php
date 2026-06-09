@@ -89,6 +89,16 @@
                     </td>
                     <td class="px-5 py-3.5">
                         <div class="flex items-center justify-center gap-1.5">
+                            {{-- Lihat Pelanggan --}}
+                            <button
+                                onclick="openModalPelanggan({{ $p->id }}, '{{ addslashes($p->nama_petugas) }}', '{{ addslashes($p->jabatan ?? '') }}')"
+                                class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all"
+                                title="Lihat Pelanggan">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                            </button>
                             {{-- Assign Jorong --}}
                             <button
                                 onclick="openAssignJorong({{ $p->id }}, '{{ addslashes($p->nama_petugas) }}')"
@@ -183,6 +193,76 @@
         <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-800 flex justify-end">
             <button onclick="closeAssignModal()"
                 class="px-4 py-2 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- ═══ MODAL DAFTAR PELANGGAN ═══ --}}
+<div id="modal-pelanggan" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 flex flex-col" style="max-height:88vh">
+
+        {{-- Header --}}
+        <div class="flex items-center justify-between px-6 py-4 bg-blue-600 rounded-t-2xl flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-sm" id="mp-nama">—</h3>
+                    <p class="text-blue-100 text-xs mt-0.5" id="mp-jabatan">—</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span id="mp-badge-total"
+                    class="hidden items-center gap-1 px-3 py-1 bg-white/20 rounded-full text-xs font-bold text-white">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span id="mp-total-text">0</span> Pelanggan
+                </span>
+                <button onclick="closePelangganModal()" class="text-white/80 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        {{-- Search bar --}}
+        <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div class="relative">
+                <input type="text" id="mp-search" placeholder="Cari nama atau nomor pelanggan…"
+                    oninput="filterPelangganModal(this.value)"
+                    class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        {{-- Daftar pelanggan --}}
+        <div class="overflow-y-auto flex-1 px-6 py-4" id="mp-list">
+            <div class="flex flex-col items-center justify-center py-16 text-gray-400">
+                <svg class="w-8 h-8 mb-3 animate-spin text-blue-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                <p class="text-sm">Memuat data...</p>
+            </div>
+        </div>
+
+        {{-- Footer --}}
+        <div class="px-6 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between flex-shrink-0">
+            <p class="text-xs text-gray-400" id="mp-footer-info">—</p>
+            <button onclick="closePelangganModal()"
+                class="px-4 py-2 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
                 Tutup
             </button>
         </div>
@@ -361,6 +441,141 @@ function hapusAssign(id) {
 // Tutup modal klik backdrop
 document.getElementById('modal-assign-jorong').addEventListener('click', function(e) {
     if (e.target === this) closeAssignModal();
+});
+
+/* ══════════════════════════════════════════════
+   MODAL DAFTAR PELANGGAN
+══════════════════════════════════════════════ */
+let allPelangganData = [];
+
+const ROUTE_DETAIL_PETUGAS = '/admin/assign-petugas/petugas/:id';
+
+function openModalPelanggan(petugasId, nama, jabatan) {
+    // Reset
+    allPelangganData = [];
+    document.getElementById('mp-nama').textContent    = nama;
+    document.getElementById('mp-jabatan').textContent = jabatan || '—';
+    document.getElementById('mp-search').value        = '';
+    document.getElementById('mp-badge-total').classList.add('hidden');
+    document.getElementById('mp-footer-info').textContent = '—';
+    document.getElementById('mp-list').innerHTML = `
+        <div class="flex flex-col items-center justify-center py-16 text-gray-400">
+            <svg class="w-8 h-8 mb-3 animate-spin text-blue-400" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+            <p class="text-sm">Memuat data...</p>
+        </div>`;
+
+    document.getElementById('modal-pelanggan').classList.remove('hidden');
+
+    fetch(ROUTE_DETAIL_PETUGAS.replace(':id', petugasId), {
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        allPelangganData = data.pelanggan ?? [];
+        renderPelangganModal(allPelangganData, data.total ?? 0);
+    })
+    .catch(() => {
+        document.getElementById('mp-list').innerHTML = `
+            <div class="flex flex-col items-center py-16 text-red-400">
+                <p class="text-sm font-medium">Gagal memuat data pelanggan.</p>
+            </div>`;
+    });
+}
+
+function renderPelangganModal(list, total) {
+    const badge = document.getElementById('mp-badge-total');
+    document.getElementById('mp-total-text').textContent = total;
+    badge.classList.remove('hidden');
+    badge.classList.add('flex');
+
+    const footer = document.getElementById('mp-footer-info');
+
+    if (list.length === 0) {
+        document.getElementById('mp-list').innerHTML = `
+            <div class="flex flex-col items-center py-16 text-gray-400">
+                <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Belum ada pelanggan</p>
+                <p class="text-xs text-gray-400 mt-1">Assign pelanggan ke petugas ini terlebih dahulu</p>
+            </div>`;
+        footer.textContent = 'Total: 0 pelanggan';
+        return;
+    }
+
+    // Kelompokkan per jorong
+    const grouped = {};
+    list.forEach(p => {
+        const key = p.jorong || '—';
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(p);
+    });
+
+    let html = '';
+    Object.entries(grouped).forEach(([jorong, pelangganList]) => {
+        html += `
+        <div class="mb-4">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">${jorong}</span>
+                <span class="text-xs text-gray-400">(${pelangganList.length})</span>
+                <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800"></div>
+            </div>
+            <div class="space-y-2">`;
+
+        pelangganList.forEach(p => {
+            html += `
+                <div class="mp-item flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
+                     data-search="${(p.nama + ' ' + p.nomor).toLowerCase()}">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                        ${p.nama.substring(0, 2).toUpperCase()}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">${p.nama}</p>
+                        <p class="text-xs text-gray-400 truncate">${p.alamat}</p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <p class="text-xs font-mono font-semibold text-brand-600 dark:text-brand-400">${p.nomor}</p>
+                        <p class="text-xs text-gray-400">${p.no_hp !== '-' ? p.no_hp : ''}</p>
+                    </div>
+                </div>`;
+        });
+
+        html += `</div></div>`;
+    });
+
+    document.getElementById('mp-list').innerHTML = html;
+    footer.textContent = `Menampilkan ${list.length} dari ${total} pelanggan aktif`;
+}
+
+function filterPelangganModal(keyword) {
+    const q = keyword.toLowerCase().trim();
+    const items = document.querySelectorAll('#mp-list .mp-item');
+    let visible = 0;
+
+    items.forEach(el => {
+        const match = !q || el.dataset.search.includes(q);
+        el.style.display = match ? '' : 'none';
+        if (match) visible++;
+    });
+
+    document.getElementById('mp-footer-info').textContent =
+        q ? `${visible} hasil dari ${allPelangganData.length} pelanggan` :
+            `Menampilkan ${allPelangganData.length} pelanggan aktif`;
+}
+
+function closePelangganModal() {
+    document.getElementById('modal-pelanggan').classList.add('hidden');
+    allPelangganData = [];
+}
+
+document.getElementById('modal-pelanggan').addEventListener('click', function(e) {
+    if (e.target === this) closePelangganModal();
 });
 </script>
 @endpush
